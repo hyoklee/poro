@@ -5,5 +5,5 @@ and the GDR submission pages; they are never modified. Cache downloaded files un
 The wiki is maintained under wiki/ following wiki/CLAUDE.md.
 Goals: document the dataset's structure, the science it supports (poroelastic tomography at Brady Hot Springs),
 and how IOWarp's Context Assimilation Engine (clio-core CAE) ingests it selectively through OMNI files.
-When testing clio-core, use the OMNI and scripts in context-assimilation-engine/test/integration/porotomo/.
+When testing clio-core, use the OMNI, configs and drivers under cae/ (see cae/README.md).
 Record every ingest, query, and test run in wiki/log.md and keep wiki/index.md current.

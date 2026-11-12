@@ -26,14 +26,14 @@ wiki/
 ## Workflows
 
 ### Ingest an HDF5 record
-1. Fetch the object from S3 (`context-assimilation-engine/test/integration/porotomo/download_porotomo.sh` style curl; no credentials needed).
+1. Fetch the object from S3 (`cae/porotomo/download_porotomo.sh` style curl; no credentials needed).
 2. Inspect it with h5py (or h5dump) and write `source-<name>.md`.
 3. Update `index.md`; update or create `concept-*.md` pages it touches.
 4. Append an entry to `log.md`.
 
 ### Run a CAE ingestion test
 1. Write or reuse an OMNI file with a `dataset_filter` that selects only what the analysis needs.
-2. Run it through `clio_cae` or the `cae_omni_hdf5_roundtrip` test and verify byte-for-byte.
+2. Run it through `clio_cae` + `cae/porotomo/verify_porotomo.py` (Linux) or the `cae/omni_roundtrip` driver (any platform) and verify byte-for-byte.
 3. File the result as `cae_<topic>.md`; log it.
 
 ### Answer a query

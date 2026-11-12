@@ -1,3 +1,4 @@
 *.h5
 *.sgy
 *.segy
+cae/omni_roundtrip/build/
