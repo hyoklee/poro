@@ -7,3 +7,10 @@ Goals: document the dataset's structure, the science it supports (poroelastic to
 and how IOWarp's Context Assimilation Engine (clio-core CAE) ingests it selectively through OMNI files.
 When testing clio-core, use the OMNI, configs and drivers under cae/ (see cae/README.md).
 Record every ingest, query, and test run in wiki/log.md and keep wiki/index.md current.
+Build an agent using clio-agent and clio-coder.
+The agent identifies anomaly in data that may trigger an induced earthquake.
+The induced earthquake happend in Pohang, South Korea.
+Calculate the probability of causing the similar induced earthquake based on the dataset.
+Submit jobs for the agents for distributed computing.
+Save all agent codes, scripts, and results in this wiki.
+

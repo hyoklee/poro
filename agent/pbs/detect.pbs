@@ -1,0 +1,26 @@
+#!/bin/bash
+#PBS -N poro_detect
+#PBS -q debug
+#PBS -A IOWarp
+#PBS -l select=2
+#PBS -l filesystems=home:flare
+#PBS -l walltime=01:00:00
+#PBS -j oe
+# Distributed anomaly detection over the DASV manifest on Aurora.
+# Submit with agent/pbs/submit.sh (sets RUN_DIR and MANIFEST).
+set -u
+export http_proxy=http://proxy.alcf.anl.gov:3128
+export https_proxy=http://proxy.alcf.anl.gov:3128
+PPN=${PPN:-24}
+NNODES=$(sort -u "$PBS_NODEFILE" | wc -l)
+NR=$((NNODES * PPN))
+echo "job $PBS_JOBID: $NNODES nodes x $PPN ranks = $NR ranks; manifest $(wc -l < "$MANIFEST") records; start $(date -u +%FT%TZ)"
+T0=$(date +%s)
+mpiexec -n "$NR" --ppn "$PPN" --cpu-bind depth -d 4 \
+  env NRANKS="$NR" "$AGENT_DIR/pbs/worker.sh" "$MANIFEST" "$RUN_DIR/detect"
+echo "detect finished in $(( $(date +%s) - T0 )) s at $(date -u +%FT%TZ)"
+# The debug queue holds one queued job per user, so the hazard step runs here
+# instead of as a dependent job (agent/pbs/hazard.pbs is kept for other queues).
+PY=${CLIO_AGENT_PY:-$HOME/.local/share/clio/clio-agent/.venv/bin/python}
+"$PY" "$AGENT_DIR/hazard.py" "$RUN_DIR" --stride "${STRIDE:-20}"
+echo "hazard finished at $(date -u +%FT%TZ)"

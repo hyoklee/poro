@@ -12,6 +12,12 @@ South Korea's first enhanced geothermal system (EGS), near Pohang, drilled two w
 
 PoroTomo measured how a pressure front actually travels through a fractured reservoir ([concept-poroelastic-tomography.md](concept-poroelastic-tomography.md)). Pohang is the consequence of not knowing that before injecting: the protocols that followed stress fault mapping before injection, pressure-diffusion modelling, and treating post-injection migration as a hazard window.
 
+## Probability estimate for Brady
+
+Shapiro, Kim & Ree (2021) put Pohang's Σ at about −2 to −1 and its Mw 5.5 at 15–17 % worst-case probability ([source-shapiro-2021-pohang.md](source-shapiro-2021-pohang.md); they use Mw 5.5, while the Korean agencies report M 5.4). The agent run [agent_induced_seismicity.md](agent_induced_seismicity.md) finds Brady's Σ to be 3–4 log units lower and gives about 1e-4 per year for Mw ≥ 5.5 (b = 1). See [concept-seismogenic-index.md](concept-seismogenic-index.md).
+
 ## Related
+
+- [concept-seismogenic-index.md](concept-seismogenic-index.md)
 
 - [concept-porotomo-project.md](concept-porotomo-project.md)

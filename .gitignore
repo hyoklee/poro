@@ -2,3 +2,7 @@
 *.sgy
 *.segy
 cae/omni_roundtrip/build/
+
+# clio-agent / clio-coder runtime state (sessions, traces, caches)
+.clio/
+data/

@@ -17,4 +17,5 @@ Both are archived as 30-second files in SEG-Y, native DAS-HDF5-1.0 and a GDR "st
 
 - Only one DASV record has been inspected; DASH files (1 GB each) have not been ingested yet.
 - Sibling GDR submissions 825 and 829 hold the DAS metadata and the DASH deployment history; neither has a source page yet.
-- Recording gaps and the pumping schedule live outside submission 980.
+- Recording gaps and the pumping schedule live outside submission 980. The pumping schedule is now in [source-brady-pumping-gdr917.md](source-brady-pumping-gdr917.md). DASV coverage starts 2016-03-18, after the 03-13 to 03-18 shutdown.
+- Induced-seismicity agent: [agent_induced_seismicity.md](agent_induced_seismicity.md). 759 DASV records show only diurnal (cultural) transients, and Brady's seismogenic index is 3–4 log units below Pohang's. Next: template matching on the full (unsampled) DASV set, DASH records, and the NCEDC catalogue for the rest of 2016.

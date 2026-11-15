@@ -13,6 +13,7 @@ wiki/
   source-*.md            ← one page per raw source (GDR submission, S3 prefix, HDF5 file, paper)
   concept-*.md           ← reusable concept / entity pages
   cae_*.md               ← CAE / OMNI ingestion experiments and their results
+  agent_*.md             ← agent runs (code in ../agent/, results in ../agent/results/run_*/)
 ```
 
 ## Page conventions
@@ -21,6 +22,7 @@ wiki/
 - Every `source-*.md` page for an HDF5 file lists: S3 key, size, root attributes of note, every dataset with dtype / shape / chunking / bytes, and which GDR layout it uses (native DAS-HDF5-1.0 or GDR "standardized").
 - Every `concept-*.md` page lists: definition, where it appears (which sources), related concepts.
 - Every `cae_*.md` page lists: platform and compiler, clio-core commit, OMNI file used, what was verified and how, timings in milliseconds, and any bugs found.
+- Every `agent_*.md` page lists: the question, agent design (data, detector, PBS job, model, LLM steps), the run directory and PBS job id, results with figures, limitations, and how reliable the LLM steps were.
 - Numbers come from the source or from a run recorded in `log.md`; never from memory.
 
 ## Workflows
@@ -40,6 +42,12 @@ wiki/
 1. Read `index.md` to find relevant pages, then read them.
 2. Synthesise an answer with page citations.
 3. If valuable, file it as a new page or append to an existing one; log the query.
+
+### Run the induced-seismicity agent
+1. `agent/pbs/submit.sh <stride> <nodes> <ppn>` (Aurora, project `IOWarp`, `debug` queue: one queued job per user, so the hazard step runs inside the detect job).
+2. Check for `download_failed` rows; rerun them as rank 0 with `agent/pbs/worker.sh` and rerun `agent/hazard.py <run>`.
+3. `agent/interpret.sh <run>` (clio-coder); check every number it quotes against `summary.json`.
+4. File the result as `agent_<topic>.md`; log it with kind `test`.
 
 ### Lint
 - Orphan pages (no inbound links), stale claims superseded by newer runs, contradictions between pages, concepts mentioned but lacking a page.

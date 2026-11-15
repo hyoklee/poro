@@ -1,0 +1,135 @@
+job 9092130.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov: 2 nodes x 24 ranks = 48 ranks; manifest 759 records; start 2026-11-15T15:57:45Z
+curl: (56) OpenSSL SSL_read: OpenSSL/3.5.0: error:0A000126:SSL routines::unexpected eof while reading, errno 0
+curl: (56) OpenSSL SSL_read: OpenSSL/3.5.0: error:0A000126:SSL routines::unexpected eof while reading, errno 0
+curl: (56) OpenSSL SSL_read: OpenSSL/3.5.0: error:0A000126:SSL routines::unexpected eof while reading, errno 0
+curl: (56) OpenSSL SSL_read: OpenSSL/3.5.0: error:0A000126:SSL routines::unexpected eof while reading, errno 0
+curl: (56) OpenSSL SSL_read: OpenSSL/3.5.0: error:0A000126:SSL routines::unexpected eof while reading, errno 0
+curl: (56) OpenSSL SSL_read: OpenSSL/3.5.0: error:0A000126:SSL routines::unexpected eof while reading, errno 0
+rank 21/48 on x4500c7s4b0n0 done
+rank 20/48 on x4500c7s4b0n0 done
+rank 41/48 on x4500c7s5b0n0 done
+rank 9/48 on x4500c7s4b0n0 done
+rank 38/48 on x4500c7s5b0n0 done
+rank 25/48 on x4500c7s5b0n0 done
+rank 16/48 on x4500c7s4b0n0 done
+rank 44/48 on x4500c7s5b0n0 done
+rank 30/48 on x4500c7s5b0n0 done
+rank 10/48 on x4500c7s4b0n0 done
+rank 1/48 on x4500c7s4b0n0 done
+rank 7/48 on x4500c7s4b0n0 done
+rank 2/48 on x4500c7s4b0n0 done
+rank 33/48 on x4500c7s5b0n0 done
+rank 31/48 on x4500c7s5b0n0 done
+rank 15/48 on x4500c7s4b0n0 done
+rank 43/48 on x4500c7s5b0n0 done
+rank 34/48 on x4500c7s5b0n0 done
+rank 40/48 on x4500c7s5b0n0 done
+rank 32/48 on x4500c7s5b0n0 done
+rank 13/48 on x4500c7s4b0n0 done
+rank 29/48 on x4500c7s5b0n0 done
+rank 11/48 on x4500c7s4b0n0 done
+rank 35/48 on x4500c7s5b0n0 done
+rank 23/48 on x4500c7s4b0n0 done
+rank 19/48 on x4500c7s4b0n0 done
+rank 12/48 on x4500c7s4b0n0 done
+rank 27/48 on x4500c7s5b0n0 done
+rank 24/48 on x4500c7s5b0n0 done
+rank 18/48 on x4500c7s4b0n0 done
+rank 47/48 on x4500c7s5b0n0 done
+rank 17/48 on x4500c7s4b0n0 done
+rank 39/48 on x4500c7s5b0n0 done
+rank 26/48 on x4500c7s5b0n0 done
+rank 36/48 on x4500c7s5b0n0 done
+rank 46/48 on x4500c7s5b0n0 done
+rank 28/48 on x4500c7s5b0n0 done
+rank 42/48 on x4500c7s5b0n0 done
+rank 22/48 on x4500c7s4b0n0 done
+rank 45/48 on x4500c7s5b0n0 done
+rank 37/48 on x4500c7s5b0n0 done
+rank 3/48 on x4500c7s4b0n0 done
+rank 8/48 on x4500c7s4b0n0 done
+rank 0/48 on x4500c7s4b0n0 done
+rank 14/48 on x4500c7s4b0n0 done
+rank 4/48 on x4500c7s4b0n0 done
+rank 5/48 on x4500c7s4b0n0 done
+rank 6/48 on x4500c7s4b0n0 done
+detect finished in 188 s at 2026-11-15T16:00:53Z
+{
+ "records": {
+  "by_status": {
+   "ok": 753,
+   "download_failed": 6
+  },
+  "analysed": 753,
+  "stride": 20,
+  "first": "2016-03-18T02:09:17Z",
+  "last": "2016-03-26T00:59:44Z",
+  "sampled_fraction_of_time": 0.03287936808736393,
+  "mean_ms_per_record": 2004.0252324037185
+ },
+ "das_events": {
+  "n": 62,
+  "n_scaled_to_full_time": 1885.6810092961489,
+  "records_with_events": 53,
+  "b_relative": 0.9849352475487246,
+  "mc_relative": -0.8492463451632817,
+  "n_above_mc": 34
+ },
+ "hazard_catalog_based": {
+  "b=1.0": {
+   "sigma": -5.448901270028832,
+   "p_over_observed_volume": {
+    "M>=3.0": 0.001654285765767427,
+    "M>=4.0": 0.00016555185552025176,
+    "M>=5.5": 5.235629034316958e-06
+   },
+   "p_per_year_at_observed_rate": {
+    "M>=3.0": 0.037185194806342636,
+    "M>=4.0": 0.003782248806627586,
+    "M>=5.5": 0.00011982478978644906
+   },
+   "p_if_pohang_volume": {
+    "M>=3.0": 4.553012186059302e-05,
+    "M>=4.0": 4.553105473426022e-06,
+    "M>=5.5": 1.4398215464339614e-07
+   }
+  },
+  "b=0.73": {
+   "sigma": -5.3193012700288325,
+   "p_over_observed_volume": {
+    "M>=3.0": 0.014303599635234643,
+    "M>=4.0": 0.002679091808476697,
+    "M>=5.5": 0.00021553767643867072
+   },
+   "p_per_year_at_observed_rate": {
+    "M>=3.0": 0.2808899025266809,
+    "M>=4.0": 0.059553589387636996,
+    "M>=5.5": 0.004921548824626587
+   },
+   "p_if_pohang_volume": {
+    "M>=3.0": 0.0003961162599406265,
+    "M>=4.0": 7.377219060988871e-05,
+    "M>=5.5": 5.927989317755511e-06
+   }
+  },
+  "b=0.65": {
+   "sigma": -5.280901270028833,
+   "p_over_observed_volume": {
+    "M>=3.0": 0.026980151909718808,
+    "M>=4.0": 0.0061043731385994615,
+    "M>=5.5": 0.0006483793467004784
+   },
+   "p_per_year_at_observed_rate": {
+    "M>=3.0": 0.46527230399352526,
+    "M>=4.0": 0.13076643482864603,
+    "M>=5.5": 0.014735103451029574
+   },
+   "p_if_pohang_volume": {
+    "M>=3.0": 0.0007518745434346163,
+    "M>=4.0": 0.00016837287799498224,
+    "M>=5.5": 1.7836302385054736e-05
+   }
+  }
+ }
+}
+hazard finished at 2026-11-15T16:00:56Z

@@ -1,0 +1,14 @@
+#!/bin/bash
+#PBS -N poro_hazard
+#PBS -q debug
+#PBS -A IOWarp
+#PBS -l select=1
+#PBS -l filesystems=home:flare
+#PBS -l walltime=00:15:00
+#PBS -j oe
+# Aggregate the detection shards and run the hazard model (agent/hazard.py).
+set -eu
+PY=${CLIO_AGENT_PY:-$HOME/.local/share/clio/clio-agent/.venv/bin/python}
+echo "hazard start $(date -u +%FT%TZ) on $(hostname)"
+"$PY" "$AGENT_DIR/hazard.py" "$RUN_DIR" --stride "${STRIDE:-20}"
+echo "hazard done $(date -u +%FT%TZ)"

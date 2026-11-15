@@ -1,0 +1,280 @@
+{
+  "generated": "2026-11-15T16:02:33+00:00",
+  "records": {
+    "by_status": {
+      "ok": 759
+    },
+    "analysed": 759,
+    "stride": 20,
+    "first": "2016-03-18T02:09:17Z",
+    "last": "2016-03-26T00:59:44Z",
+    "sampled_fraction_of_time": 0.033141355084075994,
+    "mean_ms_per_record": 2003.9857707509884
+  },
+  "anomalies": {
+    "z_threshold": 5.0,
+    "n_anomalous": 57,
+    "top": [
+      {
+        "start": "2016-03-23T20:50:17Z",
+        "zmax": 30.92,
+        "drivers": [
+          "max_sta_lta"
+        ]
+      },
+      {
+        "start": "2016-03-24T23:30:17Z",
+        "zmax": 24.99,
+        "drivers": [
+          "max_sta_lta"
+        ]
+      },
+      {
+        "start": "2016-03-25T00:30:17Z",
+        "zmax": 24.38,
+        "drivers": [
+          "max_sta_lta",
+          "spectral_centroid_hz"
+        ]
+      },
+      {
+        "start": "2016-03-23T21:10:17Z",
+        "zmax": 19.02,
+        "drivers": [
+          "max_sta_lta",
+          "spectral_centroid_hz"
+        ]
+      },
+      {
+        "start": "2016-03-18T02:09:17Z",
+        "zmax": 16.15,
+        "drivers": [
+          "max_sta_lta"
+        ]
+      },
+      {
+        "start": "2016-03-18T02:49:17Z",
+        "zmax": 15.8,
+        "drivers": [
+          "max_sta_lta"
+        ]
+      },
+      {
+        "start": "2016-03-23T04:50:17Z",
+        "zmax": 15.41,
+        "drivers": [
+          "max_sta_lta"
+        ]
+      },
+      {
+        "start": "2016-03-21T20:00:47Z",
+        "zmax": 15.36,
+        "drivers": [
+          "max_sta_lta",
+          "n_events"
+        ]
+      },
+      {
+        "start": "2016-03-25T00:40:17Z",
+        "zmax": 15.33,
+        "drivers": [
+          "max_sta_lta"
+        ]
+      },
+      {
+        "start": "2016-03-25T00:50:17Z",
+        "zmax": 15.24,
+        "drivers": [
+          "max_sta_lta"
+        ]
+      }
+    ]
+  },
+  "das_events": {
+    "n": 62,
+    "n_scaled_to_full_time": 1870.774440052701,
+    "records_with_events": 53,
+    "b_relative": 0.9849352475487246,
+    "mc_relative": -0.8492463451632817,
+    "n_above_mc": 34
+  },
+  "pumping": {
+    "source": "GDR 917 corrected deployment data",
+    "start": "2016-03-11T08:00:00+00:00",
+    "end": "2016-03-27T07:00:00+00:00",
+    "days": 15.958333333333334,
+    "injected_m3": 465448.11344981275,
+    "extracted_m3": 505933.04934013565,
+    "net_injected_m3": -40484.9358903229,
+    "injected_m3_during_das_window": 314436.11940972926,
+    "mean_injection_gpm": 5336.272172392385,
+    "mean_extraction_gpm": 5800.424095130631,
+    "injection_wells": [
+      "Well 18D-31 injection flow [gpm]",
+      "Well 18B-31 injection flow [gpm]",
+      "Well 81A-1 injection flow [gpm]",
+      "Well 73-25 injection flow [gpm]"
+    ],
+    "extraction_wells": [
+      "Well 48A-1 extraction flow [gpm]",
+      "Well 47C-1 extraction flow [gpm]",
+      "Well 18-1 extraction flow [gpm]",
+      "Well 27-1 extraction flow [gpm]",
+      "Well 82A-11 extraction flow [gpm]"
+    ]
+  },
+  "correlations_hourly": {
+    "spearman_events_vs_net_injection": -0.1727533876579381,
+    "spearman_events_vs_abs_change_in_net": -0.02964200695843252,
+    "spearman_events_vs_injection": -0.09264557773301593
+  },
+  "catalog": {
+    "source": "GDR 859, LBNL/NCEDC March 2016",
+    "n": 5,
+    "mc": -0.48,
+    "mag_max": 0.07,
+    "events": [
+      {
+        "time": "2016/03/14T06:47:46.45",
+        "lat": 39.79377,
+        "lon": -119.018,
+        "depth_km_msl": -0.106,
+        "mag": -0.17,
+        "magtype": "ML"
+      },
+      {
+        "time": "2016/03/14T08:36:26.61",
+        "lat": 39.79442,
+        "lon": -119.02161,
+        "depth_km_msl": -0.426,
+        "mag": -0.48,
+        "magtype": "ML"
+      },
+      {
+        "time": "2016/03/14T08:39:05.23",
+        "lat": 39.7935,
+        "lon": -119.01717,
+        "depth_km_msl": -0.106,
+        "mag": 0.07,
+        "magtype": "ML"
+      },
+      {
+        "time": "2016/03/14T12:11:34.92",
+        "lat": 39.79328,
+        "lon": -119.01897,
+        "depth_km_msl": -0.119,
+        "mag": 0.05,
+        "magtype": "ML"
+      },
+      {
+        "time": "2016/03/16T22:03:10.24",
+        "lat": 39.79222,
+        "lon": -119.01427,
+        "depth_km_msl": -0.424,
+        "mag": -0.29,
+        "magtype": "ML"
+      }
+    ]
+  },
+  "hazard_catalog_based": {
+    "b=1.0": {
+      "sigma": -5.448901270028832,
+      "p_over_observed_volume": {
+        "M>=3.0": 0.001654285765767427,
+        "M>=4.0": 0.00016555185552025176,
+        "M>=5.5": 5.235629034316958e-06
+      },
+      "p_per_year_at_observed_rate": {
+        "M>=3.0": 0.037185194806342636,
+        "M>=4.0": 0.003782248806627586,
+        "M>=5.5": 0.00011982478978644906
+      },
+      "p_if_pohang_volume": {
+        "M>=3.0": 4.553012186059302e-05,
+        "M>=4.0": 4.553105473426022e-06,
+        "M>=5.5": 1.4398215464339614e-07
+      }
+    },
+    "b=0.73": {
+      "sigma": -5.3193012700288325,
+      "p_over_observed_volume": {
+        "M>=3.0": 0.014303599635234643,
+        "M>=4.0": 0.002679091808476697,
+        "M>=5.5": 0.00021553767643867072
+      },
+      "p_per_year_at_observed_rate": {
+        "M>=3.0": 0.2808899025266809,
+        "M>=4.0": 0.059553589387636996,
+        "M>=5.5": 0.004921548824626587
+      },
+      "p_if_pohang_volume": {
+        "M>=3.0": 0.0003961162599406265,
+        "M>=4.0": 7.377219060988871e-05,
+        "M>=5.5": 5.927989317755511e-06
+      }
+    },
+    "b=0.65": {
+      "sigma": -5.280901270028833,
+      "p_over_observed_volume": {
+        "M>=3.0": 0.026980151909718808,
+        "M>=4.0": 0.0061043731385994615,
+        "M>=5.5": 0.0006483793467004784
+      },
+      "p_per_year_at_observed_rate": {
+        "M>=3.0": 0.46527230399352526,
+        "M>=4.0": 0.13076643482864603,
+        "M>=5.5": 0.014735103451029574
+      },
+      "p_if_pohang_volume": {
+        "M>=3.0": 0.0007518745434346163,
+        "M>=4.0": 0.00016837287799498224,
+        "M>=5.5": 1.7836302385054736e-05
+      }
+    }
+  },
+  "hazard_das_upper_bound": {
+    "b_used": 0.9849352475487246,
+    "b_source": "DAS relative-magnitude Aki MLE",
+    "sigma": -2.698279919032152,
+    "p_over_observed_volume": {
+      "M>=3.0": 0.5028935333666842,
+      "M>=4.0": 0.06980604371234655,
+      "M>=5.5": 0.0024076054468051833
+    },
+    "p_per_year_at_observed_rate": {
+      "M>=3.0": 0.9999999999480303,
+      "M>=4.0": 0.9138460482144991,
+      "M>=5.5": 0.07842182774171746
+    }
+  },
+  "pohang": {
+    "reference": {
+      "sigma_range": [
+        -2.0,
+        -1.0
+      ],
+      "b_values": [
+        0.65,
+        0.73
+      ],
+      "mainshock_mw": 5.5,
+      "worst_case_probability_reported": [
+        0.15,
+        0.17
+      ],
+      "v_fig3c_m3": 5850.0
+    },
+    "total_injected_m3": 12800.0,
+    "p_mw55_recomputed": {
+      "sigma=-2.0,b=0.65": 0.03348385973244483,
+      "sigma=-2.0,b=0.73": 0.01228931320894866,
+      "sigma=-1.0,b=0.65": 0.28863726797964195,
+      "sigma=-1.0,b=0.73": 0.11631490970703107
+    },
+    "sigma_needed_at_brady_for_1pct_mw55_over_observed_volume": {
+      "b=1.0": -2.16569069948543,
+      "b=0.73": -3.6506906994854305,
+      "b=0.65": -4.09069069948543
+    }
+  }
+}
