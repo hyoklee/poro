@@ -53,5 +53,16 @@ already in the clio-agent venv.
 
 ```bash
 ~/.local/share/clio/clio-agent/.venv/bin/python -m clio_agent.providers.argonne_auth authenticate
-agent/clio-agent/start-alcf-mistral.sh minerva "List the datasets in ~/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5"
+agent/clio-agent/start-alcf-mistral.sh minerva &        # server on :8100 (Minerva, our blueprint, data roots)
+~/.local/share/clio/clio-agent/.venv/bin/python agent/clio-agent/run_query.py \
+    "List the datasets in ~/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5 with shape and dtype." \
+    --out agent/results/llm/answer.json
 ```
+
+Use `run_query.py`, not `clio-agent --query`. `--query` always runs the built-in
+`main` agent and denies every tool. `run_query.py` activates the blueprint on a
+fresh session (`POST /v1/sessions/{sid}/agent-blueprint`) and approves only
+read-only `hdf5_*` tools. Shell stays denied unless you pass `--allow-shell`.
+The clio-kit HDF5 server keeps an index under `<server cwd>/data/`, which is
+ignored by git. On the first call after its environment is rebuilt it can hang.
+If a query stalls after `hdf5_open_file` is approved, restart the server and retry.

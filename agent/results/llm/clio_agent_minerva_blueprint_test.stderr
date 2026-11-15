@@ -1,5 +1,7 @@
-session sess_0ceddb7a5b4d; agents ['hdf5', 'main', 'seismicity']
+session sess_f53b1eef4e05; agents ['hdf5', 'main', 'seismicity']
 [tool] spawn_agent_task ...
 [tool] spawn_agent_task ok=True
 [tool] wait_agent_tasks ...
 [permission] hdf5_open_file: allow
+[permission] hdf5_close_file: allow
+[tool] wait_agent_tasks ok=True

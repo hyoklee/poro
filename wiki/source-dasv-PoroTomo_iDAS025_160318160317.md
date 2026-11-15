@@ -15,6 +15,8 @@ Root attributes: `Conventions = ['DAS-HDF5-1.0' 'CF-1.7' 'ACDD-1.3']`, `creator_
 | `/x`, `/y`, `/z` | float32 | (384,) | contiguous | 1,536 each | channel coordinates; `/z` is depth along the well |
 | `/crs` | uint8 | scalar | — | 1 | CF grid-mapping placeholder |
 
+`/crs` attributes (checked with h5py 2026-11-15): `epsg_code = EPSG:32611` (WGS 84 / UTM zone 11N), `grid_mapping_name = transverse_mercator`, central meridian −117, scale factor 0.9996, false easting 500000, unit metre. `/t` has `units = seconds since 1970-01-01T00:00:00Z`. The root `source` attribute is `PoroTomo_iDAS025_160318160317.sgy`, so the file was converted from SEG-Y.
+
 No compression anywhere. 30,000 samples per 30 s record means a 1 kHz sample rate; 384 channels along 363 m of fiber.
 
 ## GDR standardized file (46,344,096 B)
