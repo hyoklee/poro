@@ -19,5 +19,6 @@ Shapiro, Kim & Ree (2021) put Pohang's Σ at about −2 to −1 and its Mw 5.5 a
 ## Related
 
 - [concept-seismogenic-index.md](concept-seismogenic-index.md)
+- [concept-brady-vs-pohang.md](concept-brady-vs-pohang.md)
 
 - [concept-porotomo-project.md](concept-porotomo-project.md)

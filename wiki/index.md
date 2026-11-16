@@ -23,6 +23,7 @@
 - [The three storage layouts](concept-das-hdf5-layouts.md) — SEG-Y vs native HDF5 vs GDR standardized HDF5, and what to select
 - [Induced seismicity and Pohang](concept-induced-seismicity-pohang.md) — why pressure diffusion matters: the 2017 M5.4 EGS earthquake
 - [Seismogenic index](concept-seismogenic-index.md) — Σ, the Shapiro exceedance-probability model, Pohang vs Brady values
+- [Brady vs Pohang](concept-brady-vs-pohang.md) — same mechanism and post-shutdown timing; Brady injects 36× more but is net-producing with Σ 3–4 log units lower
 
 ## CAE experiments
 

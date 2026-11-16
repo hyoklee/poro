@@ -64,7 +64,7 @@ Seismogenic index from the calibrated LBNL catalogue: 5 events with ML ≥ −0.
 
 - The clio-coder code review (`agent/results/llm/clio_coder_code_review.md`) was useful. Fixes taken from it: an LTA window guard, zero-volume and empty-catalogue guards, and clearer `first_depth` semantics.
 - The clio-coder interpretation (`interpretation.md` in the run directory) got three things wrong. It read "stride 20" as 20 s. It called the DAS upper bound "calibrated". It reversed the Σ-needed comparison. A reviewer note now heads the file. Don't use LLM summaries of this run without checking them against `summary.json`.
-- clio-agent: the blueprint is written but not executed. The server on the login node couldn't get an ALCF Globus token (`globus-sdk` is missing from its venv); see [`agent/README.md`](../agent/README.md).
+- clio-agent: the blueprint could not run during this run, because the server had no ALCF Globus token. After the login it ran on ALCF Minerva Mistral Large 4 (`mistral-large-4-nvfp4`), driven by `agent/clio-agent/run_query.py` (see [log.md](log.md), 2026-11-15). The first attempt stalled for 900 s after `hdf5_open_file`. After a server restart, `main` delegated to `hdf5`, which used only the approved read-only `hdf5_open_file` and `hdf5_close_file`, and answered in 46.3 s. Every dataset, shape, dtype, the chunking and the `/crs` attributes matched h5py. Its only unsupported claim was calling the file a "shot record". The `seismicity` expert, which needs shell, has not been run yet. Transcripts are in `agent/results/llm/clio_agent_minerva_*`; setup is in [`agent/README.md`](../agent/README.md).
 
 ## Related
 
