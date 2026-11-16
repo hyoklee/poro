@@ -21,6 +21,8 @@ Hazard model: Shapiro, Kim & Ree (2021) Eq. 5, see [concept-seismogenic-index.md
 ## Run
 
 - PBS job 9092130: started 15:57:15, wall time 3 min 12 s, exit 0. Detection took 188 s for 753 records; mean 2.0 s CPU per record.
+- **Data volume.** The 759 records are 46,590,272 B each, 35,362,016,448 B in total (35.4 GB, 32.9 GiB), all streamed from S3 and analysed in full: 8,743,680,000 samples (30,000 × 384 per record). The 9 day folders the run covers (20160318 to 20160326) hold 15,162 records, 706,258,848,880 B (706.3 GB), so the run downloaded about 5 % of them. Detection moved about 190 MB/s across the 2 nodes. Per record, the HDF5 read took about 52 ms and the whole analysis about 2.0 s, about 25 min of CPU time in total. The 6 records that failed to download are counted once. The run itself does not store sizes; they come from an anonymous S3 listing on 2026-11-16 (see [log.md](log.md)).
+- **LLM data access.** The clio-agent `hdf5` expert read the structure of one locally cached 46.6 MB record, not its data. The `seismicity` expert and clio-coder read only the results files (`summary.json`, `events.csv`).
 - 6 downloads failed with proxy `SSL_read: unexpected eof`. `curl --retry` does not retry that error, so they were rerun from the login node. All 759 are now `ok`. The worker now uses `--retry 5 --retry-all-errors`.
 
 ## Results

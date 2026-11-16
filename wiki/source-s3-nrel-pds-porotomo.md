@@ -19,6 +19,8 @@ Nodal/
 
 DASV day folders start at `20160317`. The file-name timestamp is the record start (e.g. `160318160317` = 2016-03-18 16:03:17 UTC) and each file holds 30 s.
 
+Size of `DAS/H5/DASV/` (anonymous listing, 2026-11-16): the day folders 20160318 to 20160326 hold 15,162 records, 706,258,848,880 B (706.3 GB). The 759 records used by [agent_induced_seismicity.md](agent_induced_seismicity.md) are all 46,590,272 B.
+
 ## Files fetched so far
 
 | Key | Bytes | Local name |

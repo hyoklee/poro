@@ -31,7 +31,7 @@
 
 ## Agent runs
 
-- [DAS anomalies and Pohang-like earthquake probability](agent_induced_seismicity.md) — 759 DASV records on Aurora via PBS; detections are diurnal noise; P(Mw≥5.5) ≈ 1e-4/yr at Brady (b=1)
+- [DAS anomalies and Pohang-like earthquake probability](agent_induced_seismicity.md) — 759 DASV records (35.4 GB from S3) on Aurora via PBS; detections are diurnal noise; P(Mw≥5.5) ≈ 1e-4/yr at Brady (b=1)
 
 ## Schema
 
