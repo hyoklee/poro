@@ -30,6 +30,33 @@ from clio_agent.sdk.events import (
 BLUEPRINT = "porotomo-induced-seismicity"
 
 
+def _field(p):
+    md = getattr(p, "metadata", None) or {}
+    return md.get("signature_field_name", "") if isinstance(md, dict) else ""
+
+
+def split_answer(parts):
+    """Return (answer, trace) from an assistant message's parts.
+
+    The agent's final answer is the text part(s) whose metadata
+    signature_field_name is "answer". Thinking parts and intermediate text
+    ("next_thought") are reasoning; they go to the trace, not the answer.
+    Without an "answer" part, the last text part is the answer.
+    """
+    trace, answer = [], []
+    texts = [p for p in parts if getattr(p, "type", "") == "text" and getattr(p, "text", "")]
+    for p in parts:
+        kind, t = getattr(p, "type", ""), getattr(p, "text", "") or ""
+        if kind == "text" and _field(p) == "answer":
+            answer.append(t)
+        elif t:
+            trace.append(dict(type=kind, agent=getattr(p, "agent_id", ""), text=t))
+    if not answer and texts:
+        answer = [texts[-1].text]
+        trace = [x for x in trace if x["text"] != texts[-1].text]
+    return "\n".join(answer).strip(), trace
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("question")
@@ -84,12 +111,13 @@ def main():
                         log["error"] = err.model_dump() if hasattr(err, "model_dump") else str(err)
                     log.setdefault("status", "completed")
                     break
-        # The ledger holds the authoritative final text (deltas can include tool chatter).
+        # The ledger holds the authoritative final text (deltas include reasoning
+        # and tool chatter).
         msgs = c.messages.list(s.id)
         final = next((m for m in msgs if getattr(m, "role", "") == "assistant"), None)
         if final is not None:
-            parts = [getattr(p, "text", None) or "" for p in (final.parts or [])]
-            log["answer"] = "\n".join(x for x in parts if x).strip() or "".join(text).strip()
+            log["answer"], log["trace"] = split_answer(final.parts or [])
+            log["answer"] = log["answer"] or "".join(text).strip()
         else:
             log["answer"] = "".join(text).strip()
     log["elapsed_s"] = round(time.time() - t0, 1)
