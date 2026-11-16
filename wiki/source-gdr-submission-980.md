@@ -13,6 +13,8 @@
 | DASH | zigzag trenched cable | 2016-03-08 to 2016-03-26, pause and restart on 2016-03-11 |
 | DASV | first 363 m of a vertical well | 2016-03-17 to 2016-03-28 |
 
+The HDF5 DASV records on the bucket cover only 2016-03-18 to early 03-26, with gaps; see [source-s3-nrel-pds-porotomo.md](source-s3-nrel-pds-porotomo.md#dasv-coverage-on-the-bucket).
+
 ## Resources listed on the page
 
 | Resource | Format | Size | Count |

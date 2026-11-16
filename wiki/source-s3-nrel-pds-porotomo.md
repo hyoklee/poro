@@ -19,6 +19,26 @@ Nodal/
 
 DASV day folders start at `20160317`. The file-name timestamp is the record start (e.g. `160318160317` = 2016-03-18 16:03:17 UTC) and each file holds 30 s.
 
+### DASV coverage on the bucket
+
+Records per day folder under `DAS/H5/DASV/` (from `agent/results/run_20261115T155359Z_s20/manifest.log`, listed 2026-11-15). A full day is 2,880 records of 30 s.
+
+| Folder | Records |
+|---|---|
+| 20160317 | 2 (both start on 2016-03-18: `160318160317`, `160318203917`) |
+| 20160318 | 2,622 |
+| 20160319 | 469 |
+| 20160320 | 426 |
+| 20160321 | 2,880 |
+| 20160322 | 101 |
+| 20160323 | 2,880 |
+| 20160324 | 2,880 |
+| 20160325 | 2,781 |
+| 20160326 | 123 |
+| Total | 15,164 |
+
+So the HDF5 DASV data runs from 2016-03-18 02:09:17 to early 2016-03-26 UTC, with large gaps on 03-19, 03-20 and 03-22. [source-gdr-submission-980.md](source-gdr-submission-980.md) gives the DASV window as 2016-03-17 to 2016-03-28; no folder after `20160326` exists under this prefix. Whether the remaining records exist in another format (e.g. SEG-Y) has not been checked.
+
 Size of `DAS/H5/DASV/` (anonymous listing, 2026-11-16): the day folders 20160318 to 20160326 hold 15,162 records, 706,258,848,880 B (706.3 GB). The 759 records used by [agent_induced_seismicity.md](agent_induced_seismicity.md) are all 46,590,272 B.
 
 ## Files fetched so far

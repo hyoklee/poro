@@ -57,6 +57,7 @@ Seismogenic index from the calibrated LBNL catalogue: 5 events with ML ≥ −0.
 
 ## Limitations
 
+- **Coverage is set by the bucket, not chosen.** `manifest.py` takes every 20th record of everything under `DAS/H5/DASV/`, with no date filter. That prefix holds only 2016-03-18 02:09 to early 03-26, and 03-19, 03-20 and 03-22 hold only 469, 426 and 101 of a possible 2,880 records ([source-s3-nrel-pds-porotomo.md](source-s3-nrel-pds-porotomo.md#dasv-coverage-on-the-bucket)). The 03-13 to 03-18 shutdown and all 5 catalogue events fall before the first record, so DASV cannot test whether DAS sees the post-shutdown seismicity. The surface fibre (DASH) covers 2016-03-08 to 03-26 (pausing and restarting on 03-11), including that shutdown, but is 81.21 TB of native HDF5 in 1,936,663 files ([source-gdr-submission-980.md](source-gdr-submission-980.md)); a DASH run restricted to 03-13 to 03-18 is the natural next step.
 - The catalogue has only 5 events, so Σ has an uncertainty of roughly ±0.4 log units from Poisson counting alone. b can't be fitted from it and was taken from scenarios.
 - Shapiro's model uses injected volume. Brady extracted more than it injected (net −40,485 m³), and its seismicity responds to stopping, not to volume. Gross injected volume is used here as the conservative choice.
 - The detector has no template matching, no picking or location, no magnitude calibration, and no separation of cultural noise. One record per 10 minutes covers 3.3 % of the time.
