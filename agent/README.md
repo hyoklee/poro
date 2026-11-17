@@ -69,8 +69,10 @@ Use `run_query.py`, not `clio-agent --query`. `--query` always runs the built-in
 fresh session (`POST /v1/sessions/{sid}/agent-blueprint`) and approves only
 read-only `hdf5_*` tools. Shell stays denied unless you pass `--allow-shell`.
 The clio-kit HDF5 server keeps an index under `<server cwd>/data/`, which is
-ignored by git. On the first call after its environment is rebuilt it can hang.
-If a query stalls after `hdf5_open_file` is approved, restart the server and retry.
+ignored by git. A turn occasionally stalls right after a tool call (e.g.
+`hdf5_open_file`): the model's next reasoning step streams without end and the
+turn fails only at the ~900 s turn wall ([clio-agent #2371](https://github.com/iowarp/clio-agent/issues/2371), [#2372](https://github.com/iowarp/clio-agent/issues/2372)).
+Retry the question; the tuned blueprint finishes in about 8 s when it works.
 
 ## Tuned default and benchmarks
 
