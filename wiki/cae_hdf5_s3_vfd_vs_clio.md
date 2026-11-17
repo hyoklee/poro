@@ -67,7 +67,7 @@ ROS3 over the mock (median ms; GETs and MB per open, averaged over the 3 records
 
 ## Bugs and caveats found
 
-- clio-core install: `iowarp-coreConfig.cmake` still has the empty LibPressio flag (see [cae/README.md](../cae/README.md)), and with `CAE_ENABLE_S3` (cfs:: destinations) the installed CAE targets reference `clio::cte::filesystem_client`, which the package config never loads, so `find_package(clio-core)` fails. Worked around in `bench/hdf5_s3/CMakeLists.txt`.
+- clio-core install: `iowarp-coreConfig.cmake` still has the empty LibPressio flag (see [cae/README.md](../cae/README.md)), and with `CAE_ENABLE_S3` (cfs:: destinations) the installed CAE targets reference `clio::cte::filesystem_client`, which the package config never loads, so `find_package(clio-core)` fails. Worked around in `bench/hdf5_s3/CMakeLists.txt`. Filed as [clio-core #1374](https://github.com/iowarp/clio-core/issues/1374) (LibPressio flag) and [clio-core #1375](https://github.com/iowarp/clio-core/issues/1375) (`filesystem_client`).
 - The pip `iowarp_core` 2.2.1 used by clio-agent is built without CAE HDF5, S3 and Globus support.
 - aws-c-s3 parses an ETag of the form `"<x>-<n>"` as a multipart ETag; a non-numeric `<n>` made ROS3 hang after its first GET (`s3_mock.py` now sends a plain hex ETag).
 - The mock caps speed per response, not overall, so it favours CAE's parallel streams; the real-S3 table is the fair CLIO-vs-ROS3 comparison.

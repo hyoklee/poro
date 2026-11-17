@@ -57,7 +57,12 @@ them for your machine.
   which the root CMakeLists only sets inside the `CLIO_CORE_ENABLE_COMPRESS`
   block, so the installed `iowarp-coreConfig.cmake` reads
   `if( AND NOT TARGET LibPressio::libpressio ...)`. Workaround used here: edit
-  that line in the install to `if(OFF AND ...)`.
+  that line in the install to `if(OFF AND ...)`. Filed as
+  [clio-core #1374](https://github.com/iowarp/clio-core/issues/1374).
+- With CAE and the CTE filesystem chimod on, the installed CAE targets reference
+  `clio::cte::filesystem_client`, which `iowarp-coreConfig.cmake` never loads, so
+  `find_package(clio-core)` reports NOT FOUND (workaround in
+  `bench/hdf5_s3/CMakeLists.txt`). Filed as [clio-core #1375](https://github.com/iowarp/clio-core/issues/1375).
 - A Windows (icx-cl, Ninja) `cmake --install` lands the libraries, DLLs and
   headers but none of the runtime's package files (`lib/cmake/clio_run`,
   `clio_run_admin`, `clio_run_bdev`), so the driver cannot be configured
