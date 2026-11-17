@@ -1,0 +1,24 @@
+{
+  "question": "# Induced-Seismicity Analyst\n\nYou answer questions about whether the PoroTomo DAS data from Brady Hot Springs\n(March 2016) shows anomalies that could point to injection-induced seismicity,\nand how likely a Pohang-like earthquake (Mw >= 5.5) would be. You do the work\nyourself; there are no sub-experts.\n\n- Results of a run: run `python3 ~/poro/agent/report.py <run>` with `shell_bash`.\n  It prints every headline number (records, anomalies, detections, Sigma and\n  probabilities per b, the DAS upper bound) in about 1 KB. Open\n  `<run>/summary.json` or the CSVs only for a value the report lacks. Runs live\n  under `~/poro/agent/results/run_*`.\n- New runs: `~/poro/agent/pbs/submit.sh <stride> <nodes> <ppn>` (one job at a\n  time in the `debug` queue); check with `qstat -u $USER`.\n- An `.h5` record: open it read-only with `hdf5_open_file`, then call\n  `hdf5_analyze_dataset_structure` once: it lists every dataset with shape and\n  dtype in one call. Use the per-dataset tools (`hdf5_get_chunks`,\n  `hdf5_list_attributes`, `hdf5_read_attribute`) only for details it lacks, sample with\n  `hdf5_read_partial_dataset` (never the whole `/das`), and close it.\n\n- Run every `shell_bash` command with `cwd` set to `/home/hyoklee/poro`; other\n  directories are outside the allowed roots and the call fails.\n- You have no child experts, so never call `spawn_agent_task`.\n\n\nReport numbers only from tool output. Say which probability is calibrated (the\nLBNL catalogue) and which is the DAS-based upper bound with uncalibrated\nmagnitudes, which over-counts.\n\n---\n\nReport the headline results of the agent run in /home/hyoklee/poro/agent/results/run_20261115T155359Z_s20: the number of records analysed, anomalous records and DAS detections, the seismogenic index Sigma and P(Mw>=5.5) per year for each b scenario, and the DAS-based upper bound. Say which is calibrated and which is an upper bound. Read-only: do not submit PBS jobs and do not run hazard.py.",
+  "agent": "standard",
+  "tools": [
+    {
+      "tool": "shell_bash",
+      "ok": true
+    }
+  ],
+  "permissions": [
+    {
+      "tool": "shell_bash",
+      "decision": "allow"
+    }
+  ],
+  "session_id": "sess_a69d7a1b8906",
+  "agent_ref": "clio/standard",
+  "stop_reason": "end_turn",
+  "status": "completed",
+  "elapsed_s": 4.4,
+  "answer": "Headline results of the run `/home/hyoklee/poro/agent/results/run_20261115T155359Z_s20` (from `python3 ~/poro/agent/report.py <run>`, read-only \u2014 no PBS jobs submitted, no hazard.py run):\n\n**Coverage and data**\n- **Records analysed: 759** (stride 20, 2016-03-18T02:09:17Z \u2192 2016-03-26T00:59:44Z, covering 3.314 % of the time window)\n- **Anomalous records (|robust z| > 5): 57**\n- **DAS detections: 62 in 53 records**; relative b = 0.9849 (34 above the catalogue Mc)\n- Pumping over the 15.96 days: injected 4.654e+05 m\u00b3, extracted 5.059e+05 m\u00b3, net **\u22124.048e+04 m\u00b3** (net extraction, not injection)\n- LBNL/NCEDC (GDR 859) catalogue for March 2016: 5 events, ML \u22120.48 to 0.07\n\n**CALIBRATED \u2014 catalogue-based (Shapiro et al. 2021, Eq. 5); this is the calibrated probability:**\n\n| b | Sigma | P(M \u2265 5.5)/yr | P(M \u2265 5.5) in observed volume | P(M \u2265 3)/yr |\n|---|-------|---------------|-------------------------------|-------------|\n| 1.0 | \u22125.449 | 0.0001198 | 5.236e\u221206 | 0.03719 |\n| 0.73 | \u22125.319 | 0.004922 | 0.0002155 | 0.2809 |\n| 0.65 | \u22125.281 | 0.01474 | 0.0006484 | 0.4653 |\n\n**UPPER BOUND \u2014 DAS-based, with uncalibrated magnitudes; every detection is counted as an event at or above the catalogue Mc, so it over-counts:**\n- b = 0.9849, **Sigma = \u22122.698**, **P(M \u2265 5.5)/yr = 0.07842**\n\n**Interpretation:** the calibrated catalogue-based estimate gives P(Mw \u2265 5.5) per year of ~1.2e\u22124 to ~1.5e\u22122 across the b scenarios (0.00012 at b = 1.0 up to 0.0147 at b = 0.65) \u2014 a Pohang-like event is unlikely on this calibrated basis. The DAS-based number (0.078/yr) is an upper bound only, because its magnitudes are uncalibrated and it counts every DAS detection as an event above Mc, so it over-counts and is not the calibrated probability.",
+  "tokens_input": 28098,
+  "tokens_output": 856
+}

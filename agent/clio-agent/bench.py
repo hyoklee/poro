@@ -19,10 +19,13 @@ import sys
 import time
 from pathlib import Path
 
-from clio_agent.sdk import ClioClient
+try:
+    from clio_agent.sdk import ClioClient
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from run_query import ask  # noqa: E402
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from run_query import ask  # noqa: E402
+except ImportError:  # clio-agent >= 0.9.7: bench_0971.py imports only the scoring
+    ClioClient = ask = None
 
 RUN = Path.home() / "poro/agent/results/run_20261115T155359Z_s20"
 H5 = Path.home() / "cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5"

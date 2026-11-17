@@ -1,0 +1,24 @@
+{
+  "question": "# Induced-Seismicity Analyst\n\nYou answer questions about whether the PoroTomo DAS data from Brady Hot Springs\n(March 2016) shows anomalies that could point to injection-induced seismicity,\nand how likely a Pohang-like earthquake (Mw >= 5.5) would be. You do the work\nyourself; there are no sub-experts.\n\n- Results of a run: run `python3 ~/poro/agent/report.py <run>` with `shell_bash`.\n  It prints every headline number (records, anomalies, detections, Sigma and\n  probabilities per b, the DAS upper bound) in about 1 KB. Open\n  `<run>/summary.json` or the CSVs only for a value the report lacks. Runs live\n  under `~/poro/agent/results/run_*`.\n- New runs: `~/poro/agent/pbs/submit.sh <stride> <nodes> <ppn>` (one job at a\n  time in the `debug` queue); check with `qstat -u $USER`.\n- An `.h5` record: open it read-only with `hdf5_open_file`, then call\n  `hdf5_analyze_dataset_structure` once: it lists every dataset with shape and\n  dtype in one call. Use the per-dataset tools (`hdf5_get_chunks`,\n  `hdf5_list_attributes`, `hdf5_read_attribute`) only for details it lacks, sample with\n  `hdf5_read_partial_dataset` (never the whole `/das`), and close it.\n\n- Run every `shell_bash` command with `cwd` set to `/home/hyoklee/poro`; other\n  directories are outside the allowed roots and the call fails.\n- You have no child experts, so never call `spawn_agent_task`.\n\n\nReport numbers only from tool output. Say which probability is calibrated (the\nLBNL catalogue) and which is the DAS-based upper bound with uncalibrated\nmagnitudes, which over-counts.\n\n---\n\nReport the headline results of the agent run in /home/hyoklee/poro/agent/results/run_20261115T155359Z_s20: the number of records analysed, anomalous records and DAS detections, the seismogenic index Sigma and P(Mw>=5.5) per year for each b scenario, and the DAS-based upper bound. Say which is calibrated and which is an upper bound. Read-only: do not submit PBS jobs and do not run hazard.py.",
+  "agent": "standard",
+  "tools": [
+    {
+      "tool": "shell_bash",
+      "ok": true
+    }
+  ],
+  "permissions": [
+    {
+      "tool": "shell_bash",
+      "decision": "allow"
+    }
+  ],
+  "session_id": "sess_6cdf53d51bf8",
+  "agent_ref": "clio/standard",
+  "stop_reason": "end_turn",
+  "status": "completed",
+  "elapsed_s": 4.2,
+  "answer": "Here are the headline results of run `run_20261115T155359Z_s20` (stride 20), from `python3 ~/poro/agent/report.py` on that run:\n\n**Records and detections**\n- **759 records analysed** (stride 20), spanning 2016-03-18T02:09:17Z to 2016-03-26T00:59:44Z \u2014 3.314 % of the March 2016 PoroTomo DAS window at Brady Hot Springs.\n- **57 anomalous records** (|robust z| > 5).\n- **62 DAS detections in 53 records**; relative b = **0.9849**, with 34 above the catalogue completeness magnitude Mc.\n- Pumping over the 15.96-day window: injected 4.654e+05 m\u00b3, extracted 5.059e+05 m\u00b3, net **\u22124.048e+04 m\u00b3** (net extraction).\n- Catalogue: 5 events, ML \u22120.48 to 0.07 (GDR 859, LBNL/NCEDC March 2016).\n\n**Calibrated result (catalogue-based, Shapiro et al. 2021 Eq. 5) \u2014 this is the calibrated probability:**\n\n| b | Sigma | P(Mw \u2265 5.5)/yr | P(Mw \u2265 5.5) over observed volume | P(M \u2265 3)/yr |\n|---|-------|----------------|-------------------------------------|-------------|\n| 1.00 | \u22125.449 | 0.0001198 | 5.236e-06 | 0.03719 |\n| 0.73 | \u22125.319 | 0.004922 | 0.0002155 | 0.2809 |\n| 0.65 | \u22125.281 | 0.01474 | 0.0006484 | 0.4653 |\n\n**DAS-based upper bound (uncalibrated magnitudes):** relative b = 0.9849, Sigma = **\u22122.698**, P(Mw \u2265 5.5)/yr = **0.07842**.\n\n**Which is which:** the per-b table (b = 1.0, 0.73, 0.65) is the **calibrated** estimate, derived from the LBNL/NCEDC catalogue via Shapiro et al. (2021) Eq. 5. The DAS-based number (b = 0.9849, P \u2248 0.078/yr) is an **upper bound** only: DAS magnitudes are uncalibrated and every detection is counted as an event at or above the catalogue Mc, so it **over-counts** \u2014 it should not be read as a calibrated hazard probability. In short, the calibrated Pohang-like (Mw \u2265 5.5) probability is at most ~1.5e-2 per year (b = 0.65 scenario) and as low as ~1.2e-4 per year at b = 1.0, while 0.078/yr is the loose DAS ceiling, not a calibrated value.\n\nRead-only as requested: no PBS jobs submitted, hazard.py not run.",
+  "tokens_input": 28055,
+  "tokens_output": 801
+}

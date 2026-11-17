@@ -82,6 +82,13 @@ apply it after every clio-agent install or upgrade, then restart the server:
 ~/.local/share/clio/clio-agent/.venv/bin/python agent/clio-agent/patches/apply_dspy_patch.py   # --revert to undo
 ```
 
+clio-agent 0.9.7.x has no blueprints, so the blueprints here do not run on it.
+Its built-in `standard` agent uses native tool calls and does not hit #2369
+(60/60, median 4.3 s; see round 9 in `wiki/agent_clio_performance.md`).
+`clio-agent/bench_0971.py` runs that test. Start a 0.9.7.x server from an empty
+folder: started from `~/poro`, it adopts `~/poro/.clio/agent` and resumes old
+sessions ([clio-agent #2375](https://github.com/iowarp/clio-agent/issues/2375)).
+
 ## Tuned default and benchmarks
 
 `clio-agent/variants/porotomo-is-tuned/` (the default since 2026-11-17) is a

@@ -138,6 +138,21 @@ Test: the round-6 prompt (no empty-`workflow_state` line, from a temporary bluep
 - No stall in another 120 questions (240 in a row with the cap), no `late_op rejected` lines.
 - With the patch the empty-`workflow_state` prompt line is no longer needed for correctness; it stays in the tuned blueprint because it also cuts output tokens by about 30 % and time by about 1.5 s (round 7).
 
+### Round 9: clio-agent 0.9.7.1 (2026-11-17)
+
+clio-agent 0.9.7.1 (released 2026-11-13; dspy 3.4.0, json_repair 0.64.9, litellm 1.102.2) removed agent blueprints. Agents are now Python classes in plugin marketplaces, and `POST /v1/sessions/{sid}/agent-blueprint` is gone. The SDK client moved to `clio_agent.client`, and the server rejects that client's own `agent_id` argument (422). Our blueprints were not ported. Instead, `agent/clio-agent/bench_0971.py` uses the built-in `clio/standard` agent, puts the tuned expert's instructions in front of the question, approves only shell tools, and scores with `bench.py`. The run used the round-6 prompt (`--no-submit-hint`), cap 8192 and Minerva Mistral Large 4, with 60 `results` questions (no `hdf5` task, because `standard` has no HDF5 MCP tools). The server was installed in a scratch venv and started from an empty folder with its own `CLIO_AGENT_HOME`. Started from `~/poro`, 0.9.7.1 adopts the 0.9.4.24 store in `~/poro/.clio/agent` and resumes old sessions at boot; filed as [clio-agent #2375](https://github.com/iowarp/clio-agent/issues/2375).
+
+| run | clio-agent | agent | correct | median s (min–max) | model calls |
+|---|---|---|---|---|---|
+| round 6 (`bench_20261117_stall60`, results half) | 0.9.4.24, no patch | `porotomo-is-tuned-r6` | 21/30 | 8.2 | – |
+| `bench_20261117_v0971` | 0.9.7.1, no patch | `clio/standard` + tuned instructions | **60/60** | 4.3 (3.7–17.9) | 125 (about 2 per question) |
+
+- **#2369 is avoided in this run, but not fixed:** 0.9.7.1's `standard` agent calls tools through native function calling. The 125 model calls ended 65 times with `tool_call` and 60 times with `stop`, and the final answer came back as plain message text. None produced the `[[ ## tool_calls ## ]]` text field that DSPy's `parse_value` / `json_repair` parse. So the truncation path never ran: the shortest answer was 1,608 characters, and all 60 were fully correct. The DSPy bug itself is unchanged; replaying the saved malformed outputs offline through 0.9.7.1's DSPy 3.4.0 still cuts the answers at 92 and 235 characters. It matters again for any agent or provider that uses the text-field adapter.
+- About twice as fast as 0.9.4.24: one `shell_bash` call plus the answer, without the separate `submit` step. Median input was about 28k tokens and output about 770 tokens per question.
+- No stall in 60 questions and no `late_op rejected` lines. #2371 (no default output cap) and #2372 (stream not cancelled) are not fixed in the code; the cap was set.
+- The comparison is not like for like: different agent (`standard`, its own 27k-character system prompt and tools), instructions in the user message, `results` task only.
+- **What this means for us:** moving to 0.9.7.x would drop the need for the DSPy patch for this kind of question, but the blueprint has to be rewritten as a plugin agent (Python class) with the HDF5 MCP tools.
+
 ### Failures seen (all variants)
 
 - **Truncated answers (3 of 60 runs):** the stored `answer` part ended mid-sentence at 210, 250 and 514 characters (single-light round 1 run 2, single-light `low` round 3 run 2, baseline round 4 run 2). This is server side and affects both designs: re-reading the sessions with `GET /v1/sessions/{sid}/messages` returns the same cut-off `answer` parts, while the turns report `completed` / `end_turn`. Filed as [clio-agent #2369](https://github.com/iowarp/clio-agent/issues/2369).
