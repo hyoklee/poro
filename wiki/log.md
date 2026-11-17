@@ -69,3 +69,11 @@ Set `CLIO_LM_MAX_TOKENS=8192` (default in `start-alcf-mistral.sh`) and reran rou
 ## [2026-11-17] update | Why the orchestrated blueprint is slower
 
 Explained, from the round-5 sessions, why delegation costs 6x the input tokens: experts share clio-core storage, not model context. Each call re-sends the expert's full prompt (no prefix-cache reuse reported), the child builds its own 23k-token context from a brief, results return as tool messages, and about 7 calls run in series against about 2. Added to `agent_clio_performance.md`.
+
+## [2026-11-17] test | 60-question stall test; truncation root cause
+
+Tuned blueprint with `CLIO_LM_MAX_TOKENS=8192`, 30 `results` + 30 `hdf5` questions (`agent/results/llm/bench_20261117_stall60/`): 60/60 completed, no stall (max 14.9 s), medians 8.2 s and 7.6 s. 10 answers were truncated. Traced all of them with `/v1/sessions/{sid}/trace`: the model's `submit` tool-call JSON lacks one final `}`, and clio-agent's lenient fallback (`json_repair` 0.63.5 in `_recover_malformed_structured_value`) splits the answer string at `, ` / `:` instead of adding the brace. Reproduced offline. Added as round 6 to `agent_clio_performance.md`.
+
+## [2026-11-17] test | Empty `workflow_state` workaround; #2369 root cause posted
+
+Posted the `json_repair` root cause and an offline reproduction on clio-agent #2369. Added a prompt line to the tuned expert to pass `workflow_state` as `{}` and reran 30 + 30 questions (`agent/results/llm/bench_20261117_emptystate/`): 58/60 correct (was 50/60), medians 6.5 s and 6.2 s (were 8.2 and 7.6), output tokens down about 30 %, no stall. The 2 remaining failures still drop the final `}` (`"workflow_state": {}}]}`), so only the upstream fix removes them. Added as round 7 to `agent_clio_performance.md`.

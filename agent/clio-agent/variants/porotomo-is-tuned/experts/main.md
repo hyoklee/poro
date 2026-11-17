@@ -42,6 +42,10 @@ yourself; there are no sub-experts.
 - Run every `shell_bash` command with `cwd` set to `/home/hyoklee/poro`; other
   directories are outside the allowed roots and the call fails.
 - You have no child experts, so never call `spawn_agent_task`.
+- When you call `submit`, put the whole answer in `answer` and pass
+  `workflow_state` as an empty object `{}`. The model sometimes drops the final
+  `}` of the call and clio-agent's JSON repair then cuts the answer (clio-agent
+  #2369); a short call cut that from 10 to 2 in 60 questions.
 
 Report numbers only from tool output. Say which probability is calibrated (the
 LBNL catalogue) and which is the DAS-based upper bound with uncalibrated

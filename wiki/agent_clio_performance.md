@@ -95,6 +95,32 @@ Delegation pays off when children can run in parallel, or when a sub-task would 
 - The tuned input-token estimates are 15–18 % higher than in round 4 (20,395 vs 17,325; 39,516 vs 34,355) with the same tool calls; not explained, and these are clio-agent estimates, not gateway counts.
 - What this does not show: stalls hit 3 of about 63 earlier turns (about 5 %), so 0 of 15 is expected about half the time even without a fix. Nothing hit the cap, so its behaviour on a runaway step (error, retry or truncated answer) is still untested. The cap is confirmed in the server's environment and in the code path (`lm/factory.py` passes `config.max_tokens` to the LM), not by capturing a request.
 
+### Round 6: 60-question stall test, tuned blueprint with the cap (2026-11-17)
+
+`porotomo-is-tuned`, `CLIO_LM_MAX_TOKENS=8192`, 30 `results` + 30 `hdf5` questions interleaved; results in `agent/results/llm/bench_20261117_stall60/`.
+
+| task | completed | correct | wall s, median (p90, max) | input tokens, median | output tokens, median |
+|---|---|---|---|---|---|
+| results | 30/30 | 21/30 | 8.2 (9.8, 14.9) | 19,888 | 1,605 |
+| hdf5 | 30/30 | 29/30 | 7.6 (8.9, 9.1) | 34,534 | 1,228 |
+
+- **No stall in 60 questions** (slowest 14.9 s) and no `late_op rejected` line in the server log. Before the cap, stalls hit 3 of about 63 questions; at that rate, 0 of 60 would happen about 5 % of the time, so the cap very likely helps. No step reached the cap, so the stalls may also have been rare by chance; the cap's behaviour on a runaway step is still untested.
+- **10 truncated answers (9 `results`, 1 `hdf5`), all traced to one cause** in clio-agent's output parsing, not the model ([clio-agent #2369](https://github.com/iowarp/clio-agent/issues/2369)). The model writes its final answer as a `submit` tool call in the `[[ ## tool_calls ## ]]` field. In each failing turn that JSON is complete except for one closing `}` at the very end, after a deeply nested `workflow_state` object. A strict parser fails, so clio-agent's `_recover_malformed_structured_value` (`clio_agent/lm/adapters.py`, documented as "purely structural, no semantic change") passes it to `json_repair` 0.63.5, which re-splits the answer string at `, ` and `:`. For `sess_1b8b5d341f24` the repaired arguments are `{"answer": "... (stride 20", "2016-03-18T02": 9, "2016-03-26T00": 59, "window)": "n\n- Records analysed: 759 ...", ...}`; adding the one missing `}` makes the same text parse strictly with the full 1,537-character answer. The `hdf5` failure (`sess_9f1cc1421175`) is the same: one missing `}`, answer cut at `(0 subgroups)` with `/` as a new key. Reproduced offline with `json_repair.loads` on the raw output. This also explains why every truncated `results` answer, including the 2026-11-16 ones, ends at `(stride 20`, the first `, ` in the text.
+- The truncation rate here (10/60) is higher than in rounds 1–5 (3 of about 70); not explained, but it does not involve the cap: the cut answers' output token counts (1,086–2,460) match complete ones.
+
+### Round 7: tuned blueprint with an empty `workflow_state` (2026-11-17)
+
+Workaround for the truncation, on our side: one line in the tuned expert's prompt (`variants/porotomo-is-tuned/experts/main.md`) tells it to put the whole answer in `submit`'s `answer` and pass `workflow_state` as `{}`. Same 30 + 30 questions and cap as round 6; results in `agent/results/llm/bench_20261117_emptystate/`.
+
+| task | completed | correct (round 6) | wall s, median (p90, max) (round 6 median) | input tokens, median | output tokens, median (round 6) |
+|---|---|---|---|---|---|
+| results | 30/30 | 28/30 (21/30) | 6.5 (7.7, 9.7) (8.2) | 18,694 | 1,120 (1,605) |
+| hdf5 | 30/30 | 30/30 (29/30) | 6.2 (7.3, 8.7) (7.6) | 27,874 | 839 (1,228) |
+
+- Truncated answers fell from 10 to 2 in 60 questions, and the shorter `submit` call also cut output tokens by about 30 % and the median time by 1.4–1.7 s.
+- Still no stall in 60 more questions (120 in a row with the cap, max 14.9 s), and no `late_op rejected` lines.
+- **The two remaining failures are the same parser bug, which the prompt cannot remove**: the model still ends with `"workflow_state": {}}]}`, one `}` short, so the missing brace does not depend on nesting depth. Only the upstream fix ([clio-agent #2369](https://github.com/iowarp/clio-agent/issues/2369), root cause posted 2026-11-17) removes it.
+
 ### Failures seen (all variants)
 
 - **Truncated answers (3 of 60 runs):** the stored `answer` part ended mid-sentence at 210, 250 and 514 characters (single-light round 1 run 2, single-light `low` round 3 run 2, baseline round 4 run 2). This is server side and affects both designs: re-reading the sessions with `GET /v1/sessions/{sid}/messages` returns the same cut-off `answer` parts, while the turns report `completed` / `end_turn`. Filed as [clio-agent #2369](https://github.com/iowarp/clio-agent/issues/2369).
