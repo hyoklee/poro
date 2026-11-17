@@ -65,3 +65,7 @@ Traced the 600 s benchmark stalls and the 2026-11-15 900 s stall from the stored
 ## [2026-11-17] test | clio-agent benchmark with a per-step output cap
 
 Set `CLIO_LM_MAX_TOKENS=8192` (default in `start-alcf-mistral.sh`) and reran round 4's 5 configurations x 3 reps (`agent/results/llm/bench_20261117_cap8k/`). 15/15 completed with accuracy 1.0, no truncation, no stall, no late deltas; tuned medians 8.8 s (`results`) and 9.0 s (`hdf5`), as before the cap. Too few runs to show the stall rate fell (about 5 % before). Added as round 5 to `agent_clio_performance.md`.
+
+## [2026-11-17] update | Why the orchestrated blueprint is slower
+
+Explained, from the round-5 sessions, why delegation costs 6x the input tokens: experts share clio-core storage, not model context. Each call re-sends the expert's full prompt (no prefix-cache reuse reported), the child builds its own 23k-token context from a brief, results return as tool messages, and about 7 calls run in series against about 2. Added to `agent_clio_performance.md`.

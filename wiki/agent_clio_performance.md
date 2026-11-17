@@ -58,6 +58,26 @@ Round 2 alone (quiet gateway, same 3 rounds per variant): baseline 38.8 s and 11
 7. **Minerva is faster than Tara.** Same 456-token prompt, 400 output tokens, 3 runs each: Minerva time to first token 0.34–0.38 s and 362 tokens/s; Tara 0.72–4.41 s and 32–117 tokens/s. All output came in the `reasoning` delta field.
 8. **The HDF5 MCP server starts in 2.1–2.3 s** when its uv environment is cached (3 timed starts), small next to model time. Pre-warming would save at most that much per first call.
 
+### Why delegation costs more: experts share storage, not model context
+
+One `results` question from round 5, from the stored sessions (`context_usage_by_scope`, per-session token totals):
+
+| | orchestrated (`sess_46eb94d0d32e` + child `sess_994ddca7c0d9`) | tuned single expert (`sess_de528c31f800`) |
+|---|---|---|
+| model calls | about 3 (`main`) + about 4 (`seismicity` child) | about 2 |
+| prompt size per call | `main` about 15.5k tokens, child about 23.3k | about 10.3k |
+| input tokens re-sent in total | 40,010 + 88,076 = 128,086 | 19,871 |
+| wall time | 42.0 s | 8.2 s |
+
+1. **Each call re-sends the whole prompt.** The chat-completions API is stateless, so every step sends the expert's system prompt, tool schemas and conversation so far. The gateway reports `cache_read_tokens: 0` with `cache_tokens_measured: false`, so no prefix-cache reuse is visible.
+2. **A child does not inherit the parent's context.** `main` writes a task brief, and the child builds its own context from scratch: its own system prompt and tools, the brief, and whatever it reads (`summary.json` alone is 7 KB). That is why the child's context grows to about 23k tokens.
+3. **Results return as messages.** The child's answer comes back to `main` as a `wait_agent_tasks` tool result. When it is too long to inline (9,697 chars in one round-4 run), `main` makes another call, `get_agent_task_output`, which re-sends about 15k tokens.
+4. **The steps run in series.** `main` decides and spawns → child calls a tool, reads the result, answers → `main` waits → `main` reads the result → `main` writes the answer. That is about 7 calls in a row against about 2. Each pays the model's fixed latency plus several hundred to about 1,500 reasoning tokens at about 360 tokens/s.
+
+What clio-agent does share is storage: sessions and events persist in clio-core, the parent and child are linked by `parent_session_id`, and the parent can read the child's stored output. That saves bookkeeping, not model work, because every call is a new prompt.
+
+Delegation pays off when children can run in parallel, or when a sub-task would otherwise swamp the main context (e.g. watching a long PBS job while inspecting files). For one short question it is overhead. What would narrow the gap without removing the extra serial calls: prefix caching on the serving side (vLLM supports it; the gateway reports none), a lighter child prompt (light profile, fewer tools), and returning a compact digest instead of the child's full output.
+
 ### Round 5: per-step output cap (2026-11-17)
 
 `CLIO_LM_MAX_TOKENS=8192` (now the default in `start-alcf-mistral.sh`; clio-agent sends no cap when it is 0, its default). The value is far above a normal step (Minerva's largest direct completion here was 1,471 tokens) and bounds a runaway reasoning stream ([clio-agent #2371](https://github.com/iowarp/clio-agent/issues/2371)) to about 23 s at 362 tokens/s. Same 5 configurations x 3 reps as round 4, results in `agent/results/llm/bench_20261117_cap8k/`:
