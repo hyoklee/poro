@@ -1,0 +1,76 @@
+--- ~/.local/share/clio/clio-agent/.venv/lib/python3.13/site-packages/dspy/adapters/utils.py.orig-clio-patch	2026-11-17 19:07:02.000000000 +0000
++++ ~/.local/share/clio/clio-agent/.venv/lib/python3.13/site-packages/dspy/adapters/utils.py	2026-11-17 19:25:02.000000000 +0000
+@@ -179,7 +179,9 @@
+         # Handle union annotations, e.g., `str | None`, `Optional[str]`, `Union[str, int, None]`, etc.
+         return TypeAdapter(annotation).validate_python(value)
+ 
+-    candidate = json_repair.loads(value)  # json_repair.loads returns "" on failure.
++    _clio_ok, candidate = _clio_strict_or_rebalanced(value)  # clio local patch (#2369)
++    if not _clio_ok:
++        candidate = json_repair.loads(value)  # json_repair.loads returns "" on failure.
+     if candidate == "" and value != "":
+         try:
+             candidate = ast.literal_eval(value)
+@@ -296,3 +298,62 @@
+     else:
+         # Neither => enclose in single quotes
+         return f"'{s}'"
++
++
++# ---- clio local patch (clio-agent #2369), from poro/agent/clio-agent/patches ----
++
++
++import json as _clio_json
++import logging as _clio_logging
++
++_clio_log = _clio_logging.getLogger("clio_local_patch")
++
++
++def _clio_rebalance(s: str):
++    pairs = {"{": "}", "[": "]"}
++    out, stack, in_str, esc = [], [], False, False
++    for i, ch in enumerate(s):
++        if in_str:
++            out.append(ch)
++            if esc:
++                esc = False
++            elif ch == "\\":
++                esc = True
++            elif ch == '"':
++                in_str = False
++            continue
++        if ch == '"':
++            in_str = True
++        elif ch in pairs:
++            stack.append(pairs[ch])
++        elif ch in "}]":
++            if ch not in stack:
++                # Extra closers after the top-level value is already closed
++                # (e.g. "}]}}" where "}" belongs before "]"): drop the tail.
++                if not stack and s[i:].strip(" \t\r\n}]") == "":
++                    break
++                return None  # any other extra closer: leave it to json_repair
++            while stack[-1] != ch:
++                out.append(stack.pop())
++            stack.pop()
++        out.append(ch)
++    if in_str:
++        return None
++    out.extend(reversed(stack))
++    return "".join(out)
++
++
++def _clio_strict_or_rebalanced(value: str):
++    try:
++        return True, _clio_json.loads(value)
++    except Exception:
++        pass
++    fixed = _clio_rebalance(value)
++    if fixed is not None and fixed != value:
++        try:
++            obj = _clio_json.loads(fixed)
++        except Exception:
++            return False, None
++        _clio_log.warning("CLIO-LOCAL-PATCH rebalanced JSON field (length change %+d)", len(fixed) - len(value))
++        return True, obj
++    return False, None

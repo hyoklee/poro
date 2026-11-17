@@ -77,3 +77,7 @@ Tuned blueprint with `CLIO_LM_MAX_TOKENS=8192`, 30 `results` + 30 `hdf5` questio
 ## [2026-11-17] test | Empty `workflow_state` workaround; #2369 root cause posted
 
 Posted the `json_repair` root cause and an offline reproduction on clio-agent #2369. Added a prompt line to the tuned expert to pass `workflow_state` as `{}` and reran 30 + 30 questions (`agent/results/llm/bench_20261117_emptystate/`): 58/60 correct (was 50/60), medians 6.5 s and 6.2 s (were 8.2 and 7.6), output tokens down about 30 %, no stall. The 2 remaining failures still drop the final `}` (`"workflow_state": {}}]}`), so only the upstream fix removes them. Added as round 7 to `agent_clio_performance.md`.
+
+## [2026-11-17] test | Local DSPy patch for the answer truncation: 60/60
+
+Found that the corruption is in DSPy's `parse_value` (it runs `json_repair.loads` first; clio-agent's own fallback never ran), not in clio-agent as the round-6 write-up and the #2369 comment said; corrected the page. Added `agent/clio-agent/patches/` (strict parse, then bracket rebalance, then `json_repair`; `apply_dspy_patch.py`, `--revert`) and applied it to the clio-agent venv. Round-6 prompt, 60 questions: 59/60 with the first version (one misplaced-brace case), 60/60 with the final one, 47 logged repairs, no stall. Round 8 in `agent_clio_performance.md`.

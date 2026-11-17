@@ -8,3 +8,4 @@ cae/omni_roundtrip/build/
 data/
 __pycache__/
 *.pyc
+core.*
