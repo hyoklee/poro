@@ -1,0 +1,4 @@
+ -- HEAD: Bucket: nrel-pds-porotomo / Key: DAS/H5/DASV/20160317/PoroTomo_iDAS025_160318160317.h5
+ -- GET: Bytes 0 - 16777215, Request Size: 16777216
+ -- GET: Bytes 46108224 - 46108391, Request Size: 168
+ -- GET: Bytes 15388224 - 18460223, Request Size: 3072000

@@ -1,0 +1,6 @@
+{"status": 200, "ttft_s": null, "total_s": 1.49, "prompt_tokens": 456, "output_tokens": 400, "usage_reported": true, "tok_per_s": null, "answer_head": "", "target": "minerva/mistral-large-4-nvfp4", "rep": 1, "at": "03:15:20"}
+{"status": 200, "ttft_s": null, "total_s": 3.27, "prompt_tokens": 456, "output_tokens": 400, "usage_reported": true, "tok_per_s": null, "answer_head": "", "target": "tara/mistral-large-4", "rep": 1, "at": "03:15:23"}
+{"status": 200, "ttft_s": null, "total_s": 1.46, "prompt_tokens": 456, "output_tokens": 400, "usage_reported": true, "tok_per_s": null, "answer_head": "", "target": "minerva/mistral-large-4-nvfp4", "rep": 2, "at": "03:15:24"}
+{"status": 200, "ttft_s": null, "total_s": 3.24, "prompt_tokens": 456, "output_tokens": 400, "usage_reported": true, "tok_per_s": null, "answer_head": "", "target": "tara/mistral-large-4", "rep": 2, "at": "03:15:28"}
+{"status": 200, "ttft_s": null, "total_s": 1.46, "prompt_tokens": 456, "output_tokens": 400, "usage_reported": true, "tok_per_s": null, "answer_head": "", "target": "minerva/mistral-large-4-nvfp4", "rep": 3, "at": "03:15:29"}
+{"status": 200, "ttft_s": null, "total_s": 3.22, "prompt_tokens": 456, "output_tokens": 400, "usage_reported": true, "tok_per_s": null, "answer_head": "", "target": "tara/mistral-large-4", "rep": 3, "at": "03:15:32"}

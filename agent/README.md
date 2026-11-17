@@ -20,7 +20,8 @@ are written up in [wiki/agent_induced_seismicity.md](../wiki/agent_induced_seism
 | `clio-agent/porotomo-induced-seismicity/` | clio-agent blueprint: orchestrator plus `hdf5` and `seismicity` experts that drive the scripts above |
 | `sources/` | the external inputs: GDR 917 pumping CSV, GDR 859 LBNL/NCEDC catalogue PDF and text |
 | `results/run_*/` | one directory per run: manifest, per-rank JSONL, `summary.json`, CSVs, figures, logs, interpretation |
-| `results/llm/` | clio-coder code review of `detect.py` and `hazard.py` |
+| `report.py` | prints the headline numbers of a run in about 1 KB (for LLM agents) |
+| `results/llm/` | clio-coder code review, clio-agent test transcripts, benchmark rounds `bench_*` |
 
 ## Running
 
@@ -66,3 +67,23 @@ read-only `hdf5_*` tools. Shell stays denied unless you pass `--allow-shell`.
 The clio-kit HDF5 server keeps an index under `<server cwd>/data/`, which is
 ignored by git. On the first call after its environment is rebuilt it can hang.
 If a query stalls after `hdf5_open_file` is approved, restart the server and retry.
+
+## Faster variant and benchmarks
+
+`clio-agent/variants/porotomo-is-tuned/` is a single-expert version of the
+blueprint: one expert holds `shell_bash` (it runs `report.py` for run results)
+and the read-only HDF5 tools including `hdf5_analyze_dataset_structure`, with
+the light prompt profile. On the benchmark questions it answered in 8.2–8.8 s
+with 17–34k input tokens, against 51–66 s and 96–114k for the orchestrated
+blueprint, with the same accuracy (see
+[wiki/agent_clio_performance.md](../wiki/agent_clio_performance.md)). Link it
+like the main blueprint and pass `--blueprint porotomo-is-tuned` to
+`run_query.py`.
+
+```bash
+python3 agent/report.py agent/results/run_<stamp>_s20          # 1 KB digest of summary.json
+~/.local/share/clio/clio-agent/.venv/bin/python agent/clio-agent/bench.py --reps 3 \
+    --out agent/results/llm/bench_<stamp> \
+    --configs results:porotomo-induced-seismicity,results:porotomo-is-tuned
+```
+

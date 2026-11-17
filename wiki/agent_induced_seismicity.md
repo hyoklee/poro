@@ -71,6 +71,7 @@ Seismogenic index from the calibrated LBNL catalogue: 5 events with ML ≥ −0.
 
 ## Related
 
+- [agent_clio_performance.md](agent_clio_performance.md) (benchmarks of the clio-agent blueprint and faster variants)
 - [concept-seismogenic-index.md](concept-seismogenic-index.md), [concept-induced-seismicity-pohang.md](concept-induced-seismicity-pohang.md)
 - [source-brady-pumping-gdr917.md](source-brady-pumping-gdr917.md), [source-brady-meq-catalog-gdr859.md](source-brady-meq-catalog-gdr859.md), [source-shapiro-2021-pohang.md](source-shapiro-2021-pohang.md)
 - [source-dasv-PoroTomo_iDAS025_160318160317.md](source-dasv-PoroTomo_iDAS025_160318160317.md) (record layout)

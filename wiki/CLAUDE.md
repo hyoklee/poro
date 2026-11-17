@@ -16,6 +16,8 @@ wiki/
   agent_*.md             ← agent runs (code in ../agent/, results in ../agent/results/run_*/)
 ```
 
+Benchmark code and raw results that are not agent runs live in `../bench/<topic>/` (e.g. `bench/hdf5_s3/`); the wiki page that reports them follows the `cae_*.md` or `agent_*.md` convention.
+
 ## Page conventions
 
 - GitHub-flavored markdown. Links between pages use `[text](file.md)`.

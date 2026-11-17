@@ -1,0 +1,9 @@
+{
+  "delay_ms": 10.0,
+  "mbps": 28.0,
+  "reps": 3,
+  "port": 9123,
+  "clio": true,
+  "records": "160318160317,160321120917,160324003917",
+  "out": "results/layouts_20261116T040034Z"
+}

@@ -1,0 +1,34 @@
+[97m/home/hyoklee/clio-core.dev.wrk/context-runtime/src/manager.cc:175 INFO 2711690 ClientInit RuntimeManager::ClientInit[0m
+[97m/home/hyoklee/clio-core.dev.wrk/context-runtime/src/config_manager.cc:144 INFO 2711690 ClientInit Config at: /home/hyoklee/poro/bench/hdf5_s3/clio_s3bench_config.yaml[0m
+[97m/home/hyoklee/clio-core.dev.wrk/context-runtime/src/ipc_manager.cc:276 INFO 2711690 ClientInit IpcManager::ClientInit: IPC mode = SHM (auto-selected)[0m
+[97m/home/hyoklee/clio-core.dev.wrk/context-runtime/src/ipc_manager.cc:286 INFO 2711690 ClientInit IpcManager::ClientInit: retry_timeout = 60s[0m
+[97m/home/hyoklee/clio-core.dev.wrk/context-runtime/src/ipc_manager.cc:294 INFO 2711690 ClientInit IpcManager::ClientInit: try_new_servers = 0[0m
+[97m/home/hyoklee/clio-core.dev.wrk/context-transport-primitives/lightbeam/include/clio_ctp/lightbeam/zmq_transport.h:154 INFO 2711690 GetSharedContext [ZeroMqTransport] Created shared context with 8 I/O threads[0m
+[97m/home/hyoklee/clio-core.dev.wrk/context-runtime/src/ipc_manager.cc:347 INFO 2711690 ClientInit IpcManager: DEALER transport connected to port 10703[0m
+[97m/home/hyoklee/clio-core.dev.wrk/context-runtime/src/ipc_manager.cc:377 INFO 2711690 ClientInit IpcManager: client response listener bound to port 34851[0m
+[97m/home/hyoklee/clio-core.dev.wrk/context-runtime/src/ipc_manager.cc:1566 INFO 2711690 WaitForLocalServer Waiting for runtime via lightbeam (timeout=30s)[0m
+[97m/home/hyoklee/clio-core.dev.wrk/context-runtime/src/ipc_manager.cc:1676 INFO 2711690 WaitForLocalServer Successfully connected to runtime (generation=205210362697877, server_pid=2710551, shm_in_shards=1)[0m
+[97m/home/hyoklee/clio-core.dev.wrk/context-runtime/src/ipc_manager.cc:1372 INFO 2711690 ClientInitShm ClientInitShm: attached metadata segment 'chi_metadata_segment_hyoklee_10700'[0m
+[97m/home/hyoklee/clio-core.dev.wrk/context-runtime/src/ipc_manager.cc:1397 INFO 2711690 ClientInitShm ClientInitShm: response SHM ring 'clio-2711690-shm-out' (1MB)[0m
+[97m/home/hyoklee/clio-core.dev.wrk/context-runtime/src/ipc_manager.cc:3139 INFO 2711690 IncreaseClientShm IpcManager::IncreaseClientShm: Creating clio_2711690_0 with size 570425344 (536870912 + 33554432 overhead)[0m
+[97m/home/hyoklee/clio-core.dev.wrk/context-runtime/src/ipc_manager.cc:3183 INFO 2711690 IncreaseClientShm IpcManager::IncreaseClientShm: Created allocator clio_2711690_0 with ID (2711690.0)[0m
+[97m/home/hyoklee/clio-core.dev.wrk/context-runtime/src/manager.cc:224 INFO 2711690 ClientInit ClientInit: Creating admin client with kAdminPoolId=PoolId(major:1, minor:0)[0m
+[97m/home/hyoklee/clio-core.dev.wrk/context-runtime/src/manager.cc:230 INFO 2711690 ClientInit ClientInit: Admin client created, pool_id_=PoolId(major:1, minor:0)[0m
+stage 1614.7
+read 1 54.0 46590272
+meta 1 48.9 5.5 45
+full 1 47.7 44.1 46080000
+window 1 47.6 6.0 1536000
+channel 1 47.4 13.7 120000
+read 2 32.1 46590272
+meta 2 22.9 0.8 45
+full 2 21.6 30.5 46080000
+window 2 22.7 2.9 1536000
+channel 2 24.3 7.2 120000
+read 3 20.9 46590272
+meta 3 30.5 2.6 45
+full 3 30.4 37.4 46080000
+window 3 30.6 4.2 1536000
+channel 3 30.6 11.6 120000
+[97m/home/hyoklee/clio-core.dev.wrk/context-runtime/src/ipc_manager.cc:4431 INFO 2711707 RecvZmqClientThread [CountClientRecv] TOTAL responses=2 misses=0 identity_mismatches=0[0m
+[97m/home/hyoklee/clio-core.dev.wrk/context-runtime/src/ipc_manager.cc:2882 INFO 2711690 ClearClientPool [ClientPool] Clearing 0 persistent connections and 0 dial-backs[0m
