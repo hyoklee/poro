@@ -29,7 +29,7 @@ from clio_agent.sdk.events import (
     ToolCallCompleted, ToolCallStarted,
 )
 
-BLUEPRINT = "porotomo-induced-seismicity"
+BLUEPRINT = "porotomo-is-tuned"
 
 
 def _field(p):

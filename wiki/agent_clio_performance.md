@@ -66,7 +66,7 @@ Round 2 alone (quiet gateway, same 3 rounds per variant): baseline 38.8 s and 11
 
 ## Recommendation
 
-Use the tuned single-expert design for question answering: one expert with shell (running `report.py`) and the read-only HDF5 tools including `hdf5_analyze_dataset_structure`, light profile, the cwd and no-spawn lines. Keep the orchestrated blueprint only where delegation adds something (e.g. a long PBS workflow alongside file inspection). Upstream fixes worth filing: pass `reasoning_effort` for vLLM-served models with unknown thinking specs, and find the answer truncation.
+Use the tuned single-expert design for question answering: one expert with shell (running `report.py`) and the read-only HDF5 tools including `hdf5_analyze_dataset_structure`, light profile, the cwd and no-spawn lines. Keep the orchestrated blueprint only where delegation adds something (e.g. a long PBS workflow alongside file inspection). Adopted 2026-11-17: `porotomo-is-tuned` is now the default in `start-alcf-mistral.sh` and `run_query.py`. Upstream fixes worth filing: pass `reasoning_effort` for vLLM-served models with unknown thinking specs, and find the answer truncation.
 
 ## Related
 

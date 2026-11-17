@@ -17,7 +17,8 @@ are written up in [wiki/agent_induced_seismicity.md](../wiki/agent_induced_seism
 | `pbs/detect.pbs`, `pbs/worker.sh` | `mpiexec` launches N nodes x PPN ranks; rank r downloads lines r, r+N, ... to node-local scratch through the ALCF proxy, runs `detect.py`, deletes the file; `hazard.py` runs at the end |
 | `pbs/hazard.pbs` | standalone aggregation job for queues that allow dependent jobs |
 | `interpret.sh` | clio-coder (headless `run`, ALCF Metis `gpt-oss-120b`) writes `interpretation.md` from `summary.json` |
-| `clio-agent/porotomo-induced-seismicity/` | clio-agent blueprint: orchestrator plus `hdf5` and `seismicity` experts that drive the scripts above |
+| `clio-agent/variants/porotomo-is-tuned/` | **default** clio-agent blueprint: one expert with `shell_bash` and the read-only HDF5 tools that drives the scripts above |
+| `clio-agent/porotomo-induced-seismicity/` | orchestrated clio-agent blueprint: `main` plus `hdf5` and `seismicity` experts (slower; kept for comparison) |
 | `sources/` | the external inputs: GDR 917 pumping CSV, GDR 859 LBNL/NCEDC catalogue PDF and text |
 | `results/run_*/` | one directory per run: manifest, per-rank JSONL, `summary.json`, CSVs, figures, logs, interpretation |
 | `report.py` | prints the headline numbers of a run in about 1 KB (for LLM agents) |
@@ -36,9 +37,12 @@ which has h5py 3.16 and numpy 2.5). Override it with `CLIO_AGENT_PY`.
 
 ## clio-agent
 
-To use the blueprint, link it into clio-agent:
+The default blueprint is `porotomo-is-tuned` (used by `start-alcf-mistral.sh`,
+`run_query.py` and the server's default agent). Link it, and optionally the
+orchestrated one, into clio-agent:
 
 ```bash
+ln -s ~/poro/agent/clio-agent/variants/porotomo-is-tuned ~/.config/clio-agent/agent-blueprints/
 ln -s ~/poro/agent/clio-agent/porotomo-induced-seismicity ~/.config/clio-agent/agent-blueprints/
 ```
 
@@ -54,7 +58,7 @@ already in the clio-agent venv.
 
 ```bash
 ~/.local/share/clio/clio-agent/.venv/bin/python -m clio_agent.providers.argonne_auth authenticate
-agent/clio-agent/start-alcf-mistral.sh minerva &        # server on :8100 (Minerva, our blueprint, data roots)
+agent/clio-agent/start-alcf-mistral.sh minerva &        # server on :8100 (Minerva, tuned blueprint, data roots)
 ~/.local/share/clio/clio-agent/.venv/bin/python agent/clio-agent/run_query.py \
     "List the datasets in ~/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5 with shape and dtype." \
     --out agent/results/llm/answer.json
@@ -68,17 +72,18 @@ The clio-kit HDF5 server keeps an index under `<server cwd>/data/`, which is
 ignored by git. On the first call after its environment is rebuilt it can hang.
 If a query stalls after `hdf5_open_file` is approved, restart the server and retry.
 
-## Faster variant and benchmarks
+## Tuned default and benchmarks
 
-`clio-agent/variants/porotomo-is-tuned/` is a single-expert version of the
-blueprint: one expert holds `shell_bash` (it runs `report.py` for run results)
+`clio-agent/variants/porotomo-is-tuned/` (the default since 2026-11-17) is a
+single-expert version of the orchestrated blueprint: one expert holds `shell_bash` (it runs `report.py` for run results)
 and the read-only HDF5 tools including `hdf5_analyze_dataset_structure`, with
 the light prompt profile. On the benchmark questions it answered in 8.2–8.8 s
 with 17–34k input tokens, against 51–66 s and 96–114k for the orchestrated
 blueprint, with the same accuracy (see
-[wiki/agent_clio_performance.md](../wiki/agent_clio_performance.md)). Link it
-like the main blueprint and pass `--blueprint porotomo-is-tuned` to
-`run_query.py`.
+[wiki/agent_clio_performance.md](../wiki/agent_clio_performance.md)). Questions about run results need
+`--allow-shell`, because the expert reads them with `report.py`. Pass
+`--blueprint porotomo-induced-seismicity` to `run_query.py` for the
+orchestrated blueprint.
 
 ```bash
 python3 agent/report.py agent/results/run_<stamp>_s20          # 1 KB digest of summary.json

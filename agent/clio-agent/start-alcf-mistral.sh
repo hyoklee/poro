@@ -25,13 +25,14 @@ esac
 export CLIO_LM_PROVIDER=argonne_metis
 export CLIO_LM_API_BASE=https://inference-api.alcf.anl.gov/resource_server/$CLUSTER/api/v1
 export CLIO_LM_MODEL=${CLIO_LM_MODEL:-$MODEL}
-# Our blueprint (hdf5 + seismicity experts) instead of the generic default agent.
-export CLIO_DEFAULT_AGENT_BLUEPRINT_ID=${CLIO_DEFAULT_AGENT_BLUEPRINT_ID:-porotomo-induced-seismicity}
+# Our tuned single-expert blueprint instead of the generic default agent
+# (set CLIO_DEFAULT_AGENT_BLUEPRINT_ID=porotomo-induced-seismicity for the orchestrated one).
+export CLIO_DEFAULT_AGENT_BLUEPRINT_ID=${CLIO_DEFAULT_AGENT_BLUEPRINT_ID:-porotomo-is-tuned}
 # File tools may read the repo, the HDF5 cache and /tmp (default is cwd + temp only).
 export CLIO_ALLOWED_ROOTS=${CLIO_ALLOWED_ROOTS:-$HOME/poro:$HOME/cae_test_data:/tmp}
 
 # A running server keeps its old model; restart it so it inherits this env.
-pkill -u "$USER" -f "clio-agent-gact --host 127.0.0.1 --port 8100" 2>/dev/null && sleep 3 || true
+pkill -u "$USER" -f "clio-agent(-gact| serve) --host 127.0.0.1 --port 8100" 2>/dev/null && sleep 3 || true
 pkill -u "$USER" -f "iowarp_core/bin/clio_run start" 2>/dev/null || true
 
 if [ $# -gt 0 ]; then
