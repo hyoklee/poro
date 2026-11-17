@@ -58,6 +58,23 @@ Round 2 alone (quiet gateway, same 3 rounds per variant): baseline 38.8 s and 11
 7. **Minerva is faster than Tara.** Same 456-token prompt, 400 output tokens, 3 runs each: Minerva time to first token 0.34–0.38 s and 362 tokens/s; Tara 0.72–4.41 s and 32–117 tokens/s. All output came in the `reasoning` delta field.
 8. **The HDF5 MCP server starts in 2.1–2.3 s** when its uv environment is cached (3 timed starts), small next to model time. Pre-warming would save at most that much per first call.
 
+### Round 5: per-step output cap (2026-11-17)
+
+`CLIO_LM_MAX_TOKENS=8192` (now the default in `start-alcf-mistral.sh`; clio-agent sends no cap when it is 0, its default). The value is far above a normal step (Minerva's largest direct completion here was 1,471 tokens) and bounds a runaway reasoning stream ([clio-agent #2371](https://github.com/iowarp/clio-agent/issues/2371)) to about 23 s at 362 tokens/s. Same 5 configurations x 3 reps as round 4, results in `agent/results/llm/bench_20261117_cap8k/`:
+
+| task | blueprint | OK / runs | wall s, median (min–max) | input tokens, median | output tokens, median | round 4 (no cap): OK, wall s median (min–max) |
+|---|---|---|---|---|---|---|
+| results | baseline | 3/3 | 45.2 (42.0–48.6) | 128,086 | 9,755 | 2/3, 50.7 (30.6–58.1) |
+| results | tuned | 3/3 | 8.8 (8.2–14.5) | 20,395 | 1,592 | 3/3, 8.2 (7.7–9.0) |
+| hdf5 | baseline | 3/3 | 35.8 (34.6–61.1) | 86,930 | 5,133 | 3/3, 52.1 (46.2–79.2) |
+| hdf5 | single-light | 3/3 | 22.7 (22.1–23.5) | 65,565 | 2,616 | 2/3, 21.0 (19.1–22.8) |
+| hdf5 | tuned | 3/3 | 9.0 (7.9–9.0) | 39,516 | 1,373 | 3/3, 8.8 (7.0–88.1) |
+
+- All 15 runs completed with accuracy 1.0: no truncated answer, no stall, and no `late_op rejected` line in the server log (round 4 had one truncation and one 600 s stall).
+- The cap did not slow normal turns: the tuned medians are within 0.6 s of round 4. Baseline times are lower, which is within the gateway-load spread seen between rounds.
+- The tuned input-token estimates are 15–18 % higher than in round 4 (20,395 vs 17,325; 39,516 vs 34,355) with the same tool calls; not explained, and these are clio-agent estimates, not gateway counts.
+- What this does not show: stalls hit 3 of about 63 earlier turns (about 5 %), so 0 of 15 is expected about half the time even without a fix. Nothing hit the cap, so its behaviour on a runaway step (error, retry or truncated answer) is still untested. The cap is confirmed in the server's environment and in the code path (`lm/factory.py` passes `config.max_tokens` to the LM), not by capturing a request.
+
 ### Failures seen (all variants)
 
 - **Truncated answers (3 of 60 runs):** the stored `answer` part ended mid-sentence at 210, 250 and 514 characters (single-light round 1 run 2, single-light `low` round 3 run 2, baseline round 4 run 2). This is server side and affects both designs: re-reading the sessions with `GET /v1/sessions/{sid}/messages` returns the same cut-off `answer` parts, while the turns report `completed` / `end_turn`. Filed as [clio-agent #2369](https://github.com/iowarp/clio-agent/issues/2369).

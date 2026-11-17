@@ -25,6 +25,10 @@ esac
 export CLIO_LM_PROVIDER=argonne_metis
 export CLIO_LM_API_BASE=https://inference-api.alcf.anl.gov/resource_server/$CLUSTER/api/v1
 export CLIO_LM_MODEL=${CLIO_LM_MODEL:-$MODEL}
+# Cap each LM step's output (clio-agent sends no cap by default). Normal steps
+# use < 2k tokens; this bounds a runaway reasoning stream (clio-agent #2371) to
+# about 23 s at Minerva's ~360 tokens/s. Set 0 to send no cap.
+export CLIO_LM_MAX_TOKENS=${CLIO_LM_MAX_TOKENS:-8192}
 # Our tuned single-expert blueprint instead of the generic default agent
 # (set CLIO_DEFAULT_AGENT_BLUEPRINT_ID=porotomo-induced-seismicity for the orchestrated one).
 export CLIO_DEFAULT_AGENT_BLUEPRINT_ID=${CLIO_DEFAULT_AGENT_BLUEPRINT_ID:-porotomo-is-tuned}

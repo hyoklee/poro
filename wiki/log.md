@@ -61,3 +61,7 @@ Filed [clio-agent #2368](https://github.com/iowarp/clio-agent/issues/2368) (`rea
 ## [2026-11-17] update | Stall issues filed for clio-agent
 
 Traced the 600 s benchmark stalls and the 2026-11-15 900 s stall from the stored sessions and the server log: in each, an expert's reasoning step right after a successful tool result (`hdf5_open_file` or `shell_bash`) streamed without end, and the session went to `error` only at the turn wall (906–926 s). The stream kept running after the turn failed (255–7,146 rejected `late_op` deltas per session). Filed [clio-agent #2371](https://github.com/iowarp/clio-agent/issues/2371) (unbounded step, no cap or watchdog) and [#2372](https://github.com/iowarp/clio-agent/issues/2372) (stream not cancelled). Corrected `agent_clio_performance.md`: the digest stall was one `wait_agent_tasks` call on a stuck child, not a loop over the wait tools. Corrected `agent/README.md` and `agent_induced_seismicity.md`, which had blamed the HDF5 MCP server.
+
+## [2026-11-17] test | clio-agent benchmark with a per-step output cap
+
+Set `CLIO_LM_MAX_TOKENS=8192` (default in `start-alcf-mistral.sh`) and reran round 4's 5 configurations x 3 reps (`agent/results/llm/bench_20261117_cap8k/`). 15/15 completed with accuracy 1.0, no truncation, no stall, no late deltas; tuned medians 8.8 s (`results`) and 9.0 s (`hdf5`), as before the cap. Too few runs to show the stall rate fell (about 5 % before). Added as round 5 to `agent_clio_performance.md`.
