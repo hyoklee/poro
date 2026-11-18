@@ -107,7 +107,11 @@ restart the server:
 ~/.local/share/clio/clio-agent/.venv/bin/python agent/clio-agent/patches/apply_dspy_patch.py   # --revert to undo
 ```
 
-The clio-kit HDF5 server keeps an index under `<server cwd>/data/` (ignored by git).
+The `hdf5` plugin starts clio-kit's HDF5 MCP server with the `clio-kit` on PATH
+(a uv tool). Use clio-kit 2.11 or later (`uv tool install clio-kit@latest`;
+2.12.7 since 2026-11-18): 2.10.6 showed only five values of a slice in
+`hdf5_read_partial_dataset`. The server keeps an index under `<server cwd>/data/`
+(ignored by git).
 
 ## Tuned default and benchmarks
 

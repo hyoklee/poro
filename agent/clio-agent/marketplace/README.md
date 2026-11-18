@@ -59,11 +59,13 @@ up to 21; round 13 with this tool: one call, 3.2 s median).
 and returns its n, NaN count, min, max, mean and std (float64, over the whole
 slice) and its first `show` values (at most 1000) at full precision. It reads at
 most 1,000,000 elements per call, so never the whole `/das` (11.5 M), and only
-files under `CLIO_ALLOWED_ROOTS`. clio-kit's `hdf5_read_partial_dataset` shows
-only the first five values of a slice and `hdf5_aggregate_stats` works on whole
-datasets only, so without it the model read slices five values at a time or
-went to the shell (round 14: median 22.5 s, 10 calls; round 15 with this tool:
-2.5 s, one call).
+files under `CLIO_ALLOWED_ROOTS`. clio-kit's HDF5 server has no statistics over
+a slice (`hdf5_aggregate_stats` works on whole datasets only), so without this
+tool the model reads the slice with `hdf5_read_partial_dataset` and then computes
+the statistics through `run_code` or the shell. On clio-kit 2.12.7 that took a
+median of 14.8 s and 6 calls (round 17); with this tool, 2.5 s and one call
+(round 15). clio-kit 2.10.6, installed here until 2026-11-18, made it worse: its
+`hdf5_read_partial_dataset` showed only five values of a slice (round 14).
 
 All three tools are declared `@tool(read_only=True, defer=False, callers="direct")`. With the
 defaults, clio-agent 0.9.7.1 defers plugin tools (the model must find them with
@@ -96,4 +98,4 @@ Start the server from an empty folder, not from `~/poro`. 0.9.7.1 adopts the
 ([clio-agent #2375](https://github.com/iowarp/clio-agent/issues/2375)).
 
 `../bench_0971.py --agent poro/porotomo-is --tasks results,hdf5` runs the
-benchmark. Results are in `wiki/agent_clio_performance.md`, rounds 10–15.
+benchmark. Results are in `wiki/agent_clio_performance.md`, rounds 10–17.

@@ -121,3 +121,7 @@ Added a third read-only Python tool to the `porotomo-is` plugin (0.6.0): `poroto
 ## [2026-11-18] test | full benchmark, all three tasks: 90/90, one tool call each
 
 Ran `bench_0971.py --agent poro/porotomo-is --tasks results,hdf5,das --n 90` (30 per task) on the installed default, plugin 0.6.0 (`agent/results/llm/bench_20261118_full3/`). 90/90 correct, every question one tool call, no failed call, no stall. Medians 3.9 s (results), 3.3 s (hdf5), 2.5 s (das); about 25k input tokens each; slowest run 4.6 s. Round 16 in `agent_clio_performance.md`.
+
+## [2026-11-18] change | clio-kit 2.10.6 to 2.12.7; MCP-only baseline rerun (round 17)
+
+Before filing an issue about `hdf5_read_partial_dataset` showing only five values, checked upstream: clio-kit fixed it in 2.11.0 (up to 1000 values, truncation stated), so no issue was filed. The `clio-kit` uv tool here was pinned at 2.10.6; reinstalled with `uv tool install clio-kit@latest` (2.12.7, whose servers are fetched into a component store; `clio-kit mcp-server hdf5 --prepare` builds the HDF5 one). Reran the HDF5 questions with an MCP-only variant of the plugin (no `porotomo_h5_*` tools, 0.4.0 `hdf5` fragment) in a scratch home: `das` 30/30, median 14.8 s and 6 calls (round 14 on 2.10.6: 22.5 s, 10 calls), still computing statistics through `run_code` and the shell; `hdf5` 30/30, 5.7 s, 6 calls, re-checks unchanged. The default (plugin 0.6.0) on 2.12.7: 30/30, one call per question. Round 14 is corrected in `agent_clio_performance.md`; round 17 has the numbers.

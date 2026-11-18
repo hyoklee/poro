@@ -227,9 +227,10 @@ Rounds 1–13 ask only for run results and metadata. The new `das` task in `benc
 | **round 14, plugin 0.5.0** | **20/20** | 22.5 (12.3–43.5) | 10 (6–42) | 125k | 40 |
 
 - All 20 answers were fully correct, but the question costs about 6 times the time and 5 times the input tokens of the metadata questions.
-- `hdf5_read_partial_dataset` returns only the first five values of a slice (clio-kit 2.10.6), and `hdf5_aggregate_stats` works on whole datasets only. So the model either reads the slice five values at a time (7 of 20 runs made 21–32 partial reads; 203 in all) or computes the statistics with h5py through `shell_bash` (43 calls, 15 failed).
+- `hdf5_read_partial_dataset` returns only the first five values of a slice, and `hdf5_aggregate_stats` works on whole datasets only. So the model either reads the slice five values at a time (7 of 20 runs made 21–32 partial reads; 203 in all) or computes the statistics with h5py through `shell_bash` (43 calls, 15 failed).
 - Every run first tried `run_code`, which the benchmark denies (20 denials).
 - The same fix as rounds 12–13 would apply: a read-only plugin tool that returns a slice's values and statistics in one call (done in round 15).
+- Correction (round 17): the five-value limit was not current clio-kit. The `clio-kit` uv tool here was pinned at 2.10.6 (installed 2026-10-08); clio-kit fixed `read_partial_dataset` in 2.11.0 (up to 1000 values, truncation stated). Rounds 1–16 all ran the 2.10.6 HDF5 server. Round 17 reruns this baseline on 2.12.7.
 
 ### Round 15: a `porotomo_h5_slice` tool (2026-11-18)
 
@@ -259,6 +260,28 @@ The full benchmark with the three tasks alternated, 30 questions each (`bench_09
 - 90/90 fully correct, every question exactly one tool call, no stall, no failed call, no permission prompt. The slowest of the 90 took 4.6 s.
 - Against the first 0.9.7.1 port (round 10: 5.9 s and 5.4 s medians, 2 and 5 calls, 37k and 61k input tokens) the run-results and HDF5-listing questions are about 35–40 % faster with 33–60 % fewer input tokens. The `das` question went from 22.5 s (round 14) to 2.5 s.
 - The server's health was `degraded` throughout, for two host reasons that do not affect these tools: no OS write sandbox (`bwrap` cannot create namespaces on the login node) and no ripgrep.
+
+### Round 17: clio-kit 2.12.7 (2026-11-18)
+
+The `clio-kit` uv tool that the `hdf5` plugin runs was pinned at 2.10.6, whose `hdf5_read_partial_dataset` printed only five values of a slice. Upstream fixed that in 2.11.0, so no issue was filed. Upgraded with `uv tool install clio-kit@latest` to 2.12.7; its HDF5 server (`hdf5-mcp` 1.0.0, now fetched into a component store on first use) returns up to 1000 values and states truncation. Two runs on Minerva Mistral Large 4, cap 8192:
+
+1. **MCP-only baseline:** plugin 0.6.0 without `tools/h5.py` and with the 0.4.0 `hdf5` fragment (open, `hdf5_analyze_dataset_structure`, sample with `hdf5_read_partial_dataset`), installed into a scratch home, 30 `hdf5` + 30 `das` questions (`agent/results/llm/bench_20261118_cliokit2127_mcp/`).
+2. **Default:** plugin 0.6.0 as installed, 10 questions per task (`agent/results/llm/bench_20261118_cliokit2127_default/`).
+
+| task | run | correct | median s (min–max) | median tool calls (min–max) | median input tokens |
+|---|---|---|---|---|---|
+| hdf5 | round 12, 0.4.0 prompt, clio-kit 2.10.6 | 30/30 | 4.8 (3.9–6.9) | 4 (3–21) | 61k |
+| hdf5 | MCP-only, clio-kit 2.12.7 | 30/30 | 5.7 (3.6–10.8) | 6 (3–30) | 63k |
+| hdf5 | **default 0.6.0, clio-kit 2.12.7** | **10/10** | **3.2 (3.0–4.0)** | **1** | **26k** |
+| das | round 14, plugin 0.5.0, clio-kit 2.10.6 | 20/20 | 22.5 (12.3–43.5) | 10 (6–42) | 125k |
+| das | MCP-only, clio-kit 2.12.7 | 30/30 | 14.8 (11.0–29.5) | 6 (5–8) | 89k |
+| das | **default 0.6.0, clio-kit 2.12.7** | **10/10** | **2.6 (2.2–2.8)** | **1** | **25k** |
+| results | default 0.6.0, clio-kit 2.12.7 | 10/10 | 3.9 (3.3–22.5) | 1 (1–2) | 25k |
+
+- With 2.12.7, one `hdf5_read_partial_dataset` call returns all 100 values, so the five-at-a-time loops are gone and `das` drops from 22.5 s to 14.8 s. It still takes 6 calls: the server has no statistics over a slice, so 29 of 30 runs tried `run_code` (denied by the benchmark) and then computed min, max and mean with h5py through `shell_bash`. `porotomo_h5_slice` remains about 6 times faster.
+- The `hdf5` listing did not improve with the new server: the model still re-checks `hdf5_analyze_dataset_structure` with `hdf5_get_shape` / `hdf5_get_dtype` (50 calls each over 30 questions) and walks the file with `hdf5_visit` and `hdf5_list_keys`; 56 `hdf5_*` calls failed (24 `hdf5_visit`, 21 `hdf5_list_attributes`, 9 `hdf5_list_keys`, 2 `hdf5_analyze_dataset_structure`), with no answer affected. `porotomo_h5_layout` remains the better path.
+- The default is unchanged: one call per question. The 22.5 s `results` maximum was the first question after the server started; one other `results` question added a `shell_bash` call (6.5 s).
+- Starting the server twice failed at first with `clio_core_client_attach_timeout`: clio-core's runtime did not answer the first handshake within 30 s, although nothing else held port 9413. A retry succeeded.
 
 ### Failures seen (all variants)
 

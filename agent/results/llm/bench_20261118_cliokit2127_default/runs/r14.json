@@ -1,0 +1,19 @@
+{
+  "question": "List every dataset in /home/hyoklee/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5 with its shape and dtype.",
+  "agent": "poro/porotomo-is",
+  "tools": [
+    {
+      "tool": "porotomo_h5_layout",
+      "ok": true
+    }
+  ],
+  "permissions": [],
+  "session_id": "sess_2c8768cab5d8",
+  "agent_ref": "poro/porotomo-is",
+  "stop_reason": "end_turn",
+  "status": "completed",
+  "elapsed_s": 4.0,
+  "answer": "Here is every dataset in `/home/hyoklee/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5` (46,590,272 bytes), read directly from the file with `porotomo_h5_layout`:\n\n| Path | Shape | Dtype | Chunks | Compression |\n|---|---|---|---|---|\n| `/channel` | (384,) | int32 | \u2014 | none |\n| `/crs` | scalar () | uint8 | \u2014 | none |\n| `/das` | (30000, 384) | float32 | (2000, 384) | none |\n| `/t` | (30000,) | float64 | (30000,) | none |\n| `/trace` | (30000,) | int64 | (30000,) | none |\n| `/x` | (384,) | float32 | \u2014 | none |\n| `/y` | (384,) | float32 | \u2014 | none |\n| `/z` | (384,) | float32 | \u2014 | none |\n\nNotes on what each holds (from the attributes the same call returned):\n\n- `/das` is the strain data itself \u2014 30,000 time samples \u00d7 384 channels, float32, with `sampling_interval_seconds=0.001` (1 kHz) and coordinates `t x y z`.\n- `/t` is time in seconds since 1970-01-01T00:00:00Z (float64); the root attributes give `time_coverage_start=2016-03-18T10:03:17.990472Z` to `time_coverage_end=2016-03-18T10:03:47.989472Z`, i.e. a 30 s window.\n- `/trace` is the trace number (0\u201329999); `/channel` is the channel number (1\u2013384).\n- `/x`, `/y`, `/z` are per-channel Easting/Northing/Elevation in UTM zone 11N (EPSG:32611, per `/crs`), spanning a ~1 m easting, ~0 m northing line with elevations 866\u20131230 m \u2014 the surface DASH fiber at Brady Hot Springs.\n- `/crs` is a scalar holding the CRS as WKT (WGS 84 / UTM zone 11N).\n- Root attributes follow DAS-HDF5-1.0 / CF-1.7 conventions, instrument iDAS S/N iDAS025, source `PoroTomo_iDAS025_160318160317.sgy` (project CoRDIAL/PoroTomo, reference: https://gdr.openei.org/submissions/980).\n\nOnly `/das` is chunked (2000\u00d7384); everything else is stored contiguously.",
+  "tokens_input": 25933,
+  "tokens_output": 689
+}
