@@ -1,0 +1,32 @@
+{
+  "question": "Report the headline results of the agent run in /home/hyoklee/poro/agent/results/run_20261115T155359Z_s20: the number of records analysed, anomalous records and DAS detections, the seismogenic index Sigma and P(Mw>=5.5) per year for each b scenario, and the DAS-based upper bound. Say which is calibrated and which is an upper bound. Read-only: do not submit PBS jobs and do not run hazard.py.",
+  "agent": "poro/porotomo-is",
+  "tools": [
+    {
+      "tool": "shell_bash",
+      "ok": true
+    },
+    {
+      "tool": "shell_bash",
+      "ok": true
+    }
+  ],
+  "permissions": [
+    {
+      "tool": "shell_bash",
+      "decision": "allow"
+    },
+    {
+      "tool": "shell_bash",
+      "decision": "allow"
+    }
+  ],
+  "session_id": "sess_345448b462ff",
+  "agent_ref": "poro/porotomo-is",
+  "stop_reason": "end_turn",
+  "status": "completed",
+  "elapsed_s": 5.6,
+  "answer": "Headline results of run `/home/hyoklee/poro/agent/results/run_20261115T155359Z_s20` (read via `python3 ~/poro/agent/report.py`, which prints from that run's `summary.json`; no PBS jobs submitted, `hazard.py` not run):\n\n## Data coverage\n- **Records analysed: 759** (stride 20), spanning **2016-03-18T02:09:17Z to 2016-03-26T00:59:44Z** \u2014 3.314 % of the time window\n- **Anomalous records (|robust z| > 5): 57**\n- **DAS detections: 62 in 53 records**; relative b = **0.9849**, 34 above the catalogue completeness magnitude Mc\n- Pumping over the 15.96-day window: injected 4.654e+05 m\u00b3, extracted 5.059e+05 m\u00b3, **net \u22124.048e+04 m\u00b3** (net extraction)\n- Catalogue: **5 events, ML \u22120.48 to 0.07** (GDR 859, LBNL/NCEDC March 2016)\n\n## Calibrated estimate (catalogue-based, Shapiro et al. 2021 Eq. 5) \u2014 this is the calibrated probability\n\n| b | Sigma | P(Mw \u2265 5.5)/yr | P(Mw \u2265 5.5) over observed volume | P(Mw \u2265 3)/yr |\n|---|---|---|---|---|\n| 1.00 | \u22125.449 | 0.0001198 | 5.236e\u221206 | 0.03719 |\n| 0.73 | \u22125.319 | 0.004922 | 0.0002155 | 0.2809 |\n| 0.65 | \u22125.281 | 0.01474 | 0.0006484 | 0.4653 |\n\n## DAS-based upper bound (uncalibrated magnitudes; over-counts)\n- **b = 0.9849, Sigma = \u22122.698, P(Mw \u2265 5.5)/yr = 0.07842**\n\n## Which is which\n- The **catalogue-based (LBNL/NCEDC) numbers above are the calibrated probabilities** \u2014 the 5 catalogued events have proper magnitudes, so the Gutenberg\u2013Richter fit and the Shapiro et al. (2021) seismogenic-index scaling are calibrated.\n- The **DAS-based P(Mw \u2265 5.5)/yr = 0.07842 is an upper bound only**: it counts every one of the 62 DAS detections as an event at or above the catalogue Mc using uncalibrated magnitudes, so it systematically **over-counts** events and overstates the hazard. The true calibrated likelihood of a Pohang-like Mw \u2265 5.5 event is the low catalogue-based range (\u22481.2e\u22124 to 1.5e\u22122 per year depending on b), not the DAS upper bound.\n\nArtifacts backing these numbers are in the run directory: `summary.json`, `anomalies.csv`, `events.csv`, `hourly.csv`, `fig_mfd.png`, `fig_timeseries.png`, `interpretation.md`.",
+  "tokens_input": 36966,
+  "tokens_output": 977
+}

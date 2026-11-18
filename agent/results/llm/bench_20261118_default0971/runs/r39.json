@@ -1,0 +1,32 @@
+{
+  "question": "Report the headline results of the agent run in /home/hyoklee/poro/agent/results/run_20261115T155359Z_s20: the number of records analysed, anomalous records and DAS detections, the seismogenic index Sigma and P(Mw>=5.5) per year for each b scenario, and the DAS-based upper bound. Say which is calibrated and which is an upper bound. Read-only: do not submit PBS jobs and do not run hazard.py.",
+  "agent": "poro/porotomo-is",
+  "tools": [
+    {
+      "tool": "shell_bash",
+      "ok": true
+    },
+    {
+      "tool": "shell_bash",
+      "ok": true
+    }
+  ],
+  "permissions": [
+    {
+      "tool": "shell_bash",
+      "decision": "allow"
+    },
+    {
+      "tool": "shell_bash",
+      "decision": "allow"
+    }
+  ],
+  "session_id": "sess_b50528ed8233",
+  "agent_ref": "poro/porotomo-is",
+  "stop_reason": "end_turn",
+  "status": "completed",
+  "elapsed_s": 6.3,
+  "answer": "Headline results of run `run_20261115T155359Z_s20` (read via `python3 ~/poro/agent/report.py ...`, which prints from `~/poro/agent/results/run_20261115T155359Z_s20/summary.json`; I also opened `summary.json` directly and the numbers match). Read-only as requested \u2014 no PBS jobs submitted, `hazard.py` not run.\n\n**Coverage and detections**\n- **Records analysed: 759** (stride 20, 2016-03-18T02:09:17Z \u2192 2016-03-26T00:59:44Z; that is only **3.314 % of the time window**, mean ~2.0 s per record)\n- **Anomalous records: 57** (|robust z| > 5; strongest z = 30.92 on 2016-03-23T20:50:17Z, driven by `max_sta_lta`)\n- **DAS detections: 62 in 53 records**, relative b = **0.9849**, 34 above the catalogue completeness magnitude Mc\n- Pumping over the 15.96-day window: injected 4.654e+05 m\u00b3, extracted 5.059e+05 m\u00b3, **net \u22124.048e+04 m\u00b3** (net extraction, not injection)\n- Catalogue (LBNL/NCEDC, GDR 859, March 2016): **5 events, ML \u22120.48 to 0.07**\n\n**Calibrated probability \u2014 catalogue-based (Shapiro et al. 2021, Eq. 5); this is the calibrated estimate:**\n\n| b | Sigma | P(Mw \u2265 5.5)/yr | P(Mw \u2265 5.5) at observed volume | P(M \u2265 3)/yr |\n|---|-------|----------------|----------------------------------|-------------|\n| 1.00 | \u22125.449 | 0.0001198 | 5.236e\u221206 | 0.03719 |\n| 0.73 | \u22125.319 | 0.004922 | 0.0002155 | 0.2809 |\n| 0.65 | \u22125.281 | 0.01474 | 0.0006484 | 0.4653 |\n\n**Upper bound \u2014 DAS-based, uncalibrated magnitudes:** b = 0.9849, Sigma = **\u22122.698**, **P(Mw \u2265 5.5)/yr = 0.07842**. This counts every DAS detection as an event at or above the catalogue Mc, so it **over-counts** and is an upper bound only, not calibrated.\n\n**Bottom line:** the calibrated, catalogue-based probability of a Pohang-like Mw \u2265 5.5 event is ~1.2e\u22124 to ~1.5e\u22122 per year depending on the b scenario (b = 1.0 \u2192 0.73 \u2192 0.65); the DAS-based 0.078/yr is an uncalibrated upper bound that over-counts. Provenance: all numbers above are from `~/poro/agent/results/run_20261115T155359Z_s20/summary.json` as printed by `~/poro/agent/report.py`; caveats are the 3.3 % time sampling (stride 20) and the net-negative fluid balance over the analysed window.",
+  "tokens_input": 37305,
+  "tokens_output": 1078
+}

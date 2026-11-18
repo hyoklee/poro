@@ -1,0 +1,1405 @@
+{
+  "health": {
+    "healthy": true,
+    "uptime_s": 764,
+    "overall_status": "degraded",
+    "integrations": [
+      {
+        "name": "lm_provider",
+        "status": "ready",
+        "detail": "3 model(s) discovered",
+        "summary": "3 model(s) discovered",
+        "config_source": "handshake",
+        "next_action": null,
+        "endpoint": null,
+        "required": true,
+        "reason": null,
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "arc",
+        "status": "ready",
+        "detail": "ARC clio-core backend is live: iowarp_core is installed and the shared clio-core daemon is listening on port 9413.",
+        "summary": "ARC clio-core backend is live: iowarp_core is installed and the shared clio-core daemon is listening on port 9413.",
+        "config_source": "default:cte",
+        "next_action": "No action required.",
+        "endpoint": "127.0.0.1:9413",
+        "required": true,
+        "reason": null,
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "clio_core_attach",
+        "status": "ready",
+        "detail": "clio-core attached (port 9413, config /home/hyoklee/.local/share/clio/clio-agent-097/home/data/cte/hosts/aurora-uan-0012/cte.yaml). (daemon: host)",
+        "summary": "clio-core attached (port 9413, config /home/hyoklee/.local/share/clio/clio-agent-097/home/data/cte/hosts/aurora-uan-0012/cte.yaml). (daemon: host)",
+        "config_source": "runtime:clio_core_attach",
+        "next_action": "No action required.",
+        "endpoint": "127.0.0.1:9413",
+        "required": false,
+        "reason": "clio_core_attached",
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "cte_store_location",
+        "status": "ready",
+        "detail": "The clio-core store's recorded location is /home/hyoklee/.local/share/clio/clio-agent-097/home/data/cte/hosts/aurora-uan-0012.",
+        "summary": "The clio-core store's recorded location is /home/hyoklee/.local/share/clio/clio-agent-097/home/data/cte/hosts/aurora-uan-0012.",
+        "config_source": "cte.yaml, clio-core pool log",
+        "next_action": "No action required.",
+        "endpoint": null,
+        "required": false,
+        "reason": "cte_store_location_matches",
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "clio_core_ram_cap",
+        "status": "ready",
+        "detail": "clio-core runs disk-only data with working memory bounded at 1GB (~1.0 GiB); no ram data tier (#906 memory budget).",
+        "summary": "clio-core runs disk-only data with working memory bounded at 1GB (~1.0 GiB); no ram data tier (#906 memory budget).",
+        "config_source": "file:/home/hyoklee/.local/share/clio/clio-agent-097/home/data/cte/hosts/aurora-uan-0012/cte.yaml",
+        "next_action": "No action required.",
+        "endpoint": "/home/hyoklee/.local/share/clio/clio-agent-097/home/data/cte/hosts/aurora-uan-0012/cte.yaml",
+        "required": true,
+        "reason": "disk_only_arena_bounded",
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "clio_core_liveness",
+        "status": "ready",
+        "detail": "2 clio-core store liveness gate(s) active and healthy; ops are guarded against a runtime-daemon loss (#892).",
+        "summary": "2 clio-core store liveness gate(s) active and healthy; ops are guarded against a runtime-daemon loss (#892).",
+        "config_source": "runtime:clio_core_liveness_gate",
+        "next_action": "No action required.",
+        "endpoint": null,
+        "required": true,
+        "reason": "clio_core_liveness_healthy",
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "clio_core_daemon_memory",
+        "status": "ready",
+        "detail": "clio-core daemon (pid 4193349) RSS is 335.4 MiB (committed 19.3 GiB), 55 threads, 1 live client(s); within the elevated threshold (~1.0 GiB).",
+        "summary": "clio-core daemon (pid 4193349) RSS is 335.4 MiB (committed 19.3 GiB), 55 threads, 1 live client(s); within the elevated threshold (~1.0 GiB).",
+        "config_source": "runtime:clio_core_daemon_memory",
+        "next_action": "No action required.",
+        "endpoint": "127.0.0.1:9413",
+        "required": true,
+        "reason": "clio_core_daemon_rss_ok",
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "cte_cold_tier_disk",
+        "status": "ready",
+        "detail": "CTE data tier holds at least 54.0 KiB (0% of its 50GB capacity; warn at 50%). Its files have 1.0 GiB allocated, of which 1.0 GiB is growth reserved ahead of data.",
+        "summary": "CTE data tier holds at least 54.0 KiB (0% of its 50GB capacity; warn at 50%). Its files have 1.0 GiB allocated, of which 1.0 GiB is growth reserved ahead of data.",
+        "config_source": "arc.cte.file_capacity, arc.cte.disk_warn_fraction",
+        "next_action": "No action required.",
+        "endpoint": null,
+        "required": false,
+        "reason": "cte_cold_tier_ok",
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "cte_metadata_log",
+        "status": "ready",
+        "detail": "clio-core metadata log is 123.6 KiB (warn at 1.0 GiB).",
+        "summary": "clio-core metadata log is 123.6 KiB (warn at 1.0 GiB).",
+        "config_source": "runtime:filesystem-size",
+        "next_action": "No action required.",
+        "endpoint": null,
+        "required": false,
+        "reason": "cte_metadata_log_ok",
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "file_policy",
+        "status": "ready",
+        "detail": "Local file access allows roots [/home/hyoklee/poro, /home/hyoklee/cae_test_data, /tmp], max whole-file load (not streamed) 1.0 GiB, symlinks denied.",
+        "summary": "Local file access allows roots [/home/hyoklee/poro, /home/hyoklee/cae_test_data, /tmp], max whole-file load (not streamed) 1.0 GiB, symlinks denied.",
+        "config_source": "env:CLIO_ALLOWED_ROOTS; default:1GiB; default:deny-symlinks",
+        "next_action": "Set CLIO_ALLOWED_ROOTS, CLIO_MAX_FILE_SIZE_BYTES, or CLIO_ALLOW_SYMLINKS to change local file policy.",
+        "endpoint": null,
+        "required": true,
+        "reason": null,
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "gateway",
+        "status": "ready",
+        "detail": "Gateway exposes 11 tool(s) across 4 server(s).",
+        "summary": "Gateway exposes 11 tool(s) across 4 server(s).",
+        "config_source": "in-process:clio_agent.tools.gateway",
+        "next_action": "No action required.",
+        "endpoint": null,
+        "required": true,
+        "reason": null,
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "api",
+        "status": "ready",
+        "detail": "API application is running in this process.",
+        "summary": "API application is running in this process.",
+        "config_source": "current FastAPI app state",
+        "next_action": "No action required.",
+        "endpoint": "in-process",
+        "required": true,
+        "reason": null,
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "clio_core",
+        "status": "ready",
+        "detail": "clio-core runtime is live: iowarp_core is installed and the shared daemon is listening on port 9413.",
+        "summary": "clio-core runtime is live: iowarp_core is installed and the shared daemon is listening on port 9413.",
+        "config_source": "pip:iowarp_core; default:cte",
+        "next_action": "No action required.",
+        "endpoint": "127.0.0.1:9413",
+        "required": true,
+        "reason": null,
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "sandbox",
+        "status": "degraded",
+        "detail": "No OS write-confinement (mechanism=none, reason=codex_linux_fence_unavailable); the advisory file_policy applies at the tool boundary. Out-of-root writes are recorded on the provenance floor, not yet prevented.",
+        "summary": "No OS write-confinement (mechanism=none, reason=codex_linux_fence_unavailable); the advisory file_policy applies at the tool boundary. Out-of-root writes are recorded on the provenance floor, not yet prevented.",
+        "config_source": "runtime:sandbox",
+        "next_action": "Codex is installed, but its bubblewrap fence cannot start a child here (codex exited 1: bwrap: Creating new namespace failed: nesting depth or /proc/sys/user/max_*_namespaces exceeded (ENOSPC)). Allow unprivileged user namespaces (`sysctl kernel.unprivileged_userns_clone=1`; on Ubuntu 23.10+ `sysctl kernel.apparmor_restrict_unprivileged_userns=0`; in a container, a seccomp profile that permits them), or use a Landlock-capable kernel (>=5.13), then restart CLIO.",
+        "endpoint": null,
+        "required": true,
+        "reason": "codex_linux_fence_unavailable",
+        "active": false,
+        "acknowledgement_required": true,
+        "warning": "Protected execution is off. Agent tools and the commands they run are not confined by an OS sandbox, so they can change any file your user account can. CLIO still checks file-tool paths and records writes outside your workspace, but it does not prevent them."
+      },
+      {
+        "name": "sandbox_conformance",
+        "status": "ready",
+        "detail": "All 7 spawn seams carry a typed confinement label on tier 'none' (4 wrapped, 3 excluded); zero untyped degrades.",
+        "summary": "All 7 spawn seams carry a typed confinement label on tier 'none' (4 wrapped, 3 excluded); zero untyped degrades.",
+        "config_source": "runtime:sandbox_conformance",
+        "next_action": "No action required.",
+        "endpoint": null,
+        "required": false,
+        "reason": null,
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "compaction_prompt",
+        "status": "ready",
+        "detail": "compaction prompt: clio.compaction (core)",
+        "summary": "compaction prompt: clio.compaction (core)",
+        "config_source": "core",
+        "next_action": "none",
+        "endpoint": null,
+        "required": false,
+        "reason": null,
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "browser",
+        "status": "ready",
+        "detail": "The browser is downloaded the first time the agent opens a page.",
+        "summary": "The browser is downloaded the first time the agent opens a page.",
+        "config_source": "runtime:browser",
+        "next_action": "None.",
+        "endpoint": null,
+        "required": false,
+        "reason": null,
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "ripgrep",
+        "status": "degraded",
+        "detail": "No ripgrep is installed: file search and glob download the pinned release on first use and fail with ripgrep_missing if they cannot.",
+        "summary": "No ripgrep is installed: file search and glob download the pinned release on first use and fail with ripgrep_missing if they cannot.",
+        "config_source": "none",
+        "next_action": "Run `python -m clio_agent.runtime.ripgrep` while online (the installer does this), or put rg on PATH.",
+        "endpoint": null,
+        "required": false,
+        "reason": null,
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "child_reaper",
+        "status": "ready",
+        "detail": "Child-tree reaping is delegated to per-child pdeathsig (setpriv) + the process-group teardown (POSIX); no process-wide Job Object is needed.",
+        "summary": "Child-tree reaping is delegated to per-child pdeathsig (setpriv) + the process-group teardown (POSIX); no process-wide Job Object is needed.",
+        "config_source": "runtime:process_tree",
+        "next_action": "No action required.",
+        "endpoint": null,
+        "required": true,
+        "reason": "delegated_to_pdeathsig",
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "child_processes",
+        "status": "ready",
+        "detail": "2 live child process(es) in this tree (clio_core_daemon=1, python_child=1).",
+        "summary": "2 live child process(es) in this tree (clio_core_daemon=1, python_child=1).",
+        "config_source": "runtime:process_tree",
+        "next_action": "Expected while the server runs (MCP stdio + SDK CLI). A hard-kill reaper (Windows Job Object / POSIX pdeathsig) prevents these from orphaning.",
+        "endpoint": null,
+        "required": false,
+        "reason": "child_census",
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "managed_packages",
+        "status": "ready",
+        "detail": "No package preparation recorded on this computer.",
+        "summary": "No package preparation recorded on this computer.",
+        "config_source": "runtime:document_install",
+        "next_action": "Document tools and Office are prepared on first use or at install.",
+        "endpoint": null,
+        "required": false,
+        "reason": null,
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "child_parentage",
+        "status": "ready",
+        "detail": "All 0 CLIO process(es) descend from the server root (pid 4183190) or the clio-core daemon root (the two intended roots).",
+        "summary": "All 0 CLIO process(es) descend from the server root (pid 4183190) or the clio-core daemon root (the two intended roots).",
+        "config_source": "runtime:process_census",
+        "next_action": "No action required.",
+        "endpoint": null,
+        "required": false,
+        "reason": "all_rooted",
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "store_migrations",
+        "status": "degraded",
+        "detail": "This install skipped `clio-agent migrate`; boot ran task_event_lane (0.0s), task_lane_reads (0.0s), session_records_import (0.0s), session_record_columns (0.0s), transcript_legacy_import (0.0s), task_index_build (0.0s + 0.0s replay in task_history_restore), artifact_index (0.0s) once.",
+        "summary": "This install skipped `clio-agent migrate`; boot ran task_event_lane (0.0s), task_lane_reads (0.0s), session_records_import (0.0s), session_record_columns (0.0s), transcript_legacy_import (0.0s), task_index_build (0.0s + 0.0s replay in task_history_restore), artifact_index (0.0s) once.",
+        "config_source": "clio-core markers (clio-agent migrate)",
+        "next_action": "Nothing to do: the markers are recorded and later boots only check them.",
+        "endpoint": null,
+        "required": false,
+        "reason": null,
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "arc_store_format",
+        "status": "ready",
+        "detail": "The CLIO data holds no conversations yet.",
+        "summary": "The CLIO data holds no conversations yet.",
+        "config_source": "clio-core store (segment-list records)",
+        "next_action": null,
+        "endpoint": null,
+        "required": false,
+        "reason": null,
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      },
+      {
+        "name": "default_marketplace",
+        "status": "ready",
+        "detail": "CLIO's default agents are installed.",
+        "summary": "CLIO's default agents are installed.",
+        "config_source": "plugin store (default marketplace)",
+        "next_action": null,
+        "endpoint": null,
+        "required": true,
+        "reason": null,
+        "active": null,
+        "acknowledgement_required": null,
+        "warning": null
+      }
+    ],
+    "tool_hooks_installed": true,
+    "context_mode": "clio_core",
+    "boot": {
+      "steps": [
+        {
+          "name": "marketplace",
+          "thread": "MainThread",
+          "start_s": 21.361,
+          "end_s": 21.434,
+          "seconds": 0.073,
+          "outcome": "ok"
+        },
+        {
+          "name": "openapi_schema",
+          "thread": "MainThread",
+          "start_s": 21.362,
+          "end_s": 21.981,
+          "seconds": 0.619,
+          "outcome": "ok"
+        },
+        {
+          "name": "protected_execution",
+          "thread": "MainThread",
+          "start_s": 21.379,
+          "end_s": 22.017,
+          "seconds": 0.638,
+          "outcome": "ok"
+        },
+        {
+          "name": "orphans",
+          "thread": "MainThread",
+          "start_s": 21.343,
+          "end_s": 22.579,
+          "seconds": 1.236,
+          "outcome": "ok"
+        },
+        {
+          "name": "task_history_restore",
+          "thread": "asyncio_1",
+          "start_s": 23.182,
+          "end_s": 23.184,
+          "seconds": 0.002,
+          "outcome": "ok"
+        },
+        {
+          "name": "migration.task_event_lane",
+          "thread": "asyncio_1",
+          "start_s": 23.185,
+          "end_s": 23.204,
+          "seconds": 0.019,
+          "outcome": "ok"
+        },
+        {
+          "name": "migration.task_lane_reads",
+          "thread": "asyncio_1",
+          "start_s": 23.207,
+          "end_s": 23.213,
+          "seconds": 0.006,
+          "outcome": "ok"
+        },
+        {
+          "name": "migration.session_records_import",
+          "thread": "asyncio_1",
+          "start_s": 23.213,
+          "end_s": 23.216,
+          "seconds": 0.003,
+          "outcome": "ok"
+        },
+        {
+          "name": "migration.session_record_columns",
+          "thread": "asyncio_1",
+          "start_s": 23.216,
+          "end_s": 23.221,
+          "seconds": 0.005,
+          "outcome": "ok"
+        },
+        {
+          "name": "migration.transcript_legacy_import",
+          "thread": "asyncio_1",
+          "start_s": 23.228,
+          "end_s": 23.231,
+          "seconds": 0.003,
+          "outcome": "ok"
+        },
+        {
+          "name": "interrupted_sessions",
+          "thread": "asyncio_1",
+          "start_s": 23.231,
+          "end_s": 23.231,
+          "seconds": 0.0,
+          "outcome": "ok"
+        },
+        {
+          "name": "interaction_times",
+          "thread": "asyncio_1",
+          "start_s": 23.231,
+          "end_s": 23.231,
+          "seconds": 0.0,
+          "outcome": "ok"
+        },
+        {
+          "name": "clio_core_and_store",
+          "thread": "MainThread",
+          "start_s": 22.018,
+          "end_s": 23.232,
+          "seconds": 1.214,
+          "outcome": "ok"
+        },
+        {
+          "name": "migration.task_index_build",
+          "thread": "clio-core-io_0",
+          "start_s": 31.864,
+          "end_s": 31.878,
+          "seconds": 0.014,
+          "outcome": "ok"
+        },
+        {
+          "name": "obligations_held",
+          "thread": "MainThread",
+          "start_s": 32.551,
+          "end_s": 32.552,
+          "seconds": 0.001,
+          "outcome": "ok"
+        },
+        {
+          "name": "obligations",
+          "thread": "MainThread",
+          "start_s": 32.553,
+          "end_s": 32.565,
+          "seconds": 0.012,
+          "outcome": "ok"
+        },
+        {
+          "name": "agent_construct",
+          "thread": "MainThread",
+          "start_s": 31.857,
+          "end_s": 32.608,
+          "seconds": 0.751,
+          "outcome": "ok"
+        },
+        {
+          "name": "migration.artifact_index",
+          "thread": "asyncio_0",
+          "start_s": 32.637,
+          "end_s": 32.643,
+          "seconds": 0.006,
+          "outcome": "ok"
+        },
+        {
+          "name": "artifact_registry",
+          "thread": "MainThread",
+          "start_s": 32.611,
+          "end_s": 32.643,
+          "seconds": 0.032,
+          "outcome": "ok"
+        },
+        {
+          "name": "cas_gc",
+          "thread": "MainThread",
+          "start_s": 32.656,
+          "end_s": 32.657,
+          "seconds": 0.001,
+          "outcome": "ok"
+        },
+        {
+          "name": "first_doctor_pass",
+          "thread": "MainThread",
+          "start_s": 31.858,
+          "end_s": 32.668,
+          "seconds": 0.81,
+          "outcome": "ok"
+        }
+      ],
+      "running": [],
+      "marks": {
+        "lifespan_started": 12.902,
+        "serving": 21.343,
+        "task_runtime_ready": 32.552,
+        "agent_ready": 32.65
+      }
+    },
+    "readiness": "ready",
+    "starting": [],
+    "failure": null
+  },
+  "agents": [
+    {
+      "id": "appl-core",
+      "source": "builtin",
+      "title": "",
+      "description": "OPAL's analyst for plant-phenotyping data exported by APPL-CORE, the pipeline of ORNL's automated plant-phenotyping facility: onboards an export (version 6) from its own files, checks design, units and data quality, analyses growth, treatment response and physiology signals, and answers with inspected evidence, checked numbers and stated uncertainty. Derived files go to the workspace so the export stays as delivered.",
+      "parent_id": "",
+      "tier": 0,
+      "specialization": "",
+      "keywords": [],
+      "tools": [],
+      "skills": [],
+      "commands": [],
+      "enabled": true,
+      "metadata": {},
+      "ref": "clio/appl-core",
+      "name": "OPAL",
+      "role": "a plant-phenotyping analyst who works from APPL-CORE exports",
+      "version": "0.3.0",
+      "marketplace": "clio",
+      "flow": {
+        "id": "react",
+        "options": {}
+      },
+      "plugins": [
+        {
+          "ref": "core",
+          "layer": "agent"
+        },
+        {
+          "ref": "memory",
+          "layer": "agent"
+        },
+        {
+          "ref": "workspace",
+          "layer": "standard"
+        },
+        {
+          "ref": "shell",
+          "layer": "standard"
+        },
+        {
+          "ref": "web",
+          "layer": "standard"
+        },
+        {
+          "ref": "literature",
+          "layer": "standard"
+        },
+        {
+          "ref": "documents",
+          "layer": "standard"
+        },
+        {
+          "ref": "visuals",
+          "layer": "standard"
+        },
+        {
+          "ref": "connected-data",
+          "layer": "standard"
+        },
+        {
+          "ref": "delegation",
+          "layer": "standard"
+        },
+        {
+          "ref": "orchestration",
+          "layer": "standard"
+        },
+        {
+          "ref": "browser",
+          "layer": "standard"
+        },
+        {
+          "ref": "scientific-method",
+          "layer": "science"
+        },
+        {
+          "ref": "science-log",
+          "layer": "science"
+        },
+        {
+          "ref": "appl-core",
+          "layer": "appl-core"
+        },
+        {
+          "ref": "data-onboarding",
+          "layer": "appl-core"
+        },
+        {
+          "ref": "phenotyping",
+          "layer": "appl-core"
+        },
+        {
+          "ref": "parquet",
+          "layer": "appl-core"
+        }
+      ],
+      "spec_checksum": "8300b60cf1201aa0a48b4048c039879ee846f049d64d3ad64643e50a683fac95",
+      "kind": "agent"
+    },
+    {
+      "id": "clio-data",
+      "source": "builtin",
+      "title": "",
+      "description": "Works on scientific data files: HDF5 and netCDF-4, ADIOS2 BP4/BP5 and Parquet. Inspects layout, variables, steps, attributes and units with bounded reads, assesses data quality, and converts to Parquet with an explicit dtype map and a verified read-back (rows, missing values, dtypes and per-column checksums).",
+      "parent_id": "",
+      "tier": 0,
+      "specialization": "",
+      "keywords": [],
+      "tools": [],
+      "skills": [],
+      "commands": [],
+      "enabled": true,
+      "metadata": {},
+      "ref": "clio/clio-data",
+      "name": "CLIO Data",
+      "role": "a scientific data specialist who inspects, converts and validates HDF5, ADIOS2 and Parquet files",
+      "version": "1.0.0",
+      "marketplace": "clio",
+      "flow": {
+        "id": "react",
+        "options": {}
+      },
+      "plugins": [
+        {
+          "ref": "core",
+          "layer": "agent"
+        },
+        {
+          "ref": "memory",
+          "layer": "agent"
+        },
+        {
+          "ref": "workspace",
+          "layer": "standard"
+        },
+        {
+          "ref": "shell",
+          "layer": "standard"
+        },
+        {
+          "ref": "web",
+          "layer": "standard"
+        },
+        {
+          "ref": "literature",
+          "layer": "standard"
+        },
+        {
+          "ref": "documents",
+          "layer": "standard"
+        },
+        {
+          "ref": "visuals",
+          "layer": "standard"
+        },
+        {
+          "ref": "connected-data",
+          "layer": "standard"
+        },
+        {
+          "ref": "delegation",
+          "layer": "standard"
+        },
+        {
+          "ref": "orchestration",
+          "layer": "standard"
+        },
+        {
+          "ref": "browser",
+          "layer": "standard"
+        },
+        {
+          "ref": "scientific-method",
+          "layer": "science"
+        },
+        {
+          "ref": "science-log",
+          "layer": "science"
+        },
+        {
+          "ref": "clio-data",
+          "layer": "clio-data"
+        },
+        {
+          "ref": "data-onboarding",
+          "layer": "clio-data"
+        },
+        {
+          "ref": "hdf5",
+          "layer": "clio-data"
+        },
+        {
+          "ref": "adios",
+          "layer": "clio-data"
+        },
+        {
+          "ref": "parquet",
+          "layer": "clio-data"
+        }
+      ],
+      "spec_checksum": "54fd175439000f2cc4a5bbf35b76458909f83e8d7baaa27452f4c25256283f36",
+      "kind": "agent"
+    },
+    {
+      "id": "clio-search",
+      "source": "builtin",
+      "title": "",
+      "description": "Answers and discovery across the connected CLIO service's conversations, message passages, and workspace files, with real navigable source links.",
+      "parent_id": "",
+      "tier": 0,
+      "specialization": "",
+      "keywords": [],
+      "tools": [],
+      "skills": [],
+      "commands": [],
+      "enabled": true,
+      "metadata": {},
+      "ref": "clio/clio-search",
+      "name": "CLIO Search",
+      "role": "a search assistant for the connected CLIO service's conversations, message passages and workspace files",
+      "version": "0.2.0",
+      "marketplace": "clio",
+      "flow": {
+        "id": "react",
+        "options": {}
+      },
+      "plugins": [
+        {
+          "ref": "core",
+          "layer": "agent"
+        },
+        {
+          "ref": "memory",
+          "layer": "agent"
+        },
+        {
+          "ref": "clio-search",
+          "layer": "clio-search"
+        }
+      ],
+      "spec_checksum": "b38d93c757ead9f03dcd851f08ed1a3a0735469cf8818d51bfcbee9c84f4eb15",
+      "kind": "agent"
+    },
+    {
+      "id": "deep-researcher",
+      "source": "builtin",
+      "title": "",
+      "description": "Model-agnostic deep research run as a flow: a planner chooses the research directions, researchers investigate them in parallel on the web and in the scholarly literature (OpenAlex, Crossref, arXiv, Europe PMC, OSTI.gov, DataCite), an independent critic verifies every claim against fetched sources and names the gaps, the gaps are researched within a bounded number of rounds, and the report is written only from verified claims and delivered as a Markdown artifact with inline citations, the unresolved questions and the rejected claims.",
+      "parent_id": "",
+      "tier": 0,
+      "specialization": "",
+      "keywords": [],
+      "tools": [],
+      "skills": [],
+      "commands": [],
+      "enabled": true,
+      "metadata": {},
+      "ref": "clio/deep-researcher",
+      "name": "Deep Researcher",
+      "role": "a coordinator that answers hard questions with cited web research, verified by an independent critic",
+      "version": "0.4.0",
+      "marketplace": "clio",
+      "flow": {
+        "id": "react",
+        "options": {}
+      },
+      "plugins": [
+        {
+          "ref": "core",
+          "layer": "agent"
+        },
+        {
+          "ref": "memory",
+          "layer": "agent"
+        },
+        {
+          "ref": "orchestration",
+          "layer": "deep-researcher"
+        },
+        {
+          "ref": "deep-research",
+          "layer": "deep-researcher"
+        }
+      ],
+      "spec_checksum": "4a66991f64a9c5ce2795fb9d85b52202c848a56e2423d11ab83f6acb6ff5b72c",
+      "kind": "agent"
+    },
+    {
+      "id": "document-production",
+      "source": "builtin",
+      "title": "",
+      "description": "Creates and revises Markdown, HTML, LaTeX/PDF, OOXML, and OpenDocument artifacts with anchored human review and compatibility validation.",
+      "parent_id": "",
+      "tier": 0,
+      "specialization": "",
+      "keywords": [],
+      "tools": [],
+      "skills": [],
+      "commands": [],
+      "enabled": true,
+      "metadata": {},
+      "ref": "clio/document-production",
+      "name": "Document Production",
+      "role": "a writer and editor of documents in Markdown, HTML, LaTeX/PDF, Office and OpenDocument formats",
+      "version": "0.2.0",
+      "marketplace": "clio",
+      "flow": {
+        "id": "react",
+        "options": {}
+      },
+      "plugins": [
+        {
+          "ref": "core",
+          "layer": "agent"
+        },
+        {
+          "ref": "memory",
+          "layer": "agent"
+        },
+        {
+          "ref": "document-production",
+          "layer": "document-production"
+        },
+        {
+          "ref": "workspace",
+          "layer": "document-production"
+        },
+        {
+          "ref": "shell",
+          "layer": "document-production"
+        }
+      ],
+      "spec_checksum": "34c76d4086044e67103d33cd03f5d340d038eafca21a3560780b0df2e6373e8f",
+      "kind": "agent"
+    },
+    {
+      "id": "earthscope",
+      "source": "builtin",
+      "title": "",
+      "description": "Finds and stages EarthScope GNSS station catalogs and position time series through the National Data Platform, lets you pick stations on a map, and analyses them with GNSS methods: velocities, offsets, seasonal terms and honest rate uncertainty, plus station coverage across regions.",
+      "parent_id": "",
+      "tier": 0,
+      "specialization": "",
+      "keywords": [],
+      "tools": [],
+      "skills": [],
+      "commands": [],
+      "enabled": true,
+      "metadata": {},
+      "ref": "clio/earthscope",
+      "name": "EarthScope",
+      "role": "a geodesist who analyses EarthScope GNSS station data found through the National Data Platform",
+      "version": "0.7.0",
+      "marketplace": "clio",
+      "flow": {
+        "id": "react",
+        "options": {}
+      },
+      "plugins": [
+        {
+          "ref": "core",
+          "layer": "agent"
+        },
+        {
+          "ref": "memory",
+          "layer": "agent"
+        },
+        {
+          "ref": "workspace",
+          "layer": "standard"
+        },
+        {
+          "ref": "shell",
+          "layer": "standard"
+        },
+        {
+          "ref": "web",
+          "layer": "standard"
+        },
+        {
+          "ref": "literature",
+          "layer": "standard"
+        },
+        {
+          "ref": "documents",
+          "layer": "standard"
+        },
+        {
+          "ref": "visuals",
+          "layer": "standard"
+        },
+        {
+          "ref": "connected-data",
+          "layer": "standard"
+        },
+        {
+          "ref": "delegation",
+          "layer": "standard"
+        },
+        {
+          "ref": "orchestration",
+          "layer": "standard"
+        },
+        {
+          "ref": "browser",
+          "layer": "standard"
+        },
+        {
+          "ref": "ndp",
+          "layer": "ndp"
+        },
+        {
+          "ref": "scientific-method",
+          "layer": "earthscope"
+        },
+        {
+          "ref": "science-log",
+          "layer": "earthscope"
+        },
+        {
+          "ref": "earthscope",
+          "layer": "earthscope"
+        },
+        {
+          "ref": "geodesy",
+          "layer": "earthscope"
+        }
+      ],
+      "spec_checksum": "4f2c8f876f7e37917c1c45d31c2ca34ba849e632ab55b023b7824dd425769102",
+      "kind": "agent"
+    },
+    {
+      "id": "factorio",
+      "source": "builtin",
+      "title": "",
+      "description": "A research partner for scientists who study how a part's design, material and manufacturing route set its performance: research framing, evidence, simulation and topology optimization in Abaqus or Morphorm, additive and conventional manufacturing, characterization, mechanical testing, and fatigue and failure, with specialists for each and batch runs on Slurm clusters.",
+      "parent_id": "",
+      "tier": 0,
+      "specialization": "",
+      "keywords": [],
+      "tools": [],
+      "skills": [],
+      "commands": [],
+      "enabled": true,
+      "metadata": {},
+      "ref": "clio/factorio",
+      "name": "Factorio",
+      "role": "a research partner for manufacturing and materials science: how a part's design, material and manufacturing route set its performance",
+      "version": "0.6.0",
+      "marketplace": "clio",
+      "flow": {
+        "id": "react",
+        "options": {}
+      },
+      "plugins": [
+        {
+          "ref": "core",
+          "layer": "agent"
+        },
+        {
+          "ref": "memory",
+          "layer": "agent"
+        },
+        {
+          "ref": "workspace",
+          "layer": "standard"
+        },
+        {
+          "ref": "shell",
+          "layer": "standard"
+        },
+        {
+          "ref": "web",
+          "layer": "standard"
+        },
+        {
+          "ref": "literature",
+          "layer": "standard"
+        },
+        {
+          "ref": "documents",
+          "layer": "standard"
+        },
+        {
+          "ref": "visuals",
+          "layer": "standard"
+        },
+        {
+          "ref": "connected-data",
+          "layer": "standard"
+        },
+        {
+          "ref": "delegation",
+          "layer": "standard"
+        },
+        {
+          "ref": "orchestration",
+          "layer": "standard"
+        },
+        {
+          "ref": "browser",
+          "layer": "standard"
+        },
+        {
+          "ref": "scientific-method",
+          "layer": "science"
+        },
+        {
+          "ref": "science-log",
+          "layer": "science"
+        },
+        {
+          "ref": "manufacturing",
+          "layer": "factorio"
+        },
+        {
+          "ref": "abaqus",
+          "layer": "factorio"
+        },
+        {
+          "ref": "morphorm",
+          "layer": "factorio"
+        },
+        {
+          "ref": "slurm",
+          "layer": "factorio"
+        },
+        {
+          "ref": "factorio",
+          "layer": "factorio"
+        }
+      ],
+      "spec_checksum": "cc17bbbb80082a6ef5ea1feb65cd5d2ba2d3d466908cc471078949c3ec25eddb",
+      "kind": "agent"
+    },
+    {
+      "id": "ndp",
+      "source": "builtin",
+      "title": "",
+      "description": "CLIO's standard agent with the National Data Platform: search NDP organizations, datasets and resources, attach and download them, analyze the data, and query or publish to NDP Endpoints. Works without any MCP server.",
+      "parent_id": "",
+      "tier": 0,
+      "specialization": "",
+      "keywords": [],
+      "tools": [],
+      "skills": [],
+      "commands": [],
+      "enabled": true,
+      "metadata": {},
+      "ref": "clio/ndp",
+      "name": "NDP",
+      "role": "an autonomous scientific coding and data assistant that finds, attaches and analyzes National Data Platform data in the user's workspace",
+      "version": "1.0.0",
+      "marketplace": "clio",
+      "flow": {
+        "id": "react",
+        "options": {}
+      },
+      "plugins": [
+        {
+          "ref": "core",
+          "layer": "agent"
+        },
+        {
+          "ref": "memory",
+          "layer": "agent"
+        },
+        {
+          "ref": "workspace",
+          "layer": "standard"
+        },
+        {
+          "ref": "shell",
+          "layer": "standard"
+        },
+        {
+          "ref": "web",
+          "layer": "standard"
+        },
+        {
+          "ref": "literature",
+          "layer": "standard"
+        },
+        {
+          "ref": "documents",
+          "layer": "standard"
+        },
+        {
+          "ref": "visuals",
+          "layer": "standard"
+        },
+        {
+          "ref": "connected-data",
+          "layer": "standard"
+        },
+        {
+          "ref": "delegation",
+          "layer": "standard"
+        },
+        {
+          "ref": "orchestration",
+          "layer": "standard"
+        },
+        {
+          "ref": "browser",
+          "layer": "standard"
+        },
+        {
+          "ref": "ndp",
+          "layer": "ndp"
+        }
+      ],
+      "spec_checksum": "0231b5b796c6d31a41ec8fb3f976e7076b44f79172e040266cdec36583bd100b",
+      "kind": "agent"
+    },
+    {
+      "id": "science",
+      "source": "builtin",
+      "title": "",
+      "description": "The standard agent's capabilities plus general scientific practice and the study log, as a base for domain science agents.",
+      "parent_id": "",
+      "tier": 0,
+      "specialization": "",
+      "keywords": [],
+      "tools": [],
+      "skills": [],
+      "commands": [],
+      "enabled": true,
+      "metadata": {},
+      "ref": "clio/science",
+      "name": "CLIO Science",
+      "role": "a scientific research assistant that grounds every claim in inspected data",
+      "version": "1.2.0",
+      "marketplace": "clio",
+      "flow": {
+        "id": "react",
+        "options": {}
+      },
+      "plugins": [
+        {
+          "ref": "core",
+          "layer": "agent"
+        },
+        {
+          "ref": "memory",
+          "layer": "agent"
+        },
+        {
+          "ref": "workspace",
+          "layer": "standard"
+        },
+        {
+          "ref": "shell",
+          "layer": "standard"
+        },
+        {
+          "ref": "web",
+          "layer": "standard"
+        },
+        {
+          "ref": "literature",
+          "layer": "standard"
+        },
+        {
+          "ref": "documents",
+          "layer": "standard"
+        },
+        {
+          "ref": "visuals",
+          "layer": "standard"
+        },
+        {
+          "ref": "connected-data",
+          "layer": "standard"
+        },
+        {
+          "ref": "delegation",
+          "layer": "standard"
+        },
+        {
+          "ref": "orchestration",
+          "layer": "standard"
+        },
+        {
+          "ref": "browser",
+          "layer": "standard"
+        },
+        {
+          "ref": "scientific-method",
+          "layer": "science"
+        },
+        {
+          "ref": "science-log",
+          "layer": "science"
+        }
+      ],
+      "spec_checksum": "7116bf38b4cd47b7e907d4bfcc348968e1ac546e4d3aa52a6be39d6d5c8b5e99",
+      "kind": "agent"
+    },
+    {
+      "id": "spotter-ai",
+      "source": "builtin",
+      "title": "",
+      "description": "Watches a working CLIO session through its recorded provenance (Flowcept, CMF or CLIO's native journal, plus captured attention), investigates unexplained deviations and raises evidence-backed alerts for the person to decide on.",
+      "parent_id": "",
+      "tier": 0,
+      "specialization": "",
+      "keywords": [],
+      "tools": [],
+      "skills": [],
+      "commands": [],
+      "enabled": true,
+      "metadata": {},
+      "ref": "clio/spotter-ai",
+      "name": "SPOTTER",
+      "role": "a forensic watcher that guards a working CLIO session using its recorded provenance",
+      "version": "0.5.0",
+      "marketplace": "clio",
+      "flow": {
+        "id": "react",
+        "options": {}
+      },
+      "plugins": [
+        {
+          "ref": "core",
+          "layer": "agent"
+        },
+        {
+          "ref": "spotter",
+          "layer": "spotter-ai"
+        }
+      ],
+      "spec_checksum": "5cad36f8ccba5df267053faca14730c38206a3879afcd8ae6980fb67bc301fc7",
+      "kind": "agent"
+    },
+    {
+      "id": "standard",
+      "source": "builtin",
+      "title": "",
+      "description": "CLIO's general-purpose agent: workspace files, a shell, the web, scholarly literature, documents, interactive visuals, connected data, subagents and forks, workflows and flows.",
+      "parent_id": "",
+      "tier": 0,
+      "specialization": "",
+      "keywords": [],
+      "tools": [],
+      "skills": [],
+      "commands": [],
+      "enabled": true,
+      "metadata": {},
+      "ref": "clio/standard",
+      "name": "CLIO",
+      "role": "an autonomous scientific coding and data assistant working in the user's workspace",
+      "version": "1.2.0",
+      "marketplace": "clio",
+      "flow": {
+        "id": "react",
+        "options": {}
+      },
+      "plugins": [
+        {
+          "ref": "core",
+          "layer": "agent"
+        },
+        {
+          "ref": "memory",
+          "layer": "agent"
+        },
+        {
+          "ref": "workspace",
+          "layer": "standard"
+        },
+        {
+          "ref": "shell",
+          "layer": "standard"
+        },
+        {
+          "ref": "web",
+          "layer": "standard"
+        },
+        {
+          "ref": "literature",
+          "layer": "standard"
+        },
+        {
+          "ref": "documents",
+          "layer": "standard"
+        },
+        {
+          "ref": "visuals",
+          "layer": "standard"
+        },
+        {
+          "ref": "connected-data",
+          "layer": "standard"
+        },
+        {
+          "ref": "delegation",
+          "layer": "standard"
+        },
+        {
+          "ref": "orchestration",
+          "layer": "standard"
+        },
+        {
+          "ref": "browser",
+          "layer": "standard"
+        }
+      ],
+      "spec_checksum": "bba7a8b382ad893556c825b83c7d483634efea632491af0f35c910b619773c30",
+      "kind": "agent"
+    },
+    {
+      "id": "porotomo-is",
+      "source": "builtin",
+      "title": "",
+      "description": "Answers questions about anomalies and Pohang-like (Mw >= 5.5) hazard in the PoroTomo DAS runs: report.py for run results, PBS jobs on Aurora for new runs, and clio-kit's HDF5 MCP server for the records. Port of the porotomo-is-tuned blueprint.",
+      "parent_id": "",
+      "tier": 0,
+      "specialization": "",
+      "keywords": [],
+      "tools": [],
+      "skills": [],
+      "commands": [],
+      "enabled": true,
+      "metadata": {},
+      "ref": "poro/porotomo-is",
+      "name": "PoroTomo IS",
+      "role": "an induced-seismicity analyst for the PoroTomo DAS data from Brady Hot Springs (March 2016)",
+      "version": "0.3.0",
+      "marketplace": "poro",
+      "flow": {
+        "id": "react",
+        "options": {}
+      },
+      "plugins": [
+        {
+          "ref": "core",
+          "layer": "agent"
+        },
+        {
+          "ref": "memory",
+          "layer": "agent"
+        },
+        {
+          "ref": "shell",
+          "layer": "porotomo-is"
+        },
+        {
+          "ref": "hdf5",
+          "layer": "porotomo-is"
+        },
+        {
+          "ref": "porotomo-is",
+          "layer": "porotomo-is"
+        }
+      ],
+      "spec_checksum": "c01dc1afa9953c2e7e537921f7608b9f124be8283823848c1e85c04c813c2e0e",
+      "kind": "agent"
+    }
+  ]
+}

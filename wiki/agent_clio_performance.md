@@ -176,6 +176,20 @@ Test (`bench_0971.py --agent poro/porotomo-is --tasks results,hdf5`; Minerva Mis
 - Median tokens per question (clio-agent's estimate): about 37k input and 1.0k output on `results`, and 61k input and 0.76k output on `hdf5`. The composed system prompt is about 16 KB, against 27 KB for `clio/standard`. Input is higher than round 9's `standard` run (about 28k) because of the extra steps.
 - **The port has been the default since 2026-11-18.** clio-agent 0.9.7.1 (tag v0.9.7.1, commit f8ef50d) is installed in `~/.local/share/clio/clio-agent-097/.venv` with its own home. `start-alcf-mistral.sh` runs `start-0971.sh` on :8100, and `run_query.py` pins `poro/porotomo-is` on 0.9.7.x. `CLIO_AGENT_SERIES=0.9.4` still starts the 0.9.4.24 blueprint. Checked on the installed setup: the server started with no sessions (nothing adopted), the session default was `poro/porotomo-is`, and two `run_query.py` questions answered correctly (results 17.5 s on the first question after start, HDF5 5.3 s).
 
+### Round 11: the installed default (2026-11-18)
+
+The same test as round 10 (`bench_0971.py --agent poro/porotomo-is --tasks results,hdf5`, 30 + 30 questions, Minerva Mistral Large 4, cap 8192), run against the installed default: clio-agent 0.9.7.1 in `~/.local/share/clio/clio-agent-097/.venv`, started by `start-alcf-mistral.sh` on :8100 (`agent/results/llm/bench_20261118_default0971/`).
+
+| run | results | hdf5 | results median s (min–max) | hdf5 median s (min–max) | median tool calls (results / hdf5) | median input tokens (results / hdf5) |
+|---|---|---|---|---|---|---|
+| round 10, scratch install (`bench_20261118_port0971`) | 30/30 | 30/30 | 5.9 (4.2–9.8) | 5.4 (3.6–9.1) | 2 / 5 | 37k / 61k |
+| **round 11, installed default** | **30/30** | **30/30** | 6.7 (4.3–15.2) | 4.8 (3.5–14.6) | 3 / 4 | 38k / 48k |
+
+- All 60 answers were fully correct, with no stall and no `late_op rejected` lines. The installed setup behaves like the scratch one.
+- The model still re-checks `report.py` against `summary.json`, despite the "needs no cross-check" line. Only 5 of 30 `results` questions used a single `shell_bash` call; the others made 2–5 calls (9, 9, 5 and 2 questions), reading `summary.json` with small `python3 -c` one-liners. Round 10 had 14 of 30 with one call. The extra calls run in parallel, so the median grew only by 0.8 s. No shell call failed.
+- On `hdf5`, the median fell to 4 calls (3–10) and 48k input tokens. 15 tool calls failed (`hdf5_list_attributes` again), and no answer was affected.
+- Ways to cut the re-checking: firmer wording, or a dedicated `report` tool in the `porotomo-is` plugin instead of the general shell.
+
 ### Failures seen (all variants)
 
 - **Truncated answers (3 of 60 runs):** the stored `answer` part ended mid-sentence at 210, 250 and 514 characters (single-light round 1 run 2, single-light `low` round 3 run 2, baseline round 4 run 2). This is server side and affects both designs: re-reading the sessions with `GET /v1/sessions/{sid}/messages` returns the same cut-off `answer` parts, while the turns report `completed` / `end_turn`. Filed as [clio-agent #2369](https://github.com/iowarp/clio-agent/issues/2369).

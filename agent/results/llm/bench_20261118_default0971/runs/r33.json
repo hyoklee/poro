@@ -1,0 +1,32 @@
+{
+  "question": "Report the headline results of the agent run in /home/hyoklee/poro/agent/results/run_20261115T155359Z_s20: the number of records analysed, anomalous records and DAS detections, the seismogenic index Sigma and P(Mw>=5.5) per year for each b scenario, and the DAS-based upper bound. Say which is calibrated and which is an upper bound. Read-only: do not submit PBS jobs and do not run hazard.py.",
+  "agent": "poro/porotomo-is",
+  "tools": [
+    {
+      "tool": "shell_bash",
+      "ok": true
+    },
+    {
+      "tool": "shell_bash",
+      "ok": true
+    }
+  ],
+  "permissions": [
+    {
+      "tool": "shell_bash",
+      "decision": "allow"
+    },
+    {
+      "tool": "shell_bash",
+      "decision": "allow"
+    }
+  ],
+  "session_id": "sess_ddbedcbb27b6",
+  "agent_ref": "poro/porotomo-is",
+  "stop_reason": "end_turn",
+  "status": "completed",
+  "elapsed_s": 5.7,
+  "answer": "Headline results from `~/poro/agent/results/run_20261115T155359Z_s20` (read from `summary.json` via `python3 ~/poro/agent/report.py`, read-only \u2014 no PBS jobs submitted, no `hazard.py` run):\n\n## Data coverage\n- **Records analysed: 759** (stride 20, 2016-03-18T02:09:17Z \u2192 2016-03-26T00:59:44Z \u2014 3.314 % of the continuous record; ~2.0 s mean per record)\n- **Anomalous records (|robust z| > 5): 57**, strongest z = 30.92 on 2016-03-23T20:50:17Z, driven by `max_sta_lta`\n- **DAS detections: 62 in 53 records**; relative b = 0.9849 (Aki MLE on uncalibrated DAS magnitudes), 34 detections above the relative completeness magnitude Mc = \u22120.85\n- Pumping over the 15.96-day window (GDR 917): injected 4.654e5 m\u00b3, extracted 5.059e5 m\u00b3, **net \u22124.048e4 m\u00b3** (net extraction, mean injection 5336 gpm vs extraction 5800 gpm)\n- Catalogue (GDR 859, LBNL/NCEDC March 2016): **5 events, ML \u22120.48 to 0.07**, Mc = \u22120.48\n\n## Calibrated probability \u2014 catalogue-based (Shapiro et al. 2021, Eq. 5)\nThis is the **calibrated** estimate, using the LBNL/NCEDC catalogue magnitudes:\n\n| b | Sigma | P(Mw \u2265 5.5)/yr | P(Mw \u2265 5.5) over observed volume | P(M \u2265 3)/yr |\n|---|-------|----------------|------------------------------------|--------------|\n| 1.0 | \u22125.449 | 1.20e-4 | 5.24e-6 | 0.0372 |\n| 0.73 | \u22125.319 | 4.92e-3 | 2.16e-4 | 0.281 |\n| 0.65 | \u22125.281 | 1.47e-2 | 6.48e-4 | 0.465 |\n\n## DAS-based upper bound \u2014 uncalibrated magnitudes\n- b = 0.9849 (DAS relative-magnitude MLE), **Sigma = \u22122.698**, **P(Mw \u2265 5.5)/yr = 0.0784** (7.8 % per year; P over the observed volume = 2.41e-3)\n\nThis is an **upper bound, not calibrated**: every DAS detection is counted as an event at or above the catalogue Mc, and DAS magnitudes are relative/uncalibrated, so it systematically **over-counts** events and inflates the probability relative to the catalogue-based numbers.\n\n## Bottom line\nThe calibrated LBNL-catalogue result puts P(Mw \u2265 5.5) at ~10\u207b\u2074 to ~10\u207b\u00b2 per year depending on the b scenario (Sigma \u2248 \u22125.3 to \u22125.4), while the DAS-only upper bound is 0.078/yr \u2014 the gap is the over-counting in the uncalibrated DAS detection stream. For context in the run: the Sigma needed at Brady's observed volume for a 1 % Mw \u2265 5.5 probability is \u22122.17 (b = 1.0), \u22123.65 (b = 0.73), \u22124.09 (b = 0.65), all well above (less negative than) the calibrated values found here.",
+  "tokens_input": 27249,
+  "tokens_output": 995
+}

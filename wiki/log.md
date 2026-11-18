@@ -97,3 +97,7 @@ Added `agent/clio-agent/marketplace/` (marketplace `poro`, agent `poro/porotomo-
 ## [2026-11-18] test | clio-agent 0.9.7.1 installed; poro/porotomo-is is the default
 
 Installed clio-agent 0.9.7.1 (tag v0.9.7.1, commit f8ef50d; dspy 3.4.0) in `~/.local/share/clio/clio-agent-097/.venv`, next to 0.9.4.24. `start-alcf-mistral.sh` now runs `start-0971.sh` on :8100 (`CLIO_AGENT_SERIES=0.9.4` keeps the old blueprint path). `start-0971.sh` stops any server on :8100, uses `~/.local/share/clio/clio-agent-097/{home,runtime-state,cwd}` and sets the session default to `poro/porotomo-is`. `run_query.py` works with both versions; on 0.9.7.x it pins `--agent` (default `poro/porotomo-is`) through `bench_0971.ask`. `bench_0971.py` defaults to :8100. Checked: install path, 0 sessions at boot, default agent set, and one `results` and one `hdf5` question through `run_query.py`, both correct (17.5 s cold, 5.3 s). `~/poro/.clio` was untouched.
+
+## [2026-11-18] test | 60-question benchmark on the installed default: 60/60
+
+Ran `bench_0971.py --agent poro/porotomo-is --tasks results,hdf5 --n 60` against the installed clio-agent 0.9.7.1 default on :8100 (`agent/results/llm/bench_20261118_default0971/`). 60/60 correct, medians 6.7 s (results) and 4.8 s (hdf5), no stall. The model still re-reads `summary.json` after `report.py` in 25 of 30 `results` questions (median 3 shell calls), which adds about 0.8 s to the median. Round 11 in `agent_clio_performance.md`.
