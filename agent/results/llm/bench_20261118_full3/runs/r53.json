@@ -1,0 +1,19 @@
+{
+  "question": "List every dataset in /home/hyoklee/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5 with its shape and dtype.",
+  "agent": "poro/porotomo-is",
+  "tools": [
+    {
+      "tool": "porotomo_h5_layout",
+      "ok": true
+    }
+  ],
+  "permissions": [],
+  "session_id": "sess_07245f8b2fdd",
+  "agent_ref": "poro/porotomo-is",
+  "stop_reason": "end_turn",
+  "status": "completed",
+  "elapsed_s": 3.4,
+  "answer": "I read the file's full layout directly with `porotomo_h5_layout`. Here is every dataset in `/home/hyoklee/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5` (46,590,272 bytes):\n\n| Dataset | Shape | Dtype | Chunks | Notes from attributes |\n|---|---|---|---|---|\n| `/das` | (30000, 384) | float32 | (2000, 384) | strain; sampling_interval_seconds=0.001; coordinates `t x y z`; grid_mapping `crs` |\n| `/t` | (30000,) | float64 | (30000,) | time, seconds since 1970-01-01T00:00:00Z (gregorian) |\n| `/trace` | (30000,) | int64 | (30000,) | trace number, valid 0\u201329999 |\n| `/channel` | (384,) | int32 | \u2014 | channel number, valid 1\u2013384 |\n| `/x` | (384,) | float32 | \u2014 | Easting (m), UTM; valid ~327961\u2013327962 |\n| `/y` | (384,) | float32 | \u2014 | Northing (m); valid ~4407555 |\n| `/z` | (384,) | float32 | \u2014 | Elevation (m); valid 866\u20131230 |\n| `/crs` | scalar () | uint8 | \u2014 | CRS: WGS 84 / UTM zone 11N (EPSG:32611) |\n\nThat is 8 datasets total. The main data array is `/das` \u2014 30,000 time samples \u00d7 384 channels of float32 strain at 1 kHz (30 s of recording, matching the root attributes `time_coverage_start=2016-03-18T10:03:17.990472Z` to `time_coverage_end=2016-03-18T10:03:47.989472Z`). None of the datasets use compression; only `/das`, `/t`, and `/trace` are chunked. Root attributes confirm the source is `PoroTomo_iDAS025_160318160317.sgy` from instrument iDAS S/N iDAS025 (PoroTomo/CoRDIAL project, Brady Hot Springs), under DAS-HDF5-1.0 / CF-1.7 conventions.",
+  "tokens_input": 25505,
+  "tokens_output": 630
+}

@@ -1,0 +1,19 @@
+{
+  "question": "Report the headline results of the agent run in /home/hyoklee/poro/agent/results/run_20261115T155359Z_s20: the number of records analysed, anomalous records and DAS detections, the seismogenic index Sigma and P(Mw>=5.5) per year for each b scenario, and the DAS-based upper bound. Say which is calibrated and which is an upper bound. Read-only: do not submit PBS jobs and do not run hazard.py.",
+  "agent": "poro/porotomo-is",
+  "tools": [
+    {
+      "tool": "porotomo_report",
+      "ok": true
+    }
+  ],
+  "permissions": [],
+  "session_id": "sess_886b591e12a7",
+  "agent_ref": "poro/porotomo-is",
+  "stop_reason": "end_turn",
+  "status": "completed",
+  "elapsed_s": 4.1,
+  "answer": "Here are the headline results of the run, read directly from its `summary.json` via `porotomo_report` (run `run_20261115T155359Z_s20`, stride 20):\n\n## Run coverage\n- **759 records analysed** \u2014 2016-03-18T02:09:17Z to 2016-03-26T00:59:44Z (3.314 % of the month)\n- **57 anomalous records** (|robust z| > 5)\n- **62 DAS detections in 53 records**, relative b = 0.9849 (34 above the catalogue completeness magnitude Mc)\n- **Pumping**: injected 4.654\u00d710\u2075 m\u00b3, extracted 5.059\u00d710\u2075 m\u00b3, net **\u22124.048\u00d710\u2074 m\u00b3** over 15.96 days (net extraction, not injection)\n- **Catalogue**: 5 events, ML \u22120.48 to 0.07 (GDR 859, LBNL/NCEDC March 2016)\n\n## Seismogenic index \u03a3 and P(Mw \u2265 5.5) \u2014 two estimates\n\n**1. Calibrated (catalogue-based, Shapiro et al. 2021 Eq. 5)** \u2014 this is the calibrated probability:\n\n| b | \u03a3 | P(M \u2265 5.5)/yr | P(M \u2265 5.5) in observed volume | P(M \u2265 3)/yr |\n|---|---|---|---|---|\n| 1.00 | \u22125.449 | 0.00012 | 5.24\u00d710\u207b\u2076 | 0.037 |\n| 0.73 | \u22125.319 | 0.00492 | 2.16\u00d710\u207b\u2074 | 0.281 |\n| 0.65 | \u22125.281 | 0.01474 | 6.48\u00d710\u207b\u2074 | 0.465 |\n\n**2. Upper bound (DAS-based, uncalibrated magnitudes)** \u2014 every DAS detection counted as an event at or above Mc, so it **over-counts**: b = 0.9849, **\u03a3 = \u22122.698, P(M \u2265 5.5)/yr = 0.07842**.\n\n## Interpretation\n- The **calibrated** estimate says a Pohang-like Mw \u2265 5.5 event is very unlikely at Brady Hot Springs in March 2016: ~1.2\u00d710\u207b\u2074 per year at b = 1, rising to ~1.5\u00d710\u207b\u00b2 per year only at the low b = 0.65 scenario. Even the larger M \u2265 3 rate stays below ~0.5/yr.\n- The **DAS upper bound** (0.078/yr) is deliberately conservative \u2014 it treats all 62 uncalibrated DAS detections as real events above Mc and has no magnitude calibration, so it over-counts and should not be read as a calibrated probability. The truth lies at or below it, and the calibrated catalogue number is the one to quote.\n- Context: the interval was dominated by **net fluid extraction** (\u22124.0\u00d710\u2074 m\u00b3), not injection, which is consistent with the low calibrated seismic hazard.\n\nSource: [run_20261115T155359Z_s20 summary.json](workspace-file:/home/hyoklee/poro/agent/results/run_20261115T155359Z_s20/summary.json), read via `porotomo_report`. Read-only as requested \u2014 no PBS jobs submitted and `hazard.py` was not run.",
+  "tokens_input": 24879,
+  "tokens_output": 823
+}

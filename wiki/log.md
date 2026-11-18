@@ -117,3 +117,7 @@ Added a `das` task to `bench.py` (and `bench_0971.py --tasks das`): read `/das` 
 ## [2026-11-18] change | `porotomo_h5_slice` tool in the porotomo-is plugin: das 20/20, median 2.5 s
 
 Added a third read-only Python tool to the `porotomo-is` plugin (0.6.0): `porotomo_h5_slice(path, dataset, start, count, show)` returns a hyperslab's statistics (n, NaN, min, max, mean, std) and first values, at most 1 M elements per call, only under `CLIO_ALLOWED_ROOTS`. It shares `tools/h5.py` (renamed from `h5_layout.py`) with `porotomo_h5_layout`. `start-0971.sh` now waits for the old clio-core runtime to exit before starting the server (one restart had failed with `clio_core_post_attach_probe_timeout`). Benchmark on the installed default, 20 questions per task (`agent/results/llm/bench_20261118_h5slice/`): 60/60, every question one tool call; `das` median 2.5 s and 25k input tokens (round 14: 22.5 s, 10 calls, 125k). Round 15 in `agent_clio_performance.md`.
+
+## [2026-11-18] test | full benchmark, all three tasks: 90/90, one tool call each
+
+Ran `bench_0971.py --agent poro/porotomo-is --tasks results,hdf5,das --n 90` (30 per task) on the installed default, plugin 0.6.0 (`agent/results/llm/bench_20261118_full3/`). 90/90 correct, every question one tool call, no failed call, no stall. Medians 3.9 s (results), 3.3 s (hdf5), 2.5 s (das); about 25k input tokens each; slowest run 4.6 s. Round 16 in `agent_clio_performance.md`.

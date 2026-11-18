@@ -1,0 +1,19 @@
+{
+  "question": "List every dataset in /home/hyoklee/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5 with its shape and dtype.",
+  "agent": "poro/porotomo-is",
+  "tools": [
+    {
+      "tool": "porotomo_h5_layout",
+      "ok": true
+    }
+  ],
+  "permissions": [],
+  "session_id": "sess_50812440e780",
+  "agent_ref": "poro/porotomo-is",
+  "stop_reason": "end_turn",
+  "status": "completed",
+  "elapsed_s": 3.4,
+  "answer": "Here are all 8 datasets in `/home/hyoklee/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5` (46,590,272 bytes), read directly from the file with `porotomo_h5_layout`:\n\n| Dataset | Shape | Dtype | Chunking |\n|---|---|---|---|\n| `/channel` | (384,) | int32 | \u2014 |\n| `/crs` | () scalar | uint8 | \u2014 |\n| `/das` | (30000, 384) | float32 | (2000, 384) |\n| `/t` | (30000,) | float64 | (30000,) |\n| `/trace` | (30000,) | int64 | (30000,) |\n| `/x` | (384,) | float32 | \u2014 |\n| `/y` | (384,) | float32 | \u2014 |\n| `/z` | (384,) | float32 | \u2014 |\n\nNotes on what they hold, per their attributes:\n\n- `/das` is the main strain data: 30,000 time samples \u00d7 384 channels, float32, `_FillValue=nan`, `sampling_interval_seconds=0.001` (1 kHz), with coordinates `t x y z` and grid mapping `crs`.\n- `/t` is time in seconds since 1970-01-01T00:00:00Z; root attributes give coverage `2016-03-18T10:03:17.990472Z` to `2016-03-18T10:03:47.989472Z` (a 30-second window on 18 March 2016).\n- `/trace` is the trace number (0\u201329999); `/channel` is the channel number (1\u2013384).\n- `/x`, `/y`, `/z` are per-channel UTM 11N coordinates (Easting \u2248 327,961\u2013327,962 m, Northing \u2248 4,407,555 m, Elevation 866\u20131230 m); `/crs` is the WGS 84 / UTM zone 11N (EPSG:32611) grid mapping.\n- Root attributes follow DAS-HDF5-1.0 / CF-1.7 / ACDD-1.3, instrument iDAS S/N iDAS025, source `PoroTomo_iDAS025_160318160317.sgy` (project CoRDIAL, PoroTomo geothermal DAS at Brady Hot Springs).",
+  "tokens_input": 25483,
+  "tokens_output": 625
+}

@@ -1,0 +1,19 @@
+{
+  "question": "List every dataset in /home/hyoklee/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5 with its shape and dtype.",
+  "agent": "poro/porotomo-is",
+  "tools": [
+    {
+      "tool": "porotomo_h5_layout",
+      "ok": true
+    }
+  ],
+  "permissions": [],
+  "session_id": "sess_12284faf9ac9",
+  "agent_ref": "poro/porotomo-is",
+  "stop_reason": "end_turn",
+  "status": "completed",
+  "elapsed_s": 3.2,
+  "answer": "Here are all 8 datasets in `/home/hyoklee/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5` (46,590,272 bytes), read directly from the file layout:\n\n| Dataset | Shape | Dtype | Notes |\n|---|---|---|---|\n| `/das` | (30000, 384) | float32 | the strain data; chunked (2000, 384); `sampling_interval_seconds=0.001`, long_name=strain, `_FillValue=nan` |\n| `/t` | (30000,) | float64 | time axis, seconds since 1970-01-01T00:00:00Z (covers 2016-03-18T10:03:17.990472Z \u2192 10:03:47.989472Z) |\n| `/trace` | (30000,) | int64 | trace number, valid 0\u201329999 |\n| `/channel` | (384,) | int32 | channel number, valid 1\u2013384 |\n| `/x` | (384,) | float32 | Easting (UTM 11N), ~327961\u2013327962 m |\n| `/y` | (384,) | float32 | Northing, ~4407555 m |\n| `/z` | (384,) | float32 | Elevation, 866\u20131230 m |\n| `/crs` | scalar () | uint8 | CRS grid mapping (EPSG:32611, WGS 84 / UTM zone 11N) |\n\nSo the file holds **30,000 time samples \u00d7 384 channels** of DAS strain (the `/das` array, ~46 MB uncompressed), plus per-trace time/trace-index vectors and per-channel coordinate/CRS metadata. Root attributes follow DAS-HDF5-1.0 / CF-1.7 / ACDD-1.3, instrument iDAS S/N iDAS025, source SEG-Y `PoroTomo_iDAS025_160318160317.sgy`, covering 30 s on 2016-03-18 starting 10:03:17.99 UTC at Brady Hot Springs.",
+  "tokens_input": 25490,
+  "tokens_output": 557
+}

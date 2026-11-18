@@ -246,6 +246,20 @@ The `porotomo-is` plugin (0.6.0) adds a third read-only Python tool, `porotomo_h
 - `results` and `hdf5` are unchanged from round 13.
 - The first restart of the server for this round failed: `start-0971.sh` killed the old clio-core runtime but did not wait for it, and the new server attached while the old one still held port 9413 (`clio_core_post_attach_probe_timeout`; every message then answered 503). The script now waits up to 30 s for the old runtime to exit.
 
+### Round 16: full benchmark, all three tasks (2026-11-18)
+
+The full benchmark with the three tasks alternated, 30 questions each (`bench_0971.py --agent poro/porotomo-is --tasks results,hdf5,das --n 90`), on the installed default: clio-agent 0.9.7.1, plugin 0.6.0, Minerva Mistral Large 4, cap 8192 (`agent/results/llm/bench_20261118_full3/`).
+
+| task | correct | median s (min–max) | tool calls | median input / output tokens | failed calls | permission prompts |
+|---|---|---|---|---|---|---|
+| results | 30/30 | 3.9 (3.6–4.4) | 1 (`porotomo_report`) | 25k / 790 | 0 | 0 |
+| hdf5 | 30/30 | 3.3 (2.8–4.6) | 1 (`porotomo_h5_layout`) | 25k / 575 | 0 | 0 |
+| das | 30/30 | 2.5 (2.2–3.8) | 1 (`porotomo_h5_slice`) | 25k / 400 | 0 | 0 |
+
+- 90/90 fully correct, every question exactly one tool call, no stall, no failed call, no permission prompt. The slowest of the 90 took 4.6 s.
+- Against the first 0.9.7.1 port (round 10: 5.9 s and 5.4 s medians, 2 and 5 calls, 37k and 61k input tokens) the run-results and HDF5-listing questions are about 35–40 % faster with 33–60 % fewer input tokens. The `das` question went from 22.5 s (round 14) to 2.5 s.
+- The server's health was `degraded` throughout, for two host reasons that do not affect these tools: no OS write sandbox (`bwrap` cannot create namespaces on the login node) and no ripgrep.
+
 ### Failures seen (all variants)
 
 - **Truncated answers (3 of 60 runs):** the stored `answer` part ended mid-sentence at 210, 250 and 514 characters (single-light round 1 run 2, single-light `low` round 3 run 2, baseline round 4 run 2). This is server side and affects both designs: re-reading the sessions with `GET /v1/sessions/{sid}/messages` returns the same cut-off `answer` parts, while the turns report `completed` / `end_turn`. Filed as [clio-agent #2369](https://github.com/iowarp/clio-agent/issues/2369).
