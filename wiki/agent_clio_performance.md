@@ -153,6 +153,29 @@ clio-agent 0.9.7.1 (released 2026-11-13; dspy 3.4.0, json_repair 0.64.9, litellm
 - The comparison is not like for like: different agent (`standard`, its own 27k-character system prompt and tools), instructions in the user message, `results` task only.
 - **What this means for us:** moving to 0.9.7.x would drop the need for the DSPy patch for this kind of question, but the blueprint has to be rewritten as a plugin agent (Python class) with the HDF5 MCP tools.
 
+### Round 10: the tuned blueprint ported to a 0.9.7.x plugin agent (2026-11-18)
+
+`agent/clio-agent/marketplace/` is a local plugin marketplace, `poro`. Its agent `poro/porotomo-is` carries `core` and `memory`, the clio marketplace's `shell` and `hdf5` plugins (clio-kit's HDF5 MCP server, the same command as the blueprint), and a `porotomo-is` plugin. That plugin holds the expert's instructions as three prompt fragments (`mission`, `runs`, `hdf5`). The `marketplace/README.md` maps each blueprint field to its 0.9.7.x counterpart. `agent/clio-agent/start-0971.sh` installs or updates and trusts the marketplace in a separate home, starts the server from an empty folder on port 8101 (because of #2375), and sets `poro/porotomo-is` as the session default. Both the fresh-install and the update paths were tested.
+
+Fixes found while porting:
+- A fragment with `when: {"tools": [...]}` naming an MCP tool was never included, because the condition is checked before the MCP server lists its tools. The `hdf5` fragment is unconditional now.
+- The model called `report.py` with a bare run name. The fragment now asks for the full path.
+- The core plugin's "check the result before you report it" rule made the model re-read `summary.json` and re-check every dataset with `hdf5_get_shape` / `hdf5_get_dtype` (20 calls for one listing). The fragments now say that `report.py` and `hdf5_analyze_dataset_structure` are authoritative.
+
+Test (`bench_0971.py --agent poro/porotomo-is --tasks results,hdf5`; Minerva Mistral Large 4, cap 8192, 30 `results` + 30 `hdf5` questions, the round 6–8 test):
+
+| run | clio-agent | agent | results | hdf5 | results median s (min–max) | hdf5 median s (min–max) |
+|---|---|---|---|---|---|---|
+| round 8 (`bench_20261117_dspypatch2`) | 0.9.4.24 + DSPy patch | `porotomo-is-tuned` (round-6 prompt) | 30/30 | 30/30 | 8.3 | 6.5 |
+| round 9 (`bench_20261117_v0971`) | 0.9.7.1 | `clio/standard` + instructions in the question | 60/60 | – | 4.3 (3.7–17.9) | – |
+| `bench_20261118_port0971` | 0.9.7.1, no patch | `poro/porotomo-is` | **30/30** | **30/30** | 5.9 (4.2–9.8) | 5.4 (3.6–9.1) |
+
+- All 60 answers were fully correct, with no stall and no `late_op rejected` lines. No DSPy patch was needed (native tool calls, round 9).
+- The port is faster than the blueprint on both tasks: 2.4 s faster on results and 1.1 s on HDF5.
+- The model still adds some confirming calls, run in parallel so they cost little time. On `results`, 14 of 30 questions used one `shell_bash` and 16 used 2–4 (mostly a look at `summary.json`). On `hdf5`, every question called `hdf5_analyze_dataset_structure`, and most also called `hdf5_visit` or `hdf5_list_keys`. `hdf5_list_attributes` failed in 11 questions (each failure followed by more calls), but no answer was affected. The median was 5 tool calls.
+- Median tokens per question (clio-agent's estimate): about 37k input and 1.0k output on `results`, and 61k input and 0.76k output on `hdf5`. The composed system prompt is about 16 KB, against 27 KB for `clio/standard`. Input is higher than round 9's `standard` run (about 28k) because of the extra steps.
+- The 0.9.4.24 blueprint stays the default in `start-alcf-mistral.sh` until clio-agent 0.9.7.x is installed outside the scratch venv. The port is ready for that switch.
+
 ### Failures seen (all variants)
 
 - **Truncated answers (3 of 60 runs):** the stored `answer` part ended mid-sentence at 210, 250 and 514 characters (single-light round 1 run 2, single-light `low` round 3 run 2, baseline round 4 run 2). This is server side and affects both designs: re-reading the sessions with `GET /v1/sessions/{sid}/messages` returns the same cut-off `answer` parts, while the turns report `completed` / `end_turn`. Filed as [clio-agent #2369](https://github.com/iowarp/clio-agent/issues/2369).

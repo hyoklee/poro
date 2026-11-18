@@ -83,12 +83,20 @@ apply it after every clio-agent install or upgrade, then restart the server:
 ~/.local/share/clio/clio-agent/.venv/bin/python agent/clio-agent/patches/apply_dspy_patch.py   # --revert to undo
 ```
 
-clio-agent 0.9.7.x has no blueprints, so the blueprints here do not run on it.
-Its built-in `standard` agent uses native tool calls and does not hit #2369
-(60/60, median 4.3 s; see round 9 in `wiki/agent_clio_performance.md`).
-`clio-agent/bench_0971.py` runs that test. Start a 0.9.7.x server from an empty
-folder: started from `~/poro`, it adopts `~/poro/.clio/agent` and resumes old
+clio-agent 0.9.7.x has no blueprints. `clio-agent/marketplace/` ports the tuned
+blueprint to a plugin agent, `poro/porotomo-is` (see its README). Start it with:
+
+```bash
+agent/clio-agent/start-0971.sh [minerva|tara]   # 0.9.7.x venv, own home, port 8101
+```
+
+It answered 60/60 benchmark questions with no DSPy patch, in a median 5.9 s for
+run results and 5.4 s for the HDF5 listing (round 10 in
+`wiki/agent_clio_performance.md`). The script starts the server from an empty
+folder: started from `~/poro`, 0.9.7.1 adopts `~/poro/.clio/agent` and resumes old
 sessions ([clio-agent #2375](https://github.com/iowarp/clio-agent/issues/2375)).
+`clio-agent/bench_0971.py --agent poro/porotomo-is --tasks results,hdf5` runs the
+benchmark.
 
 ## Tuned default and benchmarks
 

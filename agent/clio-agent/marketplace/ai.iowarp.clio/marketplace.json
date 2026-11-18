@@ -1,0 +1,4 @@
+{
+  "name": "poro",
+  "description": "PoroTomo induced-seismicity agent for clio-agent 0.9.7.x (port of the porotomo-is-tuned blueprint)."
+}
