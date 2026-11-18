@@ -11,7 +11,16 @@
 #   ~/.local/share/clio/clio-agent/.venv/bin/python -m clio_agent.providers.argonne_auth authenticate
 #
 # Usage: agent/clio-agent/start-alcf-mistral.sh [minerva|tara] ["one-shot question"]
+#
+# Default (since 2026-11-18): clio-agent 0.9.7.1 with the ported plugin agent
+# poro/porotomo-is, via start-0971.sh (server only; ask with run_query.py).
+# CLIO_AGENT_SERIES=0.9.4 runs the old clio-agent 0.9.4.24 install with the
+# porotomo-is-tuned blueprint (below), which needs the DSPy patch in patches/.
 set -eu
+if [ "${CLIO_AGENT_SERIES:-0.9.7}" != 0.9.4 ]; then
+  [ $# -gt 1 ] && { echo "one-shot questions: start the server, then use run_query.py"; exit 2; }
+  exec "$(dirname "$0")/start-0971.sh" "${1:-minerva}"
+fi
 CLUSTER=${1:-minerva}; shift || true
 VENV=$HOME/.local/share/clio/clio-agent/.venv/bin
 case "$CLUSTER" in

@@ -17,7 +17,7 @@ questions alternately; shell and hdf5 tools are approved.
 Run it with the 0.9.7.x venv's python, against a server started from an empty
 folder (0.9.7.1 adopts a session store in <cwd>/.clio/agent):
 
-    bench_0971.py --n 60 --out ~/poro/agent/results/llm/bench_<stamp> --url http://127.0.0.1:8101
+    bench_0971.py --n 60 --out ~/poro/agent/results/llm/bench_<stamp> --agent poro/porotomo-is --tasks results,hdf5
 
 Answers are also checked for the #2369 truncation: the turn's submit args must
 contain only `answer` / `workflow_state`, and the answer must be longer than
@@ -61,7 +61,9 @@ def answer_of(msg):
     return "\n".join(ans).strip()
 
 
-def ask(c, question, agent, timeout):
+def ask(c, question, agent, timeout, allow=("shell", "hdf5")):
+    """Run one question on a new session pinned to `agent`; approve tools whose
+    names start with a prefix in `allow`. Also used by run_query.py on 0.9.7.x."""
     log = dict(question=question, agent=agent, tools=[], permissions=[])
     t0 = time.time()
     s = c.sessions.create(title=f"bench0971: {question[:40]}", metadata={"agent_ref": agent})
@@ -78,7 +80,7 @@ def ask(c, question, agent, timeout):
             if isinstance(ev, PermissionRequested):
                 p = ev.permission
                 name = p.tool_call.tool_name or ""
-                decision = "allow" if name.startswith(("shell", "hdf5")) else "deny"
+                decision = "allow" if name.startswith(tuple(allow)) else "deny"
                 c.permissions.respond(p.id, decision)
                 log["permissions"].append(dict(tool=name, decision=decision))
             elif isinstance(ev, ToolCallCompleted):
@@ -105,7 +107,7 @@ def ask(c, question, agent, timeout):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--url", default="http://127.0.0.1:8101")
+    ap.add_argument("--url", default="http://127.0.0.1:8100")
     ap.add_argument("--agent", default="clio/standard")
     ap.add_argument("--tasks", default="results", help="comma list of results,hdf5 (alternated)")
     ap.add_argument("--n", type=int, default=60)

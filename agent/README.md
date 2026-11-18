@@ -37,70 +37,78 @@ which has h5py 3.16 and numpy 2.5). Override it with `CLIO_AGENT_PY`.
 
 ## clio-agent
 
-The default blueprint is `porotomo-is-tuned` (used by `start-alcf-mistral.sh`,
-`run_query.py` and the server's default agent). Link it, and optionally the
-orchestrated one, into clio-agent:
+**Default (since 2026-11-18): clio-agent 0.9.7.1 with the plugin agent
+`poro/porotomo-is`.** 0.9.7.x has no blueprints. `clio-agent/marketplace/` ports
+the tuned blueprint to a plugin agent (see its README). clio-agent 0.9.7.1 is
+installed from tag v0.9.7.1 (commit f8ef50d) in its own venv, with its own home,
+next to the old 0.9.4.24 install:
+
+```bash
+uv venv --python ~/.local/share/clio/clio-agent/.venv/bin/python ~/.local/share/clio/clio-agent-097/.venv
+uv pip install --python ~/.local/share/clio/clio-agent-097/.venv/bin/python \
+    "clio-agent @ git+https://github.com/iowarp/clio-agent@v0.9.7.1"
+```
+
+Model: **Mistral Large 4 on the ALCF inference gateway.** ALCF lists it on Minerva
+(`mistral-large-4-nvfp4`, always hot) and Tara (`mistral-large-4`); the change
+went in with argonne-lcf/user-guides PR #1401, merged 2026-11-02. clio-agent has
+no Minerva or Tara preset, so the start scripts reuse the `argonne_metis`
+preset, which has the same Globus auth, and override `CLIO_LM_API_BASE` and
+`CLIO_LM_MODEL`.
+
+One-time login, run interactively in your own terminal. Both venvs read the same token.
+
+```bash
+~/.local/share/clio/clio-agent-097/.venv/bin/python -m clio_agent.providers.argonne_auth authenticate
+agent/clio-agent/start-alcf-mistral.sh minerva &        # server on :8100, poro/porotomo-is
+~/.local/share/clio/clio-agent-097/.venv/bin/python agent/clio-agent/run_query.py \
+    "List the datasets in ~/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5 with shape and dtype." \
+    --out agent/results/llm/answer.json
+```
+
+`start-alcf-mistral.sh` runs `clio-agent/start-0971.sh`, which:
+- installs or updates and trusts the marketplace in `~/.local/share/clio/clio-agent-097/home`;
+- stops any server on :8100;
+- starts the server from the empty folder `~/.local/share/clio/clio-agent-097/cwd`. Started from `~/poro`, 0.9.7.1 adopts `~/poro/.clio/agent` and resumes old sessions ([clio-agent #2375](https://github.com/iowarp/clio-agent/issues/2375));
+- makes `poro/porotomo-is` the session default.
+
+The output cap (`CLIO_LM_MAX_TOKENS=8192`, [#2371](https://github.com/iowarp/clio-agent/issues/2371)) and the data roots are set as before.
+Use `run_query.py`, not `clio-agent --query`. It pins a new session to `--agent`
+(default `poro/porotomo-is`) and approves only `hdf5_*` tools; shell stays denied
+unless you pass `--allow-shell` (needed for run results, which the agent reads
+with `report.py`). The agent answered 60/60 benchmark questions with no DSPy
+patch, in a median 5.9 s for run results and 5.4 s for the HDF5 listing (round
+10 in `wiki/agent_clio_performance.md`).
+`clio-agent/bench_0971.py --agent poro/porotomo-is --tasks results,hdf5 --out <dir>` runs the benchmark.
+
+**The old 0.9.4.24 setup** (`~/.local/share/clio/clio-agent/.venv`, with the
+`porotomo-is-tuned` blueprint) still works. Start it with
+`CLIO_AGENT_SERIES=0.9.4 agent/clio-agent/start-alcf-mistral.sh minerva`, and run
+`run_query.py` and `bench.py` with that venv's python. Link the blueprints into it:
 
 ```bash
 ln -s ~/poro/agent/clio-agent/variants/porotomo-is-tuned ~/.config/clio-agent/agent-blueprints/
 ln -s ~/poro/agent/clio-agent/porotomo-induced-seismicity ~/.config/clio-agent/agent-blueprints/
 ```
 
-Model: **Mistral Large 4 on the ALCF inference gateway.** ALCF lists it on Minerva
-(`mistral-large-4-nvfp4`, always hot) and Tara (`mistral-large-4`); the change
-went in with argonne-lcf/user-guides PR #1401, merged 2026-11-02. clio-agent has
-no Minerva or Tara preset, so `clio-agent/start-alcf-mistral.sh` reuses the
-`argonne_metis` preset, which has the same Globus auth, and overrides
-`CLIO_LM_API_BASE` and `CLIO_LM_MODEL`.
-
-One-time login, run interactively in your own terminal. `globus-sdk` 4.9.1 is
-already in the clio-agent venv.
-
-```bash
-~/.local/share/clio/clio-agent/.venv/bin/python -m clio_agent.providers.argonne_auth authenticate
-agent/clio-agent/start-alcf-mistral.sh minerva &        # server on :8100 (Minerva, tuned blueprint, data roots)
-~/.local/share/clio/clio-agent/.venv/bin/python agent/clio-agent/run_query.py \
-    "List the datasets in ~/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5 with shape and dtype." \
-    --out agent/results/llm/answer.json
-```
-
-Use `run_query.py`, not `clio-agent --query`. `--query` always runs the built-in
-`main` agent and denies every tool. `run_query.py` activates the blueprint on a
-fresh session (`POST /v1/sessions/{sid}/agent-blueprint`) and approves only
-read-only `hdf5_*` tools. Shell stays denied unless you pass `--allow-shell`.
-The clio-kit HDF5 server keeps an index under `<server cwd>/data/`, which is
-ignored by git. A turn occasionally stalls right after a tool call (e.g.
-`hdf5_open_file`): the model's next reasoning step streams without end and the
-turn fails only at the ~900 s turn wall ([clio-agent #2371](https://github.com/iowarp/clio-agent/issues/2371), [#2372](https://github.com/iowarp/clio-agent/issues/2372)).
-Retry the question; the tuned blueprint finishes in about 8 s when it works.
-
-On 0.9.4.x, truncated answers (clio-agent #2369, closed as not applying to
-0.9.7.x) come from DSPy's `json_repair` call
-mangling the model's slightly malformed tool-call JSON. A local patch fixes it;
-apply it after every clio-agent install or upgrade, then restart the server:
+On 0.9.4.24, a turn occasionally stalls right after a tool call: the model's
+next reasoning step streams without end, and the turn fails only at the ~900 s
+turn wall ([#2371](https://github.com/iowarp/clio-agent/issues/2371),
+[#2372](https://github.com/iowarp/clio-agent/issues/2372); not seen with the cap).
+Truncated answers (clio-agent #2369, closed as not applying to 0.9.7.x) come from
+DSPy's `json_repair` call mangling the model's slightly malformed tool-call JSON.
+A local patch fixes them; apply it after every 0.9.4 install or upgrade, then
+restart the server:
 
 ```bash
 ~/.local/share/clio/clio-agent/.venv/bin/python agent/clio-agent/patches/apply_dspy_patch.py   # --revert to undo
 ```
 
-clio-agent 0.9.7.x has no blueprints. `clio-agent/marketplace/` ports the tuned
-blueprint to a plugin agent, `poro/porotomo-is` (see its README). Start it with:
-
-```bash
-agent/clio-agent/start-0971.sh [minerva|tara]   # 0.9.7.x venv, own home, port 8101
-```
-
-It answered 60/60 benchmark questions with no DSPy patch, in a median 5.9 s for
-run results and 5.4 s for the HDF5 listing (round 10 in
-`wiki/agent_clio_performance.md`). The script starts the server from an empty
-folder: started from `~/poro`, 0.9.7.1 adopts `~/poro/.clio/agent` and resumes old
-sessions ([clio-agent #2375](https://github.com/iowarp/clio-agent/issues/2375)).
-`clio-agent/bench_0971.py --agent poro/porotomo-is --tasks results,hdf5` runs the
-benchmark.
+The clio-kit HDF5 server keeps an index under `<server cwd>/data/` (ignored by git).
 
 ## Tuned default and benchmarks
 
-`clio-agent/variants/porotomo-is-tuned/` (the default since 2026-11-17) is a
+`clio-agent/variants/porotomo-is-tuned/` (the 0.9.4.24 default from 2026-11-17; ported as `poro/porotomo-is`) is a
 single-expert version of the orchestrated blueprint: one expert holds `shell_bash` (it runs `report.py` for run results)
 and the read-only HDF5 tools including `hdf5_analyze_dataset_structure`, with
 the light prompt profile. On the benchmark questions it answered in 8.2–8.8 s

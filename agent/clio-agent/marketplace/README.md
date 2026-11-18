@@ -3,7 +3,9 @@
 clio-agent 0.9.7 replaced agent blueprints with agents defined as Python classes
 that carry plugins. This folder is a local plugin marketplace named `poro`. It
 holds `poro/porotomo-is`, a port of the `porotomo-is-tuned` blueprint
-(`../variants/porotomo-is-tuned/`), which still runs on 0.9.4.24.
+(`../variants/porotomo-is-tuned/`), which still runs on 0.9.4.24. Since 2026-11-18
+it is the default PoroTomo agent, run by clio-agent 0.9.7.1 from
+`~/.local/share/clio/clio-agent-097/.venv`.
 
 | file | role |
 |---|---|
@@ -31,7 +33,7 @@ Two lines are new in the port:
 ## Use
 
 ```bash
-agent/clio-agent/start-0971.sh            # installs or updates the marketplace, starts on :8101
+agent/clio-agent/start-alcf-mistral.sh minerva   # = start-0971.sh: installs or updates the marketplace, starts on :8100
 ```
 
 or by hand, with a 0.9.7.x `clio-agent` and its own `CLIO_AGENT_HOME`:

@@ -1,7 +1,9 @@
 #!/bin/bash
-# Start clio-agent 0.9.7.x with the ported PoroTomo agent (poro/porotomo-is) on
-# Mistral Large 4 served by the ALCF inference gateway, next to the 0.9.4.24
-# install that start-alcf-mistral.sh runs on port 8100.
+# Start clio-agent 0.9.7.x with the ported PoroTomo agent (poro/porotomo-is, the
+# default since 2026-11-18) on Mistral Large 4 served by the ALCF inference
+# gateway. start-alcf-mistral.sh calls this script; CLIO_AGENT_SERIES=0.9.4 there
+# runs the old 0.9.4.24 blueprint instead. Both use port 8100, so starting one
+# stops the other.
 #
 # 0.9.7.x has no blueprints: the agent is a plugin marketplace in ./marketplace,
 # installed into this server's own home (a snapshot, so the script re-installs it
@@ -21,7 +23,7 @@ VENV=${CLIO097_VENV:-$HOME/.local/share/clio/clio-agent-097/.venv}/bin
 export CLIO_AGENT_HOME=${CLIO097_HOME:-$HOME/.local/share/clio/clio-agent-097/home}
 export CLIO_RUNTIME_STATE_DIR=${CLIO097_RUNTIME:-$HOME/.local/share/clio/clio-agent-097/runtime-state}
 WORKDIR=${CLIO097_CWD:-$HOME/.local/share/clio/clio-agent-097/cwd}
-PORT=${CLIO097_PORT:-8101}
+PORT=${CLIO097_PORT:-8100}
 AGENT=poro/porotomo-is
 
 case "$CLUSTER" in
@@ -40,7 +42,8 @@ cd "$WORKDIR"
 export CLIO_LM_PROVIDER=argonne_metis
 export CLIO_LM_API_BASE=https://inference-api.alcf.anl.gov/resource_server/$CLUSTER/api/v1
 export CLIO_LM_MODEL=${CLIO_LM_MODEL:-$MODEL}
-# No default output cap upstream (clio-agent #2371); see start-alcf-mistral.sh.
+# No default output cap upstream (clio-agent #2371). Normal steps use < 2k tokens;
+# this bounds a runaway reasoning stream to about 23 s at ~360 tokens/s.
 export CLIO_LM_MAX_TOKENS=${CLIO_LM_MAX_TOKENS:-8192}
 export CLIO_ALLOWED_ROOTS=${CLIO_ALLOWED_ROOTS:-$HOME/poro:$HOME/cae_test_data:/tmp}
 
@@ -52,6 +55,10 @@ else
   "$VENV/clio-agent" plugin install "$HERE/marketplace" --name poro
   "$VENV/clio-agent" plugin trust poro
 fi
+
+# Stop any clio-agent server (0.9.4 or 0.9.7) and clio-core runtime left on this port.
+pkill -u "$USER" -f "clio-agent(-gact| serve) --host 127.0.0.1 --port $PORT" 2>/dev/null && sleep 3 || true
+pkill -u "$USER" -f "iowarp_core/bin/clio_run start" 2>/dev/null || true
 
 "$VENV/clio-agent" serve --host 127.0.0.1 --port "$PORT" &
 SERVER=$!

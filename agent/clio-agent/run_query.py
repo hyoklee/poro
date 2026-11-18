@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
-"""Ask a clio-agent blueprint one question via the SDK.
+"""Ask the PoroTomo agent one question via the SDK.
+
+clio-agent 0.9.7.x (the default, started by start-alcf-mistral.sh): runs with the
+0.9.7.x venv's python, pins a new session to --agent (default poro/porotomo-is)
+and uses bench_0971.ask. Tools are approved as below.
+
+    ~/.local/share/clio/clio-agent-097/.venv/bin/python agent/clio-agent/run_query.py \
+        --allow-shell "Report the headline results of ~/poro/agent/results/run_..."
+
+clio-agent 0.9.4.x (CLIO_AGENT_SERIES=0.9.4): run with the 0.9.4 venv's python;
+everything below applies.
 
 `clio-agent --query` always runs the built-in `main` agent and auto-denies every
 tool permission. This driver:
@@ -20,16 +30,23 @@ let this script fail fast if nothing listens on --url.
 """
 import argparse
 import json
+import os
 import sys
 import time
 
-from clio_agent.sdk import ClioClient
-from clio_agent.sdk.events import (
-    MessageCompleted, MessagePartDelta, PermissionRequested,
-    ToolCallCompleted, ToolCallStarted,
-)
+try:  # clio-agent 0.9.4.x
+    from clio_agent.sdk import ClioClient
+    from clio_agent.sdk.events import (
+        MessageCompleted, MessagePartDelta, PermissionRequested,
+        ToolCallCompleted, ToolCallStarted,
+    )
+    LEGACY = True
+except ImportError:  # clio-agent >= 0.9.7: no blueprints, agents are plugins
+    from clio_agent.client import ClioClient
+    LEGACY = False
 
-BLUEPRINT = "porotomo-is-tuned"
+BLUEPRINT = "porotomo-is-tuned"   # 0.9.4.x
+AGENT = "poro/porotomo-is"        # 0.9.7.x (agent/clio-agent/marketplace)
 
 
 def _field(p):
@@ -149,19 +166,28 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("question")
     ap.add_argument("--url", default="http://127.0.0.1:8100")
-    ap.add_argument("--blueprint", default=BLUEPRINT)
+    ap.add_argument("--blueprint", default=BLUEPRINT, help="0.9.4.x only")
+    ap.add_argument("--agent", default=AGENT, help="0.9.7.x only")
     ap.add_argument("--allow-prefix", action="append", default=["hdf5_"],
                     help="tool-name prefixes to approve (repeatable)")
     ap.add_argument("--allow-shell", action="store_true")
     ap.add_argument("--timeout", type=float, default=900)
     ap.add_argument("--effort", default=None,
                     choices=["off", "minimal", "low", "medium", "high", "xhigh", "max"],
-                    help="reasoning effort for this question (default: configured level)")
+                    help="reasoning effort for this question (0.9.4.x only; default: configured level)")
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     allow = tuple(a.allow_prefix) + (("shell_bash",) if a.allow_shell else ())
-    with ClioClient(a.url) as c:
-        log = ask(c, a.question, a.blueprint, allow, a.timeout, effort=a.effort)
+    with ClioClient(a.url, **({} if LEGACY else {"timeout": a.timeout})) as c:
+        if LEGACY:
+            log = ask(c, a.question, a.blueprint, allow, a.timeout, effort=a.effort)
+        else:
+            sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+            from bench_0971 import ask as ask097  # noqa: PLC0415
+            # The 0.9.7.x shell tool is shell_bash; hdf5_* as before.
+            log = ask097(c, a.question, a.agent, a.timeout,
+                         allow=tuple(p for p in allow if p != "shell_bash")
+                         + (("shell",) if "shell_bash" in allow else ()))
     print(log["answer"])
     if a.out:
         with open(a.out, "w") as f:
