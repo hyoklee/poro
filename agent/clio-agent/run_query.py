@@ -6,7 +6,7 @@ clio-agent 0.9.7.x (the default, started by start-alcf-mistral.sh): runs with th
 and uses bench_0971.ask. Tools are approved as below.
 
     ~/.local/share/clio/clio-agent-097/.venv/bin/python agent/clio-agent/run_query.py \
-        --allow-shell "Report the headline results of ~/poro/agent/results/run_..."
+        "Report the headline results of the latest run"   # porotomo_report, no shell
 
 clio-agent 0.9.4.x (CLIO_AGENT_SERIES=0.9.4): run with the 0.9.4 venv's python;
 everything below applies.
@@ -17,7 +17,7 @@ tool permission. This driver:
      (POST /v1/sessions/{sid}/agent-blueprint),
   2. posts the question,
   3. streams the turn, approving only the tools in --allow-prefix (default: the
-     read-only hdf5_* tools; shell stays denied unless --allow-shell),
+     read-only hdf5_* and porotomo_* tools; shell stays denied unless --allow-shell),
   4. prints the answer and writes a JSON transcript (tool calls, permission
      decisions, answer, reasoning trace, tokens, timings) to --out.
 
@@ -168,7 +168,7 @@ def main():
     ap.add_argument("--url", default="http://127.0.0.1:8100")
     ap.add_argument("--blueprint", default=BLUEPRINT, help="0.9.4.x only")
     ap.add_argument("--agent", default=AGENT, help="0.9.7.x only")
-    ap.add_argument("--allow-prefix", action="append", default=["hdf5_"],
+    ap.add_argument("--allow-prefix", action="append", default=["hdf5_", "porotomo_"],
                     help="tool-name prefixes to approve (repeatable)")
     ap.add_argument("--allow-shell", action="store_true")
     ap.add_argument("--timeout", type=float, default=900)

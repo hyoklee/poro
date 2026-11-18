@@ -21,7 +21,7 @@ are written up in [wiki/agent_induced_seismicity.md](../wiki/agent_induced_seism
 | `clio-agent/porotomo-induced-seismicity/` | orchestrated clio-agent blueprint: `main` plus `hdf5` and `seismicity` experts (slower; kept for comparison) |
 | `sources/` | the external inputs: GDR 917 pumping CSV, GDR 859 LBNL/NCEDC catalogue PDF and text |
 | `results/run_*/` | one directory per run: manifest, per-rank JSONL, `summary.json`, CSVs, figures, logs, interpretation |
-| `report.py` | prints the headline numbers of a run in about 1 KB (for LLM agents) |
+| `report.py` | prints the headline numbers of a run in about 1 KB (for LLM agents; also the `porotomo_report` tool of the 0.9.7.x agent) |
 | `results/llm/` | clio-coder code review, clio-agent test transcripts, benchmark rounds `bench_*` |
 
 ## Running
@@ -74,11 +74,12 @@ agent/clio-agent/start-alcf-mistral.sh minerva &        # server on :8100, poro/
 
 The output cap (`CLIO_LM_MAX_TOKENS=8192`, [#2371](https://github.com/iowarp/clio-agent/issues/2371)) and the data roots are set as before.
 Use `run_query.py`, not `clio-agent --query`. It pins a new session to `--agent`
-(default `poro/porotomo-is`) and approves only `hdf5_*` tools; shell stays denied
-unless you pass `--allow-shell` (needed for run results, which the agent reads
-with `report.py`). The agent answered 60/60 benchmark questions with no DSPy
-patch, in a median 5.9 s for run results and 5.4 s for the HDF5 listing (round
-10 in `wiki/agent_clio_performance.md`).
+(default `poro/porotomo-is`) and approves only the `hdf5_*` and `porotomo_*` tools;
+shell stays denied unless you pass `--allow-shell` (needed only for PBS jobs). Run
+results come from the plugin's read-only `porotomo_report` tool, which returns the
+`report.py` digest of a run. The agent answered 60/60 benchmark questions with no DSPy
+patch; with `porotomo_report` the medians are 4.0 s for run results and 4.8 s for
+the HDF5 listing (round 12 in `wiki/agent_clio_performance.md`).
 `clio-agent/bench_0971.py --agent poro/porotomo-is --tasks results,hdf5 --out <dir>` runs the benchmark.
 
 **The old 0.9.4.24 setup** (`~/.local/share/clio/clio-agent/.venv`, with the

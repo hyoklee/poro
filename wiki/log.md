@@ -101,3 +101,7 @@ Installed clio-agent 0.9.7.1 (tag v0.9.7.1, commit f8ef50d; dspy 3.4.0) in `~/.l
 ## [2026-11-18] test | 60-question benchmark on the installed default: 60/60
 
 Ran `bench_0971.py --agent poro/porotomo-is --tasks results,hdf5 --n 60` against the installed clio-agent 0.9.7.1 default on :8100 (`agent/results/llm/bench_20261118_default0971/`). 60/60 correct, medians 6.7 s (results) and 4.8 s (hdf5), no stall. The model still re-reads `summary.json` after `report.py` in 25 of 30 `results` questions (median 3 shell calls), which adds about 0.8 s to the median. Round 11 in `agent_clio_performance.md`.
+
+## [2026-11-18] change | `porotomo_report` tool in the porotomo-is plugin: 60/60, results median 4.0 s
+
+Added a read-only Python tool, `porotomo_report(run)`, to the `porotomo-is` plugin (0.4.0). It returns the `agent/report.py` digest of a finished run (it loads `report.py` from the repo, which now has a `report(run)` function) and refuses paths outside `agent/results/run_*`. The `runs` fragment uses it instead of `shell_bash`. It is declared `defer=False, callers="direct"`: with the defaults the model reached it through `run_code` and fell back to the shell. `start-0971.sh` now re-trusts the marketplace after every update, because changed Python parts are held until trusted. `run_query.py` and `bench_0971.py` approve `porotomo_*`. Benchmark on the installed default (`agent/results/llm/bench_20261118_reporttool/`): 60/60, every `results` question used one call, median 4.0 s (round 11: 6.7 s, median 3 shell calls). Round 12 in `agent_clio_performance.md`.

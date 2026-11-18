@@ -47,14 +47,16 @@ export CLIO_LM_MODEL=${CLIO_LM_MODEL:-$MODEL}
 export CLIO_LM_MAX_TOKENS=${CLIO_LM_MAX_TOKENS:-8192}
 export CLIO_ALLOWED_ROOTS=${CLIO_ALLOWED_ROOTS:-$HOME/poro:$HOME/cae_test_data:/tmp}
 
-# Install (first time) or refresh (later) the marketplace, then trust it.
+# Install (first time) or refresh (later) the marketplace, then trust it. An
+# update whose Python parts changed (agents/, the porotomo_report tool) is held
+# until it is trusted again, so trust after every update: it is this repo's code.
 "$VENV/clio-agent" plugin check "$HERE/marketplace" >/dev/null
 if "$VENV/clio-agent" plugin list 2>/dev/null | grep -q '^poro '; then
   "$VENV/clio-agent" plugin update poro
 else
   "$VENV/clio-agent" plugin install "$HERE/marketplace" --name poro
-  "$VENV/clio-agent" plugin trust poro
 fi
+"$VENV/clio-agent" plugin trust poro
 
 # Stop any clio-agent server (0.9.4 or 0.9.7) and clio-core runtime left on this port.
 pkill -u "$USER" -f "clio-agent(-gact| serve) --host 127.0.0.1 --port $PORT" 2>/dev/null && sleep 3 || true

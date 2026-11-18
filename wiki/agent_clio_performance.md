@@ -188,7 +188,21 @@ The same test as round 10 (`bench_0971.py --agent poro/porotomo-is --tasks resul
 - All 60 answers were fully correct, with no stall and no `late_op rejected` lines. The installed setup behaves like the scratch one.
 - The model still re-checks `report.py` against `summary.json`, despite the "needs no cross-check" line. Only 5 of 30 `results` questions used a single `shell_bash` call; the others made 2–5 calls (9, 9, 5 and 2 questions), reading `summary.json` with small `python3 -c` one-liners. Round 10 had 14 of 30 with one call. The extra calls run in parallel, so the median grew only by 0.8 s. No shell call failed.
 - On `hdf5`, the median fell to 4 calls (3–10) and 48k input tokens. 15 tool calls failed (`hdf5_list_attributes` again), and no answer was affected.
-- Ways to cut the re-checking: firmer wording, or a dedicated `report` tool in the `porotomo-is` plugin instead of the general shell.
+- Ways to cut the re-checking: firmer wording, or a dedicated `report` tool in the `porotomo-is` plugin instead of the general shell (done in round 12).
+
+### Round 12: a `porotomo_report` tool (2026-11-18)
+
+The `porotomo-is` plugin (0.4.0) adds a read-only Python tool, `porotomo_report(run)`, that returns the `report.py` digest of a run. The `runs` fragment now points at it instead of `shell_bash` + `report.py`; the shell stays for PBS. Same test as round 11 on the installed default (`agent/results/llm/bench_20261118_reporttool/`).
+
+| run | results | hdf5 | results median s (min–max) | hdf5 median s (min–max) | median tool calls (results / hdf5) | median input tokens (results / hdf5) |
+|---|---|---|---|---|---|---|
+| round 11, `shell_bash` + `report.py` (`bench_20261118_default0971`) | 30/30 | 30/30 | 6.7 (4.3–15.2) | 4.8 (3.5–14.6) | 3 / 4 | 38k / 48k |
+| **round 12, `porotomo_report`** | **30/30** | **30/30** | **4.0 (3.3–4.8)** | 4.8 (3.9–6.9) | **1** / 4 | **24k** / 61k |
+
+- Every `results` question made exactly one call, `porotomo_report`, with no permission prompt and no re-check of `summary.json` (round 11: 5 of 30 with one call). The median fell from 6.7 s to 4.0 s, the slowest run from 15.2 s to 4.8 s, and input tokens from 38k to 24k.
+- `hdf5` is unchanged in time and calls. 6 tool calls failed, none affecting an answer. One run made 21 calls (the model again checked shapes and dtypes one dataset at a time).
+- The tool had to be declared `defer=False, callers="direct"`. With the defaults, 0.9.7.1 offers plugin tools only through `search_tools` and allows calls from `run_code`. In a first probe the model found the tool, tried it through `run_code` (denied by the benchmark) and fell back to the shell, with 4 calls per question.
+- An update that changes a plugin's Python files is held until the marketplace is trusted again, so `start-0971.sh` now runs `plugin trust poro` after every update.
 
 ### Failures seen (all variants)
 
@@ -198,7 +212,7 @@ The same test as round 10 (`bench_0971.py --agent poro/porotomo-is --tasks resul
 
 ## Recommendation
 
-Use the tuned single-expert design for question answering: one expert with shell (running `report.py`) and the read-only HDF5 tools including `hdf5_analyze_dataset_structure`, light profile, the cwd and no-spawn lines. Keep the orchestrated blueprint only where delegation adds something (e.g. a long PBS workflow alongside file inspection). Adopted 2026-11-17: `porotomo-is-tuned` became the default in `start-alcf-mistral.sh` and `run_query.py`. Since 2026-11-18 the default is its clio-agent 0.9.7.1 port, `poro/porotomo-is` (round 10). Upstream issues filed 2026-11-17: [clio-agent #2368](https://github.com/iowarp/clio-agent/issues/2368) (pass `reasoning_effort` for vLLM-served models with unknown thinking specs) and [clio-agent #2369](https://github.com/iowarp/clio-agent/issues/2369) (answer truncation; closed 2026-11-18 because it does not apply to 0.9.7.x, while the local DSPy patch is still needed on 0.9.4.24). The 0.9.7.1 store adoption is [clio-agent #2375](https://github.com/iowarp/clio-agent/issues/2375). The stalls are [clio-agent #2371](https://github.com/iowarp/clio-agent/issues/2371) and [#2372](https://github.com/iowarp/clio-agent/issues/2372).
+Use the tuned single-expert design for question answering: one expert with shell (running `report.py`) and the read-only HDF5 tools including `hdf5_analyze_dataset_structure`, light profile, the cwd and no-spawn lines. Keep the orchestrated blueprint only where delegation adds something (e.g. a long PBS workflow alongside file inspection). Adopted 2026-11-17: `porotomo-is-tuned` became the default in `start-alcf-mistral.sh` and `run_query.py`. Since 2026-11-18 the default is its clio-agent 0.9.7.1 port, `poro/porotomo-is` (round 10), which reads run results with its own `porotomo_report` tool (round 12). Upstream issues filed 2026-11-17: [clio-agent #2368](https://github.com/iowarp/clio-agent/issues/2368) (pass `reasoning_effort` for vLLM-served models with unknown thinking specs) and [clio-agent #2369](https://github.com/iowarp/clio-agent/issues/2369) (answer truncation; closed 2026-11-18 because it does not apply to 0.9.7.x, while the local DSPy patch is still needed on 0.9.4.24). The 0.9.7.1 store adoption is [clio-agent #2375](https://github.com/iowarp/clio-agent/issues/2375). The stalls are [clio-agent #2371](https://github.com/iowarp/clio-agent/issues/2371) and [#2372](https://github.com/iowarp/clio-agent/issues/2372).
 
 ## Related
 

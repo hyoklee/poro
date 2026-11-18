@@ -13,6 +13,7 @@ it is the default PoroTomo agent, run by clio-agent 0.9.7.1 from
 | `agents/porotomo_is.py` | the agent: `core` and `memory` (every agent), `shell`, `hdf5` (clio marketplace) and `porotomo-is` |
 | `plugins/porotomo-is/plugin.json` | the plugin; it requires `shell` and `hdf5` |
 | `plugins/porotomo-is/ai.iowarp.clio/prompt/*.md` | the blueprint's instructions as three prompt fragments (`mission`, `runs`, `hdf5`), each within the 150-token fragment budget |
+| `plugins/porotomo-is/ai.iowarp.clio/tools/report.py` | the `porotomo_report` tool (since 0.4.0): the digest of a run's `summary.json`, from `agent/report.py` |
 
 How the blueprint maps to the port:
 
@@ -26,8 +27,25 @@ How the blueprint maps to the port:
 | "pass `workflow_state` as `{}`" (#2369 workaround) | dropped: 0.9.7.x uses native tool calls and needs no `submit` call |
 | `CLIO_DEFAULT_AGENT_BLUEPRINT_ID` | `PATCH /v1/session-defaults {"agent_ref": "poro/porotomo-is"}` (done by `../start-0971.sh`), or `metadata.agent_ref` when the session is created |
 
+## The `porotomo_report` tool
+
+`porotomo_report(run="")` returns the ~1 KB digest that `agent/report.py` prints,
+for a run name or path under `agent/results/` (empty: the latest finished run).
+It loads `agent/report.py` from the repo (`POROTOMO_ROOT`, default `~/poro`), so
+the script and the tool share one implementation, and it refuses any path that
+is not a finished run there. It is read-only and needs no permission prompt.
+It replaces `shell_bash` + `report.py` for run results: with the shell, the
+model re-read `summary.json` with `python3 -c` one-liners in 25 of 30 questions
+(round 11 in `wiki/agent_clio_performance.md`). `shell_bash` is still there for
+PBS submission.
+
+It is declared `@tool(read_only=True, defer=False, callers="direct")`. With the
+defaults, clio-agent 0.9.7.1 defers plugin tools (the model must find them with
+`search_tools` first) and lets them be called from `run_code`; the model then
+tried `run_code`, was denied and fell back to the shell.
+
 Two lines are new in the port:
-- The fragments say that `report.py` and `hdf5_analyze_dataset_structure` are authoritative. Without that, the core plugin's "check the result before you report it" rule made the model re-read `summary.json` and re-check every dataset with `hdf5_get_shape` / `hdf5_get_dtype`.
+- The fragments say that the run digest and `hdf5_analyze_dataset_structure` are authoritative. Without that, the core plugin's "check the result before you report it" rule made the model re-read `summary.json` and re-check every dataset with `hdf5_get_shape` / `hdf5_get_dtype`.
 - The `hdf5` fragment has no `when: {"tools": [...]}` condition. With one it was never included, because the condition is checked before the MCP server's tools are listed.
 
 ## Use
@@ -43,6 +61,7 @@ clio-agent plugin check   agent/clio-agent/marketplace
 clio-agent plugin install agent/clio-agent/marketplace --name poro
 clio-agent plugin trust   poro
 clio-agent plugin update  poro               # after editing: installs keep a snapshot
+clio-agent plugin trust   poro               # again, if the update changed Python files
 clio-agent plugin resolve poro/porotomo-is --prompt   # the composed system prompt
 ```
 
@@ -51,4 +70,4 @@ Start the server from an empty folder, not from `~/poro`. 0.9.7.1 adopts the
 ([clio-agent #2375](https://github.com/iowarp/clio-agent/issues/2375)).
 
 `../bench_0971.py --agent poro/porotomo-is --tasks results,hdf5` runs the
-benchmark. Results are in `wiki/agent_clio_performance.md`, round 10.
+benchmark. Results are in `wiki/agent_clio_performance.md`, rounds 10–12.

@@ -19,7 +19,8 @@ def g(x):
     return f"{x:.4g}"
 
 
-def main(run):
+def report(run):
+    """The digest of <run>/summary.json as text."""
     s = json.loads((Path(run) / "summary.json").read_text())
     r, a, e = s["records"], s["anomalies"], s["das_events"]
     p, cat = s["pumping"], s["catalog"]
@@ -49,10 +50,10 @@ def main(run):
         f"  b {g(u['b_used'])}, Sigma {g(u['sigma'])}, "
         f"P(M>=5.5)/yr {g(u['p_per_year_at_observed_rate']['M>=5.5'])}",
     ]
-    print("\n".join(out))
+    return "\n".join(out)
 
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         sys.exit(__doc__)
-    main(sys.argv[1])
+    print(report(sys.argv[1]))

@@ -4,10 +4,10 @@ from clio_agent.sdk import Agent
 
 
 class PorotomoIS(Agent):
-    """One agent, no delegation: shell for report.py and PBS, read-only HDF5 tools."""
+    """One agent, no delegation: porotomo_report for run results, shell for PBS, read-only HDF5 tools."""
 
     id = "porotomo-is"
-    version = "0.3.0"
+    version = "0.4.0"
     name = "PoroTomo IS"
     role = (
         "an induced-seismicity analyst for the PoroTomo DAS data from Brady Hot Springs "
@@ -15,7 +15,7 @@ class PorotomoIS(Agent):
     )
     description = (
         "Answers questions about anomalies and Pohang-like (Mw >= 5.5) hazard in the PoroTomo "
-        "DAS runs: report.py for run results, PBS jobs on Aurora for new runs, and clio-kit's "
+        "DAS runs: the porotomo_report tool for run results, PBS jobs on Aurora for new runs, and clio-kit's "
         "HDF5 MCP server for the records. Port of the porotomo-is-tuned blueprint."
     )
     # core + memory from Agent; no web, documents, delegation or orchestration.

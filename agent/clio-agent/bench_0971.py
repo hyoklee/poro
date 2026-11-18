@@ -61,7 +61,7 @@ def answer_of(msg):
     return "\n".join(ans).strip()
 
 
-def ask(c, question, agent, timeout, allow=("shell", "hdf5")):
+def ask(c, question, agent, timeout, allow=("shell", "hdf5", "porotomo_")):
     """Run one question on a new session pinned to `agent`; approve tools whose
     names start with a prefix in `allow`. Also used by run_query.py on 0.9.7.x."""
     log = dict(question=question, agent=agent, tools=[], permissions=[])
