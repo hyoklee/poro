@@ -61,6 +61,12 @@ fi
 # Stop any clio-agent server (0.9.4 or 0.9.7) and clio-core runtime left on this port.
 pkill -u "$USER" -f "clio-agent(-gact| serve) --host 127.0.0.1 --port $PORT" 2>/dev/null && sleep 3 || true
 pkill -u "$USER" -f "iowarp_core/bin/clio_run start" 2>/dev/null || true
+# Wait for the old runtime to exit: a new server that attaches while it still
+# holds port 9413 fails with clio_core_post_attach_probe_timeout and answers 503.
+for _ in $(seq 1 30); do
+  pgrep -u "$USER" -f "iowarp_core/bin/clio_run start" >/dev/null || break
+  sleep 1
+done
 
 "$VENV/clio-agent" serve --host 127.0.0.1 --port "$PORT" &
 SERVER=$!

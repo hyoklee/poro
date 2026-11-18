@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "porotomo-is",
-  "version": "0.5.0",
-  "description": "PoroTomo induced-seismicity agent: the porotomo_report (run digests) and porotomo_h5_layout (HDF5 record layout) tools, PBS submission on Aurora, and bounded HDF5 inspection.",
+  "version": "0.6.0",
+  "description": "PoroTomo induced-seismicity agent: the porotomo_report (run digests), porotomo_h5_layout (HDF5 record layout) and porotomo_h5_slice (slice values and statistics) tools, PBS submission on Aurora, and bounded HDF5 inspection.",
   "license": "BSD-3-Clause",
   "keywords": ["porotomo", "das", "induced-seismicity", "hdf5"],
   "extensions": {

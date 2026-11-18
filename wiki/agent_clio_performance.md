@@ -229,7 +229,22 @@ Rounds 1–13 ask only for run results and metadata. The new `das` task in `benc
 - All 20 answers were fully correct, but the question costs about 6 times the time and 5 times the input tokens of the metadata questions.
 - `hdf5_read_partial_dataset` returns only the first five values of a slice (clio-kit 2.10.6), and `hdf5_aggregate_stats` works on whole datasets only. So the model either reads the slice five values at a time (7 of 20 runs made 21–32 partial reads; 203 in all) or computes the statistics with h5py through `shell_bash` (43 calls, 15 failed).
 - Every run first tried `run_code`, which the benchmark denies (20 denials).
-- The same fix as rounds 12–13 would apply: a read-only plugin tool that returns a slice's values and statistics in one call.
+- The same fix as rounds 12–13 would apply: a read-only plugin tool that returns a slice's values and statistics in one call (done in round 15).
+
+### Round 15: a `porotomo_h5_slice` tool (2026-11-18)
+
+The `porotomo-is` plugin (0.6.0) adds a third read-only Python tool, `porotomo_h5_slice(path, dataset, start, count, show=10)`. It reads one hyperslab with h5py and returns its n, NaN count, min, max, mean and std (float64, over the whole slice) and its first `show` values at full precision. It allows at most 1,000,000 elements per call (the whole `/das` is 11.5 M) and only files under `CLIO_ALLOWED_ROOTS`. The `hdf5` fragment now names it for data values. All three tasks, 20 questions each, on the installed default (`agent/results/llm/bench_20261118_h5slice/`):
+
+| task | round | correct | median s (min–max) | median tool calls (min–max) | median input tokens | failed calls |
+|---|---|---|---|---|---|---|
+| das | 14, plugin 0.5.0 | 20/20 | 22.5 (12.3–43.5) | 10 (6–42) | 125k | 40 |
+| **das** | **15, `porotomo_h5_slice`** | **20/20** | **2.5 (2.3–2.8)** | **1 (1–1)** | **25k** | **0** |
+| results | 15 | 20/20 | 3.8 (3.3–4.8) | 1 | 25k | 0 |
+| hdf5 | 15 | 20/20 | 3.2 (2.8–4.1) | 1 | 25k | 0 |
+
+- Every one of the 60 questions made exactly one tool call, with no permission prompt and no failure. On `das` the median fell from 22.5 s to 2.5 s and input tokens from 125k to 25k; no `run_code` attempt, partial-read loop or shell call remained.
+- `results` and `hdf5` are unchanged from round 13.
+- The first restart of the server for this round failed: `start-0971.sh` killed the old clio-core runtime but did not wait for it, and the new server attached while the old one still held port 9413 (`clio_core_post_attach_probe_timeout`; every message then answered 503). The script now waits up to 30 s for the old runtime to exit.
 
 ### Failures seen (all variants)
 
@@ -239,7 +254,7 @@ Rounds 1–13 ask only for run results and metadata. The new `das` task in `benc
 
 ## Recommendation
 
-Use the tuned single-expert design for question answering: one expert with shell (running `report.py`) and the read-only HDF5 tools including `hdf5_analyze_dataset_structure`, light profile, the cwd and no-spawn lines. Keep the orchestrated blueprint only where delegation adds something (e.g. a long PBS workflow alongside file inspection). Adopted 2026-11-17: `porotomo-is-tuned` became the default in `start-alcf-mistral.sh` and `run_query.py`. Since 2026-11-18 the default is its clio-agent 0.9.7.1 port, `poro/porotomo-is` (round 10), which reads run results and HDF5 layouts with its own `porotomo_report` and `porotomo_h5_layout` tools (rounds 12 and 13). Upstream issues filed 2026-11-17: [clio-agent #2368](https://github.com/iowarp/clio-agent/issues/2368) (pass `reasoning_effort` for vLLM-served models with unknown thinking specs) and [clio-agent #2369](https://github.com/iowarp/clio-agent/issues/2369) (answer truncation; closed 2026-11-18 because it does not apply to 0.9.7.x, while the local DSPy patch is still needed on 0.9.4.24). The 0.9.7.1 store adoption is [clio-agent #2375](https://github.com/iowarp/clio-agent/issues/2375). The stalls are [clio-agent #2371](https://github.com/iowarp/clio-agent/issues/2371) and [#2372](https://github.com/iowarp/clio-agent/issues/2372).
+Use the tuned single-expert design for question answering: one expert with shell (running `report.py`) and the read-only HDF5 tools including `hdf5_analyze_dataset_structure`, light profile, the cwd and no-spawn lines. Keep the orchestrated blueprint only where delegation adds something (e.g. a long PBS workflow alongside file inspection). Adopted 2026-11-17: `porotomo-is-tuned` became the default in `start-alcf-mistral.sh` and `run_query.py`. Since 2026-11-18 the default is its clio-agent 0.9.7.1 port, `poro/porotomo-is` (round 10), which reads run results, HDF5 layouts and HDF5 slices with its own `porotomo_report`, `porotomo_h5_layout` and `porotomo_h5_slice` tools (rounds 12, 13 and 15). Upstream issues filed 2026-11-17: [clio-agent #2368](https://github.com/iowarp/clio-agent/issues/2368) (pass `reasoning_effort` for vLLM-served models with unknown thinking specs) and [clio-agent #2369](https://github.com/iowarp/clio-agent/issues/2369) (answer truncation; closed 2026-11-18 because it does not apply to 0.9.7.x, while the local DSPy patch is still needed on 0.9.4.24). The 0.9.7.1 store adoption is [clio-agent #2375](https://github.com/iowarp/clio-agent/issues/2375). The stalls are [clio-agent #2371](https://github.com/iowarp/clio-agent/issues/2371) and [#2372](https://github.com/iowarp/clio-agent/issues/2372).
 
 ## Related
 

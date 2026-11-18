@@ -1,0 +1,19 @@
+{
+  "question": "List every dataset in /home/hyoklee/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5 with its shape and dtype.",
+  "agent": "poro/porotomo-is",
+  "tools": [
+    {
+      "tool": "porotomo_h5_layout",
+      "ok": true
+    }
+  ],
+  "permissions": [],
+  "session_id": "sess_2b53563dc95f",
+  "agent_ref": "poro/porotomo-is",
+  "stop_reason": "end_turn",
+  "status": "completed",
+  "elapsed_s": 3.4,
+  "answer": "Here is every dataset in `/home/hyoklee/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5` (46,590,272 bytes), read directly from the file's layout:\n\n| Path | Shape | Dtype | Chunks | Notes from attributes |\n|---|---|---|---|---|\n| `/das` | (30000, 384) | float32 | (2000, 384) | strain; sampling interval 0.001 s; `coordinates = t x y z` |\n| `/t` | (30000,) | float64 | (30000,) | time, seconds since 1970-01-01T00:00:00Z |\n| `/trace` | (30000,) | int64 | (30000,) | trace number, 0\u201329999 |\n| `/channel` | (384,) | int32 | \u2014 | channel number, 1\u2013384 |\n| `/x` | (384,) | float32 | \u2014 | Easting (m), EPSG:32611 |\n| `/y` | (384,) | float32 | \u2014 | Northing (m) |\n| `/z` | (384,) | float32 | \u2014 | Elevation above reference ellipsoid (m) |\n| `/crs` | () (scalar) | uint8 | \u2014 | CRS grid mapping: WGS 84 / UTM zone 11N (EPSG:32611) |\n\nSo the file holds **8 datasets**: one 2-D strain array `/das` (30,000 time samples \u00d7 384 channels, the only chunked dataset), three 1-D per-sample arrays (`/t`, `/trace`, plus coordinates), three 1-D per-channel coordinate arrays (`/x`, `/y`, `/z`), and one scalar CRS variable (`/crs`). Root attributes follow DAS-HDF5-1.0 / CF-1.7 conventions, cover 2016-03-18T10:03:17.990472Z to 10:03:47.989472Z (30 s at 1 kHz), and identify the instrument as iDAS S/N iDAS025 from the PoroTomo project (source SEG-Y `PoroTomo_iDAS025_160318160317.sgy`).",
+  "tokens_input": 25491,
+  "tokens_output": 579
+}

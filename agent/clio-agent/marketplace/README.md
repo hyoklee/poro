@@ -14,7 +14,7 @@ it is the default PoroTomo agent, run by clio-agent 0.9.7.1 from
 | `plugins/porotomo-is/plugin.json` | the plugin; it requires `shell` and `hdf5` |
 | `plugins/porotomo-is/ai.iowarp.clio/prompt/*.md` | the blueprint's instructions as three prompt fragments (`mission`, `runs`, `hdf5`), each within the 150-token fragment budget |
 | `plugins/porotomo-is/ai.iowarp.clio/tools/report.py` | the `porotomo_report` tool (since 0.4.0): the digest of a run's `summary.json`, from `agent/report.py` |
-| `plugins/porotomo-is/ai.iowarp.clio/tools/h5_layout.py` | the `porotomo_h5_layout` tool (since 0.5.0): every dataset of an HDF5 record with shape, dtype, chunks, compression and attributes |
+| `plugins/porotomo-is/ai.iowarp.clio/tools/h5.py` | the `porotomo_h5_layout` tool (since 0.5.0): every dataset of an HDF5 record with shape, dtype, chunks, compression and attributes; the `porotomo_h5_slice` tool (since 0.6.0): a slice's statistics and values |
 
 How the blueprint maps to the port:
 
@@ -50,10 +50,22 @@ attributes, cuts values at 80 characters, and refuses files outside
 `CLIO_ALLOWED_ROOTS`. It replaces the open / analyze / `hdf5_get_shape` /
 `hdf5_get_dtype` / `hdf5_list_attributes` round trips through clio-kit's HDF5 MCP
 server, which the model made even when told not to (round 12: median 4 calls,
-up to 21; round 13 with this tool: one call, 3.2 s median). The `hdf5_*` tools
-stay for reading data values.
+up to 21; round 13 with this tool: one call, 3.2 s median).
 
-Both tools are declared `@tool(read_only=True, defer=False, callers="direct")`. With the
+## The `porotomo_h5_slice` tool
+
+`porotomo_h5_slice(path, dataset, start, count, show=10)` reads one hyperslab
+(`start` and `count` comma-separated per dimension, e.g. `"0,200"` and `"100,1"`)
+and returns its n, NaN count, min, max, mean and std (float64, over the whole
+slice) and its first `show` values (at most 1000) at full precision. It reads at
+most 1,000,000 elements per call, so never the whole `/das` (11.5 M), and only
+files under `CLIO_ALLOWED_ROOTS`. clio-kit's `hdf5_read_partial_dataset` shows
+only the first five values of a slice and `hdf5_aggregate_stats` works on whole
+datasets only, so without it the model read slices five values at a time or
+went to the shell (round 14: median 22.5 s, 10 calls; round 15 with this tool:
+2.5 s, one call).
+
+All three tools are declared `@tool(read_only=True, defer=False, callers="direct")`. With the
 defaults, clio-agent 0.9.7.1 defers plugin tools (the model must find them with
 `search_tools` first) and lets them be called from `run_code`; the model then
 tried `run_code`, was denied and fell back to the shell.
@@ -84,4 +96,4 @@ Start the server from an empty folder, not from `~/poro`. 0.9.7.1 adopts the
 ([clio-agent #2375](https://github.com/iowarp/clio-agent/issues/2375)).
 
 `../bench_0971.py --agent poro/porotomo-is --tasks results,hdf5` runs the
-benchmark. Results are in `wiki/agent_clio_performance.md`, rounds 10–13.
+benchmark. Results are in `wiki/agent_clio_performance.md`, rounds 10–15.

@@ -1,0 +1,19 @@
+{
+  "question": "Report the headline results of the agent run in /home/hyoklee/poro/agent/results/run_20261115T155359Z_s20: the number of records analysed, anomalous records and DAS detections, the seismogenic index Sigma and P(Mw>=5.5) per year for each b scenario, and the DAS-based upper bound. Say which is calibrated and which is an upper bound. Read-only: do not submit PBS jobs and do not run hazard.py.",
+  "agent": "poro/porotomo-is",
+  "tools": [
+    {
+      "tool": "porotomo_report",
+      "ok": true
+    }
+  ],
+  "permissions": [],
+  "session_id": "sess_be182f70f6c1",
+  "agent_ref": "poro/porotomo-is",
+  "stop_reason": "end_turn",
+  "status": "completed",
+  "elapsed_s": 3.5,
+  "answer": "Headline results of run `run_20261115T155359Z_s20` (stride 20), read from its `summary.json` via `porotomo_report`:\n\n## Data coverage\n- **Records analysed:** 759, spanning 2016-03-18T02:09:17Z \u2192 2016-03-26T00:59:44Z (3.314 % of the time window)\n- **Anomalous records** (|robust z| > 5): **57**\n- **DAS detections:** **62 in 53 records**; relative b = 0.9849 (34 above Mc)\n\n## Pumping (15.96 days)\n- Injected 4.654e+05 m\u00b3, extracted 5.059e+05 m\u00b3 \u2192 **net \u22124.048e+04 m\u00b3** (net extraction)\n\n## Catalogue (LBNL/NCEDC, GDR 859, March 2016)\n- 5 events, ML \u22120.48 to 0.07\n\n## Probabilities \u2014 two different estimates\n\n**CALIBRATED (catalogue-based, Shapiro et al. 2021 Eq. 5)** \u2014 this is the trustworthy, calibrated probability:\n\n| b | Sigma | P(M \u2265 5.5)/yr | P(M \u2265 5.5) in observed volume | P(M \u2265 3)/yr |\n|---|-------|---------------|-------------------------------|--------------|\n| 1.0 | \u22125.449 | 0.0001198 | 5.236e-06 | 0.03719 |\n| 0.73 | \u22125.319 | 0.004922 | 0.0002155 | 0.2809 |\n| 0.65 | \u22125.281 | 0.01474 | 0.0006484 | 0.4653 |\n\n**UPPER BOUND (DAS-based)** \u2014 **not calibrated**: magnitudes are uncalibrated and every DAS detection is counted as an event at or above the catalogue completeness magnitude Mc, so it **over-counts** events. With b = 0.9849: Sigma = \u22122.698, **P(M \u2265 5.5)/yr = 0.07842**.\n\n## Bottom line\nA Pohang-like Mw \u2265 5.5 event at Brady Hot Springs in this March 2016 window is very unlikely on the calibrated estimate: ~1.2e-4 per year at b = 1.0, rising to ~1.5e-2 per year only in the low-b (0.65) scenario. The DAS-based figure of 0.078/yr is an upper bound only \u2014 inflated by uncalibrated magnitudes and over-counting \u2014 and should not be read as a calibrated probability.\n\nAs requested, this was read-only: no PBS jobs were submitted and `hazard.py` was not run.",
+  "tokens_input": 24878,
+  "tokens_output": 676
+}

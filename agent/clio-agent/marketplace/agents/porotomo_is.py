@@ -4,10 +4,10 @@ from clio_agent.sdk import Agent
 
 
 class PorotomoIS(Agent):
-    """One agent, no delegation: porotomo_report for run results, porotomo_h5_layout for HDF5 records, shell for PBS, read-only HDF5 tools for data values."""
+    """One agent, no delegation: porotomo_report for run results, porotomo_h5_layout and porotomo_h5_slice for HDF5 records, shell for PBS, read-only HDF5 tools for anything else."""
 
     id = "porotomo-is"
-    version = "0.5.0"
+    version = "0.6.0"
     name = "PoroTomo IS"
     role = (
         "an induced-seismicity analyst for the PoroTomo DAS data from Brady Hot Springs "
