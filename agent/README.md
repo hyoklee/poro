@@ -74,7 +74,8 @@ ignored by git. A turn occasionally stalls right after a tool call (e.g.
 turn fails only at the ~900 s turn wall ([clio-agent #2371](https://github.com/iowarp/clio-agent/issues/2371), [#2372](https://github.com/iowarp/clio-agent/issues/2372)).
 Retry the question; the tuned blueprint finishes in about 8 s when it works.
 
-Truncated answers (clio-agent #2369) come from DSPy's `json_repair` call
+On 0.9.4.x, truncated answers (clio-agent #2369, closed as not applying to
+0.9.7.x) come from DSPy's `json_repair` call
 mangling the model's slightly malformed tool-call JSON. A local patch fixes it;
 apply it after every clio-agent install or upgrade, then restart the server:
 
