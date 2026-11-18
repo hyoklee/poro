@@ -43,7 +43,16 @@ TASKS = {
         question=f"List every dataset in {H5} with its shape and dtype.",
         allow=("hdf5_",),
     ),
+    # Data values, not metadata: one channel's first 100 time samples.
+    "das": dict(
+        question=(f"In {H5}, read /das rows 0 to 99 (the first 100 time samples) of "
+                  "channel index 200 (column 200, 0-based). Report the first five values "
+                  "and the minimum, maximum and mean of all 100 values. Read only that "
+                  "slice, not the whole dataset."),
+        allow=("hdf5_",),
+    ),
 }
+DAS_ROWS, DAS_CHANNEL = slice(0, 100), 200
 
 SUP = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹⁻", "0123456789-")
 NUM = re.compile(r"[-−–]?\d[\d,]*(?:\.\d+)?(?:[eE][-+−]?\d+)?"
@@ -96,6 +105,23 @@ def expected_hdf5():
         return {k: (f[k].shape, str(f[k].dtype)) for k in f}
 
 
+def expected_das():
+    import h5py
+    import numpy as np
+    with h5py.File(H5, "r") as f:
+        v = f["das"][DAS_ROWS, DAS_CHANNEL].astype(np.float64)
+    exp = {f"value {i}": v[i] for i in range(5)}
+    exp.update(min=v.min(), max=v.max(), mean=v.mean())
+    return exp
+
+
+def score_das(answer, exp, tol=0.002):
+    """Each expected value must appear in the answer within `tol` (relative)."""
+    vals = numbers(answer)
+    hits = {k: any(abs(v - e) <= tol * abs(e) for v in vals) for k, e in exp.items()}
+    return sum(hits.values()) / len(hits), [k for k, ok in hits.items() if not ok]
+
+
 def score_hdf5(answer, exp):
     """A dataset counts if its name, dtype and every shape number appear on one line."""
     lines = answer.splitlines()
@@ -123,8 +149,8 @@ def main():
     (out / "runs").mkdir(parents=True, exist_ok=True)
     # task:blueprint[:effort]
     configs = [tuple((x.split(":") + [""])[:3]) for x in a.configs.split(",")]
-    exp = {"results": expected_results(), "hdf5": expected_hdf5()}
-    scorer = {"results": score_results, "hdf5": score_hdf5}
+    exp = {"results": expected_results(), "hdf5": expected_hdf5(), "das": expected_das()}
+    scorer = {"results": score_results, "hdf5": score_hdf5, "das": score_das}
     rows = []
     with ClioClient(a.url, timeout=a.timeout) as c, open(out / "runs.jsonl", "a") as fl:
         for rep in range(1, a.reps + 1):

@@ -218,6 +218,19 @@ Round 12 left the `hdf5` question at a median of 4 calls through clio-kit's HDF5
 - On `hdf5` the median fell from 4.8 s to 3.2 s, the slowest run from 6.9 s to 4.1 s, and input tokens from 61k to 25k. The HDF5 MCP server is no longer started for this question.
 - The tool reads no data values and only files under `CLIO_ALLOWED_ROOTS`. Questions about values (samples of `/das`) still use the `hdf5_*` tools.
 
+### Round 14: a data-value question, `das` (2026-11-18)
+
+Rounds 1–13 ask only for run results and metadata. The new `das` task in `bench.py` asks for data values: "read `/das` rows 0 to 99 of channel index 200, report the first five values and the minimum, maximum and mean of all 100 values; read only that slice". It is scored against h5py: each of the 8 values must appear within 0.2 % (relative). Baseline on the installed default (plugin 0.5.0, `bench_0971.py --tasks das --n 20`, `agent/results/llm/bench_20261118_das/`):
+
+| run | das | median s (min–max) | median tool calls (min–max) | median input tokens | failed calls |
+|---|---|---|---|---|---|
+| **round 14, plugin 0.5.0** | **20/20** | 22.5 (12.3–43.5) | 10 (6–42) | 125k | 40 |
+
+- All 20 answers were fully correct, but the question costs about 6 times the time and 5 times the input tokens of the metadata questions.
+- `hdf5_read_partial_dataset` returns only the first five values of a slice (clio-kit 2.10.6), and `hdf5_aggregate_stats` works on whole datasets only. So the model either reads the slice five values at a time (7 of 20 runs made 21–32 partial reads; 203 in all) or computes the statistics with h5py through `shell_bash` (43 calls, 15 failed).
+- Every run first tried `run_code`, which the benchmark denies (20 denials).
+- The same fix as rounds 12–13 would apply: a read-only plugin tool that returns a slice's values and statistics in one call.
+
 ### Failures seen (all variants)
 
 - **Truncated answers (3 of 60 runs):** the stored `answer` part ended mid-sentence at 210, 250 and 514 characters (single-light round 1 run 2, single-light `low` round 3 run 2, baseline round 4 run 2). This is server side and affects both designs: re-reading the sessions with `GET /v1/sessions/{sid}/messages` returns the same cut-off `answer` parts, while the turns report `completed` / `end_turn`. Filed as [clio-agent #2369](https://github.com/iowarp/clio-agent/issues/2369).

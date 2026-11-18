@@ -11,8 +11,8 @@ the question. Only shell tools are approved. Scoring is bench.py's.
 With `--agent poro/porotomo-is` (the port in marketplace/, installed with
 `clio-agent plugin install agent/clio-agent/marketplace --name poro` and
 `clio-agent plugin trust poro`) the question is sent as is; the agent's own
-prompt carries the instructions. `--tasks results,hdf5` runs both benchmark
-questions alternately; shell and hdf5 tools are approved.
+prompt carries the instructions. `--tasks results,hdf5,das` runs the benchmark
+questions alternately (`das` reads /das values); shell, hdf5 and porotomo_ tools are approved.
 
 Run it with the 0.9.7.x venv's python, against a server started from an empty
 folder (0.9.7.1 adopts a session store in <cwd>/.clio/agent):
@@ -37,7 +37,8 @@ from clio_agent.client.events import (
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from bench import TASKS, expected_hdf5, expected_results, score_hdf5, score_results  # noqa: E402
+from bench import (TASKS, expected_das, expected_hdf5, expected_results,  # noqa: E402
+                   score_das, score_hdf5, score_results)
 
 EXPERT = HERE / "variants/porotomo-is-tuned/experts/main.md"
 
@@ -109,7 +110,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--url", default="http://127.0.0.1:8100")
     ap.add_argument("--agent", default="clio/standard")
-    ap.add_argument("--tasks", default="results", help="comma list of results,hdf5 (alternated)")
+    ap.add_argument("--tasks", default="results", help="comma list of results,hdf5,das (alternated)")
     ap.add_argument("--n", type=int, default=60)
     ap.add_argument("--timeout", type=float, default=900)
     ap.add_argument("--out", required=True)
@@ -119,8 +120,9 @@ def main():
     out = Path(a.out).expanduser()
     (out / "runs").mkdir(parents=True, exist_ok=True)
     tasks = a.tasks.split(",")
-    exp = {"results": expected_results(), "hdf5": expected_hdf5() if "hdf5" in tasks else None}
-    scorer = {"results": score_results, "hdf5": score_hdf5}
+    expected = {"results": expected_results, "hdf5": expected_hdf5, "das": expected_das}
+    exp = {t: expected[t]() for t in tasks}
+    scorer = {"results": score_results, "hdf5": score_hdf5, "das": score_das}
     # clio/standard gets the tuned instructions in front of the question; a ported
     # agent carries them in its own prompt.
     prefix = (instructions(not a.no_submit_hint) + "\n\n---\n\n"

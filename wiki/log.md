@@ -109,3 +109,7 @@ Added a read-only Python tool, `porotomo_report(run)`, to the `porotomo-is` plug
 ## [2026-11-18] change | `porotomo_h5_layout` tool in the porotomo-is plugin: 60/60, one call per question
 
 Added a second read-only Python tool to the `porotomo-is` plugin (0.5.0): `porotomo_h5_layout(path)` returns every dataset of an HDF5 file with shape, dtype, chunks, compression and attributes, plus the root attributes, from h5py metadata (no data values, only under `CLIO_ALLOWED_ROOTS`). The `hdf5` fragment uses it instead of the open / analyze / get_shape / get_dtype round trips; the `hdf5_*` tools stay for data values. Benchmark on the installed default (`agent/results/llm/bench_20261118_h5layout/`): 60/60, every question one tool call, medians 3.8 s (results) and 3.2 s (hdf5; round 12: 4.8 s, median 4 calls, 61k input tokens, now 25k). Round 13 in `agent_clio_performance.md`.
+
+## [2026-11-18] test | new `das` benchmark question (data values): 20/20, median 22.5 s
+
+Added a `das` task to `bench.py` (and `bench_0971.py --tasks das`): read `/das` rows 0–99 of channel 200 and report the first five values and the min, max and mean, scored against h5py within 0.2 %. Baseline on the installed default (plugin 0.5.0, `agent/results/llm/bench_20261118_das/`): 20/20 correct, median 22.5 s, 10 tool calls (up to 42), 125k input tokens, 40 failed calls. `hdf5_read_partial_dataset` shows only five values per call, so the model reads the slice five at a time or uses h5py through the shell; every run also tried the denied `run_code`. Round 14 in `agent_clio_performance.md`.
