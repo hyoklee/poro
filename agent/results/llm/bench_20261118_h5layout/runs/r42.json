@@ -1,0 +1,19 @@
+{
+  "question": "List every dataset in /home/hyoklee/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5 with its shape and dtype.",
+  "agent": "poro/porotomo-is",
+  "tools": [
+    {
+      "tool": "porotomo_h5_layout",
+      "ok": true
+    }
+  ],
+  "permissions": [],
+  "session_id": "sess_894794d9dc87",
+  "agent_ref": "poro/porotomo-is",
+  "stop_reason": "end_turn",
+  "status": "completed",
+  "elapsed_s": 2.9,
+  "answer": "Here are all 8 datasets in `/home/hyoklee/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5` (46.6 MB), per the file's own layout:\n\n| Dataset | Shape | Dtype | Notes |\n|---|---|---|---|\n| `/das` | (30000, 384) | float32 | the strain data; chunked (2000, 384), long_name=strain, 1 ms sampling |\n| `/t` | (30000,) | float64 | time axis, seconds since 1970-01-01T00:00:00Z |\n| `/trace` | (30000,) | int64 | trace number, valid 0\u201329999 |\n| `/channel` | (384,) | int32 | channel number, valid 1\u2013384 |\n| `/x` | (384,) | float32 | Easting (m), UTM zone 11N |\n| `/y` | (384,) | float32 | Northing (m) |\n| `/z` | (384,) | float32 | Elevation above ellipsoid (m), 866\u20131230 |\n| `/crs` | scalar () | uint8 | CRS grid mapping, EPSG:32611 (WGS 84 / UTM 11N) |\n\nSo this is a 30-second, 1 kHz record (30,000 samples \u00d7 384 channels, ~30 s from 2016-03-18T10:03:17.99Z to 10:03:47.99Z) from iDAS unit iDAS025, in DAS-HDF5-1.0 / CF-1.7 convention, converted from the source SEG-Y `PoroTomo_iDAS025_160318160317.sgy` (SHA3-256 checksum recorded in the root attributes).",
+  "tokens_input": 24974,
+  "tokens_output": 491
+}

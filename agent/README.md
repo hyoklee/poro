@@ -77,9 +77,10 @@ Use `run_query.py`, not `clio-agent --query`. It pins a new session to `--agent`
 (default `poro/porotomo-is`) and approves only the `hdf5_*` and `porotomo_*` tools;
 shell stays denied unless you pass `--allow-shell` (needed only for PBS jobs). Run
 results come from the plugin's read-only `porotomo_report` tool, which returns the
-`report.py` digest of a run. The agent answered 60/60 benchmark questions with no DSPy
-patch; with `porotomo_report` the medians are 4.0 s for run results and 4.8 s for
-the HDF5 listing (round 12 in `wiki/agent_clio_performance.md`).
+`report.py` digest of a run, and an HDF5 record's layout from `porotomo_h5_layout`. The agent answered 60/60 benchmark questions with no DSPy
+patch; with `porotomo_report` and `porotomo_h5_layout` every question takes one
+tool call, with medians of 3.8 s for run results and 3.2 s for the HDF5 listing
+(round 13 in `wiki/agent_clio_performance.md`).
 `clio-agent/bench_0971.py --agent poro/porotomo-is --tasks results,hdf5 --out <dir>` runs the benchmark.
 
 **The old 0.9.4.24 setup** (`~/.local/share/clio/clio-agent/.venv`, with the

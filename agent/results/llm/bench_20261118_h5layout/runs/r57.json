@@ -1,0 +1,19 @@
+{
+  "question": "Report the headline results of the agent run in /home/hyoklee/poro/agent/results/run_20261115T155359Z_s20: the number of records analysed, anomalous records and DAS detections, the seismogenic index Sigma and P(Mw>=5.5) per year for each b scenario, and the DAS-based upper bound. Say which is calibrated and which is an upper bound. Read-only: do not submit PBS jobs and do not run hazard.py.",
+  "agent": "poro/porotomo-is",
+  "tools": [
+    {
+      "tool": "porotomo_report",
+      "ok": true
+    }
+  ],
+  "permissions": [],
+  "session_id": "sess_62cd8745c3df",
+  "agent_ref": "poro/porotomo-is",
+  "stop_reason": "end_turn",
+  "status": "completed",
+  "elapsed_s": 3.5,
+  "answer": "Headline results from `run_20261115T155359Z_s20` (stride 20, 2016-03-18T02:09:17Z \u2192 2016-03-26T00:59:44Z), read from the run's `summary.json` via `porotomo_report`:\n\n**Coverage and counts**\n- **Records analysed:** 759 (3.314 % of the March 2016 acquisition window)\n- **Anomalous records** (|robust z| > 5): **57**\n- **DAS detections:** **62 in 53 records** (relative b = 0.9849; 34 above the catalogue completeness magnitude Mc)\n- **Pumping:** 4.654e+05 m\u00b3 injected, 5.059e+05 m\u00b3 extracted, net **\u22124.048e+04 m\u00b3** over 15.96 days (net extraction, not injection)\n- **Catalogue:** 5 events, ML \u22120.48 to 0.07 (GDR 859, LBNL/NCEDC March 2016)\n\n**Calibrated estimate (catalogue-based, Shapiro et al. 2021 Eq. 5)** \u2014 this is the calibrated probability, from the LBNL catalogue:\n\n| b | Sigma | P(M \u2265 5.5)/yr | P(M \u2265 5.5) over observed volume | P(M \u2265 3)/yr |\n|---|-------|---------------|-----------------------------------|--------------|\n| 1.0 | \u22125.449 | 1.198e-04 | 5.236e-06 | 0.03719 |\n| 0.73 | \u22125.319 | 4.922e-03 | 2.155e-04 | 0.2809 |\n| 0.65 | \u22125.281 | 1.474e-02 | 6.484e-04 | 0.4653 |\n\n**DAS-based upper bound (uncalibrated)** \u2014 every DAS detection is counted as an event at or above the catalogue Mc with uncalibrated magnitudes, so it **over-counts**: at b = 0.9849, Sigma = \u22122.698 and **P(M \u2265 5.5)/yr = 0.07842**.\n\n**Bottom line:** the calibrated, catalogue-based rate of a Pohang-like Mw \u2265 5.5 event is at most ~1.5e-02 per year (and as low as ~1.2e-04/yr at b = 1.0) during this window, while the DAS-only figure of 0.078/yr is an upper bound that should not be treated as a calibrated probability. Net fluid balance over the analysed window was negative (more extracted than injected), so the data do not show injection-driven pressurisation in this period.",
+  "tokens_input": 24383,
+  "tokens_output": 680
+}

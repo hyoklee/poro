@@ -1,0 +1,19 @@
+{
+  "question": "List every dataset in /home/hyoklee/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5 with its shape and dtype.",
+  "agent": "poro/porotomo-is",
+  "tools": [
+    {
+      "tool": "porotomo_h5_layout",
+      "ok": true
+    }
+  ],
+  "permissions": [],
+  "session_id": "sess_2992f80460f8",
+  "agent_ref": "poro/porotomo-is",
+  "stop_reason": "end_turn",
+  "status": "completed",
+  "elapsed_s": 3.2,
+  "answer": "All datasets in `/home/hyoklee/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5` (46,590,272 bytes), from `porotomo_h5_layout`:\n\n| Path | Shape | Dtype |\n|---|---|---|\n| `/channel` | (384,) | int32 |\n| `/crs` | scalar () | uint8 |\n| `/das` | (30000, 384) | float32 |\n| `/t` | (30000,) | float64 |\n| `/trace` | (30000,) | int64 |\n| `/x` | (384,) | float32 |\n| `/y` | (384,) | float32 |\n| `/z` | (384,) | float32 |\n\nNotes from the same layout read:\n\n- `/das` is the strain data \u2014 30,000 time samples \u00d7 384 channels, chunked (2000, 384), with `sampling_interval_seconds=0.001` (1 kHz) and `_FillValue=nan`.\n- `/t` gives the time axis in `seconds since 1970-01-01T00:00:00Z`; root attributes put coverage at 2016-03-18T10:03:17.990472Z \u2192 10:03:47.989472Z (~30 s).\n- `/x`, `/y`, `/z` are per-channel coordinates (Easting/Northing/Elevation, EPSG:32611 UTM 11N via `/crs`); `/channel` and `/trace` are index arrays.\n- Root attributes: DAS-HDF5-1.0 / CF-1.7 / ACDD-1.3 conventions, instrument iDAS S/N iDAS025, source `PoroTomo_iDAS025_160318160317.sgy`, project CoRDIAL/PoroTomo at Brady Hot Springs.",
+  "tokens_input": 25031,
+  "tokens_output": 591
+}

@@ -14,6 +14,7 @@ it is the default PoroTomo agent, run by clio-agent 0.9.7.1 from
 | `plugins/porotomo-is/plugin.json` | the plugin; it requires `shell` and `hdf5` |
 | `plugins/porotomo-is/ai.iowarp.clio/prompt/*.md` | the blueprint's instructions as three prompt fragments (`mission`, `runs`, `hdf5`), each within the 150-token fragment budget |
 | `plugins/porotomo-is/ai.iowarp.clio/tools/report.py` | the `porotomo_report` tool (since 0.4.0): the digest of a run's `summary.json`, from `agent/report.py` |
+| `plugins/porotomo-is/ai.iowarp.clio/tools/h5_layout.py` | the `porotomo_h5_layout` tool (since 0.5.0): every dataset of an HDF5 record with shape, dtype, chunks, compression and attributes |
 
 How the blueprint maps to the port:
 
@@ -39,7 +40,20 @@ model re-read `summary.json` with `python3 -c` one-liners in 25 of 30 questions
 (round 11 in `wiki/agent_clio_performance.md`). `shell_bash` is still there for
 PBS submission.
 
-It is declared `@tool(read_only=True, defer=False, callers="direct")`. With the
+## The `porotomo_h5_layout` tool
+
+`porotomo_h5_layout(path)` reads an HDF5 file's metadata with h5py (in the
+server's venv) and returns, in one call, one line per dataset (path, shape,
+dtype, chunks, compression, attributes) and the root attributes, about 3 KB for
+a DASV record. It reads no data values, skips the dimension-scale reference
+attributes, cuts values at 80 characters, and refuses files outside
+`CLIO_ALLOWED_ROOTS`. It replaces the open / analyze / `hdf5_get_shape` /
+`hdf5_get_dtype` / `hdf5_list_attributes` round trips through clio-kit's HDF5 MCP
+server, which the model made even when told not to (round 12: median 4 calls,
+up to 21; round 13 with this tool: one call, 3.2 s median). The `hdf5_*` tools
+stay for reading data values.
+
+Both tools are declared `@tool(read_only=True, defer=False, callers="direct")`. With the
 defaults, clio-agent 0.9.7.1 defers plugin tools (the model must find them with
 `search_tools` first) and lets them be called from `run_code`; the model then
 tried `run_code`, was denied and fell back to the shell.
@@ -70,4 +84,4 @@ Start the server from an empty folder, not from `~/poro`. 0.9.7.1 adopts the
 ([clio-agent #2375](https://github.com/iowarp/clio-agent/issues/2375)).
 
 `../bench_0971.py --agent poro/porotomo-is --tasks results,hdf5` runs the
-benchmark. Results are in `wiki/agent_clio_performance.md`, rounds 10–12.
+benchmark. Results are in `wiki/agent_clio_performance.md`, rounds 10–13.

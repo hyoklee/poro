@@ -1,0 +1,19 @@
+{
+  "question": "List every dataset in /home/hyoklee/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5 with its shape and dtype.",
+  "agent": "poro/porotomo-is",
+  "tools": [
+    {
+      "tool": "porotomo_h5_layout",
+      "ok": true
+    }
+  ],
+  "permissions": [],
+  "session_id": "sess_7231ca59ad3c",
+  "agent_ref": "poro/porotomo-is",
+  "stop_reason": "end_turn",
+  "status": "completed",
+  "elapsed_s": 3.8,
+  "answer": "Here are all 8 datasets in `/home/hyoklee/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5` (46,590,272 bytes), read directly from the file with `porotomo_h5_layout`:\n\n| Dataset | Shape | Dtype | Chunking |\n|---|---|---|---|\n| `/das` | (30000, 384) | float32 | (2000, 384) |\n| `/t` | (30000,) | float64 | (30000,) |\n| `/trace` | (30000,) | int64 | (30000,) |\n| `/channel` | (384,) | int32 | \u2014 |\n| `/x` | (384,) | float32 | \u2014 |\n| `/y` | (384,) | float32 | \u2014 |\n| `/z` | (384,) | float32 | \u2014 |\n| `/crs` | scalar () | uint8 | \u2014 |\n\nKey attributes from the file:\n\n- **`/das`** is the strain data (long_name `strain`, coordinates `t x y z`, sampling interval 0.001 s, _FillValue nan) \u2014 30,000 time samples \u00d7 384 channels, chunked in blocks of 2000 traces.\n- **`/t`** is time in seconds since 1970-01-01T00:00:00Z (gregorian calendar); root attributes give coverage 2016-03-18T10:03:17.990472Z \u2192 2016-03-18T10:03:47.989472Z (30 s window at 1 kHz).\n- **`/channel`** is channel number 1\u2013384; **`/x`, `/y`, `/z`** are Easting/Northing/Elevation per channel in UTM zone 11N (EPSG:32611), with the fiber spanning ~1 m of easting and elevations 866\u20131230 m.\n- Root attributes: DAS-HDF5-1.0 / CF-1.7 / ACDD-1.3 conventions, instrument iDAS S/N iDAS025, source SEG-Y `PoroTomo_iDAS025_160318160317.sgy`, project CoRDIAL/PoroTomo, Brady Hot Springs area (lat \u2248 39.8006, lon \u2248 \u2212119.0095).\n\nNote `/crs` is a scalar uint8 placeholder whose real content is the WKT string in its `crs_wkt` attribute, not numeric data.",
+  "tokens_input": 24974,
+  "tokens_output": 628
+}

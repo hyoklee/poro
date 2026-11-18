@@ -1,0 +1,19 @@
+{
+  "question": "Report the headline results of the agent run in /home/hyoklee/poro/agent/results/run_20261115T155359Z_s20: the number of records analysed, anomalous records and DAS detections, the seismogenic index Sigma and P(Mw>=5.5) per year for each b scenario, and the DAS-based upper bound. Say which is calibrated and which is an upper bound. Read-only: do not submit PBS jobs and do not run hazard.py.",
+  "agent": "poro/porotomo-is",
+  "tools": [
+    {
+      "tool": "porotomo_report",
+      "ok": true
+    }
+  ],
+  "permissions": [],
+  "session_id": "sess_eb7f84dfb63f",
+  "agent_ref": "poro/porotomo-is",
+  "stop_reason": "end_turn",
+  "status": "completed",
+  "elapsed_s": 3.5,
+  "answer": "Headline results for **run_20261115T155359Z_s20** (`/home/hyoklee/poro/agent/results/run_20261115T155359Z_s20`, read from its `summary.json` via `porotomo_report`):\n\n**Coverage and detections**\n- Records analysed: **759** (stride 20, 2016-03-18T02:09:17Z \u2192 2016-03-26T00:59:44Z; 3.314 % of the time window)\n- Anomalous records (|robust z| > 5): **57**\n- DAS detections: **62 in 53 records**, relative b = 0.9849 (34 above the catalogue completeness magnitude Mc)\n- Pumping over 15.96 days: injected 4.654e+05 m\u00b3, extracted 5.059e+05 m\u00b3, net **\u22124.048e+04 m\u00b3** (net extraction)\n- Catalogue: 5 events, ML \u22120.48 to 0.07 (GDR 859, LBNL/NCEDC March 2016)\n\n**Calibrated probability (LBNL catalogue, Shapiro et al. 2021 Eq. 5)** \u2014 this is the calibrated estimate:\n\n| b | Sigma | P(M \u2265 5.5)/yr | P(M \u2265 5.5) at observed volume | P(M \u2265 3)/yr |\n|---|-------|---------------|-------------------------------|-------------|\n| 1.00 | \u22125.449 | 1.198e\u22124 | 5.236e\u221206 | 0.03719 |\n| 0.73 | \u22125.319 | 4.922e\u22123 | 2.155e\u221204 | 0.2809 |\n| 0.65 | \u22125.281 | 1.474e\u22122 | 6.484e\u221204 | 0.4653 |\n\n**DAS-based upper bound (uncalibrated magnitudes)**: b = 0.9849, Sigma = \u22122.698, **P(M \u2265 5.5)/yr = 0.07842**. This one over-counts \u2014 every DAS detection is treated as an event at or above the catalogue Mc \u2014 so it is an upper bound, not a calibrated probability.\n\n**Bottom line:** the calibrated catalogue-based probability of a Pohang-like Mw \u2265 5.5 event is very low (1.2e\u22124 to 1.5e\u22122 per year depending on the b scenario, with Sigma \u2248 \u22125.3 to \u22125.4), while the DAS-only upper bound is 0.078/yr. Even the upper bound indicates no Pohang-scale event is likely; the DAS number should not be read as a calibrated hazard estimate because its magnitudes are uncalibrated and it counts all detections as catalogued events.\n\nRead-only as requested: no PBS jobs submitted, `hazard.py` not run.",
+  "tokens_input": 24382,
+  "tokens_output": 712
+}

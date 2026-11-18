@@ -1,0 +1,19 @@
+{
+  "question": "List every dataset in /home/hyoklee/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5 with its shape and dtype.",
+  "agent": "poro/porotomo-is",
+  "tools": [
+    {
+      "tool": "porotomo_h5_layout",
+      "ok": true
+    }
+  ],
+  "permissions": [],
+  "session_id": "sess_cb9653b8f278",
+  "agent_ref": "poro/porotomo-is",
+  "stop_reason": "end_turn",
+  "status": "completed",
+  "elapsed_s": 3.3,
+  "answer": "Here are all 8 datasets in `/home/hyoklee/cae_test_data/porotomo/dasv_native_PoroTomo_iDAS025_160318160317.h5` (46,590,272 bytes), as read from the file itself:\n\n| Path | Shape | Dtype | Chunks |\n|------|-------|-------|--------|\n| `/das` | (30000, 384) | float32 | (2000, 384) |\n| `/t` | (30000,) | float64 | (30000,) |\n| `/trace` | (30000,) | int64 | (30000,) |\n| `/channel` | (384,) | int32 | \u2013 |\n| `/x` | (384,) | float32 | \u2013 |\n| `/y` | (384,) | float32 | \u2013 |\n| `/z` | (384,) | float32 | \u2013 |\n| `/crs` | () scalar | uint8 | \u2013 |\n\nKey details:\n\n- **`/das`** is the main strain data: 30,000 time samples \u00d7 384 channels, float32, chunked (2000, 384), with `sampling_interval_seconds=0.001` (1 kHz) and `long_name=strain`.\n- **`/t`** holds the time axis in seconds since 1970-01-01 UTC (float64); file-level `time_coverage_start/end` give 2016-03-18T10:03:17.990472Z \u2192 10:03:47.989472Z (a 30-second window, matching 30,000 samples at 1 ms).\n- **`/x`, `/y`, `/z`** are the per-channel coordinates in EPSG:32611 (UTM 11N, WGS 84): Easting ~327,961\u2013327,962 m, Northing ~4,407,555 m, elevation 866\u20131230 m \u2014 the ~1 m easting span reflects the nearly north\u2013south fiber at Brady Hot Springs.\n- **`/crs`** is a scalar grid-mapping variable carrying the WKT for EPSG:32611.\n- Root attributes follow DAS-HDF5-1.0 / CF-1.7 / ACDD-1.3, instrument iDAS S/N iDAS025, source `PoroTomo_iDAS025_160318160317.sgy` (SHA3-256 checksum recorded), project CoRDIAL.",
+  "tokens_input": 24972,
+  "tokens_output": 607
+}
